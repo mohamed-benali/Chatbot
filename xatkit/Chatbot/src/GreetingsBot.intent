@@ -40,7 +40,25 @@ intent Sad {
 
 intent Test {
 	inputs {
-		"testing"
+		"Test"
+	}
+}
+
+intent Test2 follows Test {
+	inputs {
+		"Test 2"
+	}
+}
+
+intent Test3 follows Test2 {
+	inputs {
+		"Test 2"
+	}
+}
+
+intent Test4 follows Test3 {
+	inputs {
+		"Test 4"
 	}
 }
 

@@ -23,5 +23,13 @@ on intent Help do
 	ChatPlatform.Reply("I am the Xatkit example bot from the [getting started tutorial](https://github.com/xatkit-bot-platform/xatkit-releases/wiki/Getting-Started)")
 	
 on intent Test do
-	ChatPlatform.Reply("Test success")
+	ChatPlatform.Reply("Test")
 	
+on intent Test2 do
+	ChatPlatform.Reply("Test2")
+	
+on intent Test3 do
+	ChatPlatform.Reply("Test3")
+	
+on intent Test4 do
+	ChatPlatform.Reply("Test4")
