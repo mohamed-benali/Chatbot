@@ -1,0 +1,9 @@
+Platform ZapierPlatform
+
+path "com.xatkit.plugins.zapier.platform.ZapierPlatform"
+
+actions {
+	
+	PostAction(zapierEndpoint : String, jsonBody : String)
+	PostActionWithCallback(zapierEndpoint : String, jsonBody : String)
+}
