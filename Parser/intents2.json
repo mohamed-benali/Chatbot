@@ -1,0 +1,13 @@
+{
+    "dummy": {
+        "dum": "hello",
+        "py/object": "Parser.Dummy"
+    },
+    "inputs": [
+        "testing",
+        "testing2",
+        "testing3",
+        "testing4"
+    ],
+    "py/object": "Parser.Intent"
+}
