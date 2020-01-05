@@ -7,7 +7,7 @@
         "intent_execution": "",
         "intent_intent": "",
         "name": "Test",
-        "py/object": "Parser.Intent",
+        "py/object": "Intent.Intent",
         "response": "Intent: Test"
     },
     {
@@ -18,7 +18,7 @@
         "intent_execution": "",
         "intent_intent": "",
         "name": "Test2",
-        "py/object": "Parser.Intent",
+        "py/object": "Intent.Intent",
         "response": "Intent: Test2"
     },
     {
@@ -29,7 +29,7 @@
         "intent_execution": "",
         "intent_intent": "",
         "name": "Test3",
-        "py/object": "Parser.Intent",
+        "py/object": "Intent.Intent",
         "response": "Intent: Test3"
     },
     {
@@ -40,7 +40,7 @@
         "intent_execution": "",
         "intent_intent": "",
         "name": "Test4",
-        "py/object": "Parser.Intent",
+        "py/object": "Intent.Intent",
         "response": "Intent: Test4"
     }
 ]
