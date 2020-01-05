@@ -4,19 +4,30 @@ intent Test {
 	inputs {
 		"testing"
 	}
+	creates context CONTEXT_Test with lifespan 3
 }
-intent Test2 follows Test {
+
+intent Test2 {
+	requires context CONTEXT_Test
 	inputs {
 		"testing"
 	}
+	creates context CONTEXT_Test2 with lifespan 3
 }
-intent Test3 follows Test2 {
+
+intent Test3 {
+	requires context CONTEXT_Test2
 	inputs {
 		"testing"
 	}
+	creates context CONTEXT_Test3 with lifespan 3
 }
-intent Test4 follows Test3 {
+
+intent Test4 {
+	requires context CONTEXT_Test3
 	inputs {
 		"testing"
 	}
+	creates context CONTEXT_Test4 with lifespan 3
 }
+

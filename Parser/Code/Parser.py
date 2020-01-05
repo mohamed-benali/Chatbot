@@ -1,16 +1,6 @@
-
 from Code.Entity import Entity
 from Code.Intent import Intents
 from Code.Imports import Imports
-
-
-
-
-
-
-
-
-
 
 
 class Parser(Entity):

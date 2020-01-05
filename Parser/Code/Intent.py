@@ -28,19 +28,30 @@ class Intent(Entity):
         self.follows = follows
 
     def add_intent_on_intent_format(self, name, inputs, follows):
+        context_name = 'CONTEXT_' + name
+        lifespan = 3
+
+        if self.follows != None:
+            follows_name = 'CONTEXT_' + follows
+
         # File .intent
         self.intent_intent += 'intent ' + name + ' '
-        if self.follows != None:
-            self.intent_intent += "follows" + ' ' + follows + ' '
 
         self.intent_intent += '{' + '\n'
+
+        if self.follows != None:
+            self.intent_intent += '\t' + 'requires context ' + follows_name  + '\n'
+
         self.intent_intent += '\t' + 'inputs {' + '\n'
 
         for input in inputs:
             self.intent_intent += '\t\t' + '"' + input + '"' + '\n'
 
         self.intent_intent += '\t' + '}' + '\n'
-        self.intent_intent += '}' + '\n'
+
+        self.intent_intent += '\t' + 'creates context ' + context_name + ' with lifespan ' + str(lifespan) + '\n'
+
+        self.intent_intent += '}' + '\n\n'
         return self.intent_intent
 
     def add_intent_on_execution_format(self, name, response):
