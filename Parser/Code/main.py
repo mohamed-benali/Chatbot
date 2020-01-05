@@ -4,20 +4,25 @@ from Code.Intent import Intent
 
 
 def testing(file_read_permission = 'r+', file_write_permission = 'w+', ):
-    intent = Intent(name="Test", response="Intent: Test")
+
+    intent = Intent(name="Test", response="Intent: Test", subject="Empleat")
     intent.add_input("testing")
 
     follows = ["Test"]
-    intent2 = Intent(name="Test2", response="Intent: Test2", follows=follows)
-    intent2.add_input("testing")
+    intent2 = Intent(name="Test2", response="Intent: Test2", follows=follows, subject="Empleat")
+    inputs = ["testing"]
+    intent2.set_inputs(inputs)
+
 
     follows = ["Test2"]
-    intent3 = Intent(name="Test3", response="Intent: Test3", follows=follows)
-    intent3.add_input("testing")
+    intent3 = Intent(name="Test3", response="Intent: Test3", follows=follows, subject="Departament")
+    inputs = ["testing"]
+    intent3.set_inputs(inputs)
 
     follows = ["Test3"]
-    intent4 = Intent(name="Test4", response="Intent: Test4", follows=follows)
-    intent4.add_input("testing")
+    intent4 = Intent(name="Test4", response="Intent: Test4", follows=follows, subject="Departament")
+    inputs = ["testing"]
+    intent4.set_inputs(inputs)
 
     # TODO: Fer un FOR per crear N intents automaticament
     intents = []

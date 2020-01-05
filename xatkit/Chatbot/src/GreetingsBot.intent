@@ -4,7 +4,8 @@ intent Test {
 	inputs {
 		"testing"
 	}
-	creates context CONTEXT_Test with lifespan 3
+	creates context CONTEXT_Test with lifespan 4
+	creates context SUBJECT_CONTEXT_Empleat with lifespan 4
 }
 
 intent Test2 {
@@ -12,7 +13,8 @@ intent Test2 {
 	inputs {
 		"testing"
 	}
-	creates context CONTEXT_Test2 with lifespan 3
+	creates context CONTEXT_Test2 with lifespan 4
+	creates context SUBJECT_CONTEXT_Empleat with lifespan 4
 }
 
 intent Test3 {
@@ -20,7 +22,8 @@ intent Test3 {
 	inputs {
 		"testing"
 	}
-	creates context CONTEXT_Test3 with lifespan 3
+	creates context CONTEXT_Test3 with lifespan 4
+	creates context SUBJECT_CONTEXT_Departament with lifespan 4
 }
 
 intent Test4 {
@@ -28,6 +31,25 @@ intent Test4 {
 	inputs {
 		"testing"
 	}
-	creates context CONTEXT_Test4 with lifespan 3
+	creates context CONTEXT_Test4 with lifespan 4
+	creates context SUBJECT_CONTEXT_Departament with lifespan 4
+}
+
+intent SUBJECT_CONTEXT_Departament {
+	requires context SUBJECT_CONTEXT_Departament
+	inputs {
+		"Who does this task?"
+		"Who does it?"
+		"Who performs this task"
+	}
+}
+
+intent SUBJECT_CONTEXT_Empleat {
+	requires context SUBJECT_CONTEXT_Empleat
+	inputs {
+		"Who does this task?"
+		"Who does it?"
+		"Who performs this task"
+	}
 }
 

@@ -6,7 +6,8 @@
         ],
         "name": "Test",
         "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test"
+        "response": "Intent: Test",
+        "subject": "Empleat"
     },
     {
         "follows": [
@@ -17,7 +18,8 @@
         ],
         "name": "Test2",
         "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test2"
+        "response": "Intent: Test2",
+        "subject": "Empleat"
     },
     {
         "follows": [
@@ -28,7 +30,8 @@
         ],
         "name": "Test3",
         "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test3"
+        "response": "Intent: Test3",
+        "subject": "Departament"
     },
     {
         "follows": [
@@ -39,6 +42,7 @@
         ],
         "name": "Test4",
         "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test4"
+        "response": "Intent: Test4",
+        "subject": "Departament"
     }
 ]
