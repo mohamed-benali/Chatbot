@@ -4,43 +4,41 @@
         "inputs": [
             "testing"
         ],
-        "intent_execution": "",
-        "intent_intent": "",
         "name": "Test",
-        "py/object": "Intent.Intent",
+        "py/object": "Code.Intent.Intent",
         "response": "Intent: Test"
     },
     {
-        "follows": "Test",
+        "follows": [
+            "Test"
+        ],
         "inputs": [
             "testing"
         ],
-        "intent_execution": "",
-        "intent_intent": "",
         "name": "Test2",
-        "py/object": "Intent.Intent",
+        "py/object": "Code.Intent.Intent",
         "response": "Intent: Test2"
     },
     {
-        "follows": "Test2",
+        "follows": [
+            "Test2"
+        ],
         "inputs": [
             "testing"
         ],
-        "intent_execution": "",
-        "intent_intent": "",
         "name": "Test3",
-        "py/object": "Intent.Intent",
+        "py/object": "Code.Intent.Intent",
         "response": "Intent: Test3"
     },
     {
-        "follows": "Test3",
+        "follows": [
+            "Test3"
+        ],
         "inputs": [
             "testing"
         ],
-        "intent_execution": "",
-        "intent_intent": "",
         "name": "Test4",
-        "py/object": "Intent.Intent",
+        "py/object": "Code.Intent.Intent",
         "response": "Intent: Test4"
     }
 ]

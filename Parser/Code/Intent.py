@@ -12,9 +12,6 @@ class Intent(Entity):
         #TODO: Is posible that i will have to create another attribute called "behaviour"
         #TODO: To be able to add code automaticaly, but is possible that i wil not need that
 
-        self.intent_intent = ''
-        self.intent_execution = ''
-
     def add_input(self, input):
         self.inputs.append(input)
 
@@ -27,40 +24,46 @@ class Intent(Entity):
     def set_follows(self, follows):
         self.follows = follows
 
+    def add_follows(self, follows):
+        if self.follows != None:
+            self.follows.append(follows)
+
     def add_intent_on_intent_format(self, name, inputs, follows):
         context_name = 'CONTEXT_' + name
         lifespan = 3
 
-        if self.follows != None:
-            follows_name = 'CONTEXT_' + follows
+        intent_intent = ''
 
         # File .intent
-        self.intent_intent += 'intent ' + name + ' '
+        intent_intent += 'intent ' + name + ' '
 
-        self.intent_intent += '{' + '\n'
+        intent_intent += '{' + '\n'
 
         if self.follows != None:
-            self.intent_intent += '\t' + 'requires context ' + follows_name  + '\n'
+            for follow in follows:
+                follows_name = 'CONTEXT_' + follow
+                intent_intent += '\t' + 'requires context ' + follows_name  + '\n'
 
-        self.intent_intent += '\t' + 'inputs {' + '\n'
+        intent_intent += '\t' + 'inputs {' + '\n'
 
         for input in inputs:
-            self.intent_intent += '\t\t' + '"' + input + '"' + '\n'
+            intent_intent += '\t\t' + '"' + input + '"' + '\n'
 
-        self.intent_intent += '\t' + '}' + '\n'
+        intent_intent += '\t' + '}' + '\n'
 
-        self.intent_intent += '\t' + 'creates context ' + context_name + ' with lifespan ' + str(lifespan) + '\n'
+        intent_intent += '\t' + 'creates context ' + context_name + ' with lifespan ' + str(lifespan) + '\n'
 
-        self.intent_intent += '}' + '\n\n'
-        return self.intent_intent
+        intent_intent += '}' + '\n\n'
+        return intent_intent
 
     def add_intent_on_execution_format(self, name, response):
         # File .execution
-        self.intent_execution += 'on intent ' + name + ' do' + '\n'
-        self.intent_execution += '\t' + 'ChatPlatform.Reply("'
-        self.intent_execution += response
-        self.intent_execution += '")' + '\n' + '\n'
-        return self.intent_execution
+        intent_execution = ''
+        intent_execution += 'on intent ' + name + ' do' + '\n'
+        intent_execution += '\t' + 'ChatPlatform.Reply("'
+        intent_execution += response
+        intent_execution += '")' + '\n' + '\n'
+        return intent_execution
 
     def parse(self):
         self.intent_intent      = self.add_intent_on_intent_format(self.name, self.inputs, self.follows)

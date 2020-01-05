@@ -7,13 +7,16 @@ def testing(file_read_permission = 'r+', file_write_permission = 'w+', ):
     intent = Intent(name="Test", response="Intent: Test")
     intent.add_input("testing")
 
-    intent2 = Intent(name="Test2", response="Intent: Test2", follows="Test")
+    follows = ["Test"]
+    intent2 = Intent(name="Test2", response="Intent: Test2", follows=follows)
     intent2.add_input("testing")
 
-    intent3 = Intent(name="Test3", response="Intent: Test3", follows="Test2")
+    follows = ["Test2"]
+    intent3 = Intent(name="Test3", response="Intent: Test3", follows=follows)
     intent3.add_input("testing")
 
-    intent4 = Intent(name="Test4", response="Intent: Test4", follows="Test3")
+    follows = ["Test3"]
+    intent4 = Intent(name="Test4", response="Intent: Test4", follows=follows)
     intent4.add_input("testing")
 
     # TODO: Fer un FOR per crear N intents automaticament
@@ -25,9 +28,9 @@ def testing(file_read_permission = 'r+', file_write_permission = 'w+', ):
 
     json_intent = toJSON(intents)
 
-    open("../Data/intents.json", file_write_permission).write(json_intent)
+    open("./Data/intents.json", file_write_permission).write(json_intent)
 
-    aux = open("../Data/intents.json", file_read_permission).read()
+    aux = open("./Data/intents.json", file_read_permission).read()
 
     # print(aux)
 
@@ -63,7 +66,7 @@ def main():
     parser.parse()
 
 
-    #testing()
+    testing()
 
 
 
