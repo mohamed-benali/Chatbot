@@ -16,11 +16,11 @@ on intent Test3 do
 on intent Test4 do
 	ChatPlatform.Reply("Intent: Test4")
 
-on intent SUBJECT_CONTEXT_Departament do
-	ChatPlatform.Reply("Departament")
-
 on intent SUBJECT_CONTEXT_Empleat do
 	ChatPlatform.Reply("Empleat")
+
+on intent SUBJECT_CONTEXT_Departament do
+	ChatPlatform.Reply("Departament")
 
 on intent Default_Fallback_Intent do
 	ChatPlatform.Reply("Sorry I didn't get it")
