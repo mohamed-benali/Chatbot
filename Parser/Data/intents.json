@@ -19,30 +19,6 @@
         "name": "Test2",
         "py/object": "Code.Intent.Intent",
         "response": "Intent: Test2",
-        "subject": "Empleat"
-    },
-    {
-        "follows": [
-            "Test2"
-        ],
-        "inputs": [
-            "testing"
-        ],
-        "name": "Test3",
-        "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test3",
-        "subject": "Departament"
-    },
-    {
-        "follows": [
-            "Test3"
-        ],
-        "inputs": [
-            "testing"
-        ],
-        "name": "Test4",
-        "py/object": "Code.Intent.Intent",
-        "response": "Intent: Test4",
         "subject": "Departament"
     }
 ]

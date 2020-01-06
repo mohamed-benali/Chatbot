@@ -95,7 +95,7 @@ class Intent(Entity):
         subject_context_name = self.context_subject_name(subject)
 
         lifespan_own = 4
-        lifespan_subject = 3#lifespan_own # Dona conflictes amb altres intents_subject amb la mateixa pregunta(com a input)
+        lifespan_subject = 4#lifespan_own # Dona conflictes amb altres intents_subject amb la mateixa pregunta(com a input)
 
         intent_intent = ''
 

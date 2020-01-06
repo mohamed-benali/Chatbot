@@ -9,7 +9,7 @@ def testing(file_read_permission = 'r+', file_write_permission = 'w+', ):
     intent.add_input("testing")
 
     follows = ["Test"]
-    intent2 = Intent(name="Test2", response="Intent: Test2", follows=follows, subject="Empleat")
+    intent2 = Intent(name="Test2", response="Intent: Test2", follows=follows, subject="Departament")
     inputs = ["testing"]
     intent2.set_inputs(inputs)
 
@@ -28,8 +28,8 @@ def testing(file_read_permission = 'r+', file_write_permission = 'w+', ):
     intents = []
     intents.append(intent)
     intents.append(intent2)
-    intents.append(intent3)
-    intents.append(intent4)
+    #intents.append(intent3)
+    #intents.append(intent4)
 
     json_intent = toJSON(intents)
 
