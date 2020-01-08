@@ -5,22 +5,23 @@ import platform "ChatPlatform"
 use provider ChatPlatform.ChatProvider
 
 on intent Test do
+	session.put("Who_Does_It", "Empleat")
 	ChatPlatform.Reply("Intent: Test")
 
 on intent Test2 do
+	session.put("Who_Does_It", "Empleat")
 	ChatPlatform.Reply("Intent: Test2")
 
 on intent Test3 do
+	session.put("Who_Does_It", "Departament")
 	ChatPlatform.Reply("Intent: Test3")
 
 on intent Test4 do
+	session.put("Who_Does_It", "Departament")
 	ChatPlatform.Reply("Intent: Test4")
 
-on intent SUBJECT_CONTEXT_Empleat do
-	ChatPlatform.Reply("Empleat")
-
-on intent SUBJECT_CONTEXT_Departament do
-	ChatPlatform.Reply("Departament")
+on intent Who_Does_It do
+	ChatPlatform.Reply(session.get("Who_Does_It") as String)
 
 on intent Default_Fallback_Intent do
 	ChatPlatform.Reply("Sorry I didn't get it")

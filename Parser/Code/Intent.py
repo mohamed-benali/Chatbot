@@ -67,7 +67,7 @@ class Intent(Entity):
 
 
 
-    def add_subject_intent_on_intent_format(self, name, inputs, follows, subject):
+    def add_WhoDoesIt_intent_on_intent_format(self, name, inputs, follows):
         intent_intent = ''
 
         # File .intent
@@ -76,9 +76,8 @@ class Intent(Entity):
         intent_intent += '{' + '\n'
 
         if follows != None:
-            for follow in follows:
-                follows_context_name = self.context_subject_name(follow)
-                intent_intent = self.add_requires_context(intent_intent, follows_context_name)
+            follows_context_name = self.context_subject_name(follows)
+            intent_intent = self.add_requires_context(intent_intent, follows_context_name)
 
         intent_intent += '\t' + 'inputs {' + '\n'
 
@@ -94,8 +93,8 @@ class Intent(Entity):
         own_context_name = self.context_intent_name(name)
         subject_context_name = self.context_subject_name(subject)
 
-        lifespan_own = 4
-        lifespan_subject = 3#lifespan_own # Dona conflictes amb altres intents_subject amb la mateixa pregunta(com a input)
+        lifespan_own = 5
+        lifespan_subject = lifespan_own
 
         intent_intent = ''
 
@@ -123,18 +122,30 @@ class Intent(Entity):
         intent_intent += '}' + '\n\n'
         return intent_intent
 
-    def add_intent_on_execution_format(self, name, response):
+    def add_intent_on_execution_format(self, name, response, session_key=None, session_value=None):
         # File .execution
         intent_execution = ''
         intent_execution += 'on intent ' + name + ' do' + '\n'
+        if session_key != None and session_value != None:
+            intent_execution += '\t' + 'session.put(' + session_key + ', "' + session_value + '")' + '\n'
         intent_execution += '\t' + 'ChatPlatform.Reply("'
         intent_execution += response
         intent_execution += '")' + '\n' + '\n'
         return intent_execution
 
+    def add_whoDoesIt_intent_on_execution_format(self, name, response):
+        # File .execution
+        intent_execution = ''
+        intent_execution += 'on intent ' + name + ' do' + '\n'
+        intent_execution += '\t' + 'ChatPlatform.Reply('
+        intent_execution += response
+        intent_execution += ')' + '\n' + '\n'
+        return intent_execution
+
     def parse(self):
-        self.intent_intent      = self.add_intent_on_intent_format(self.name, self.inputs, self.follows, self.subject)
-        self.intent_execution   = self.add_intent_on_execution_format(self.name, self.response)
+        self.intent_intent      = self.add_intent_on_intent_format(self.name, self.inputs, self.follows, subject="Who_Does_It")
+        # TODO: Revisar codi, a mes de els atributs session_key, session_value
+        self.intent_execution   = self.add_intent_on_execution_format(self.name, self.response, session_key='"Who_Does_It"', session_value=self.subject)
 
         return self.intent_intent, self.intent_execution
 
@@ -167,26 +178,24 @@ class Intents(Entity):
         return self.context_name(subject, "SUBJECT_")
 
     def parse(self):
-        subjects = set()
         for intent in self.intents:
             [intent_intent, intent_execution] = intent.parse()
             self.intents_intent += intent_intent
             self.intents_execution += intent_execution
 
-            subjects.add(intent.subject)
 
-        for subject in subjects:
-            subject_context_name = self.context_subject_name(subject)
-            subject_intent = Intent(name= subject_context_name,
-                                    response=subject)
-
-            inputs = ["Who does this task?",
-                      "Who does it?",
-                      "Who performs this task"]
-            follows = [subject]
-            self.intents_intent += subject_intent.add_subject_intent_on_intent_format(name=subject_context_name, inputs=inputs,  follows=follows, subject=subject)
-            self.intents_execution += subject_intent.add_intent_on_execution_format(name=subject_context_name,
-                                                                                    response=subject)
+        response = 'session.get("Who_Does_It") as String'
+        inputs = ["Who does this task?",
+                  "Who does it?",
+                  "Who performs this task"]
+        who_Does_It_Name = "Who_Does_It"
+        who_Does_It = Intent(name=who_Does_It_Name,
+                             response=response)
+        self.intents_intent += who_Does_It.add_WhoDoesIt_intent_on_intent_format(name=who_Does_It_Name,
+                                                                                 inputs=inputs,
+                                                                                 follows=who_Does_It_Name)
+        self.intents_execution += who_Does_It.add_whoDoesIt_intent_on_execution_format(  name=who_Does_It_Name,
+                                                                            response=response)
 
 
         default_fallback_intent = Intent(   name='Default_Fallback_Intent',
