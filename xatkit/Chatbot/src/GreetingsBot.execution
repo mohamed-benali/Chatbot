@@ -4,21 +4,25 @@ import platform "ChatPlatform"
 
 use provider ChatPlatform.ChatProvider
 
-on intent Test do
+on intent Begin do
+	session.put("Who_Does_It", "Customer")
+	ChatPlatform.Reply("Intent: Begin;  Items fetched")
+
+on intent Price do
+	session.put("Who_Does_It", "Employee")
+	ChatPlatform.Reply("Intent: Stock;  Employee calculates the price. Is the total price over 100?")
+
+on intent Price_YES do
 	session.put("Who_Does_It", "Empleat")
-	ChatPlatform.Reply("Intent: Test")
+	ChatPlatform.Reply("Intent: Price_YES; Ship a Parcel with Transport insurance")
 
-on intent Test2 do
-	session.put("Who_Does_It", "Empleat")
-	ChatPlatform.Reply("Intent: Test2")
-
-on intent Test3 do
+on intent Price_NO do
 	session.put("Who_Does_It", "Departament")
-	ChatPlatform.Reply("Intent: Test3")
+	ChatPlatform.Reply("Intent: Price_NO; Ship a Parcel")
 
-on intent Test4 do
+on intent End do
 	session.put("Who_Does_It", "Departament")
-	ChatPlatform.Reply("Intent: Test4")
+	ChatPlatform.Reply("Intent: Test4; Order is delivered. And the process ends.")
 
 on intent Who_Does_It do
 	ChatPlatform.Reply(session.get("Who_Does_It") as String)

@@ -1,37 +1,74 @@
 Library GreetingsBotLibrary
 
-intent Test {
+intent Begin {
 	inputs {
-		"testing"
+		"begin"
+		"start"
 	}
-	creates context CONTEXT_Test with lifespan 5
+	creates context CONTEXT_Begin with lifespan 5
+	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
+	
+	creates context CONTEXT_Price with lifespan 0
+	creates context CONTEXT_Price_Question with lifespan 0
+	creates context CONTEXT_Test2 with lifespan 0
+	
+}
+
+intent Price {
+	requires context CONTEXT_Begin
+	inputs {
+		"next"
+		"go forward"
+		"show me next"
+		"switch to the next"
+		"go to the next step"
+		"tell me the next step"
+		"show me the next"
+		"show me the following"
+	}
+	creates context CONTEXT_Price with lifespan 5
 	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
 }
 
-intent Test2 {
-	requires context CONTEXT_Test
+intent Price_YES {
+	requires context CONTEXT_Price
 	inputs {
-		"testing"
+		"yes"
+		"sure"
+		"confirm"
+		"of course"
+		"that's correct"
+	}
+	creates context CONTEXT_Price_Question with lifespan 5
+	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
+}
+
+intent Price_NO {
+	requires context CONTEXT_Price
+	inputs {
+		"no"
+		"definitely not"
+		"not really"
+		"I don't think so"
+	}
+	creates context CONTEXT_Price_Question with lifespan 5
+	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
+}
+
+intent End {
+	requires context CONTEXT_Price
+	requires context CONTEXT_Price_Question
+	inputs {
+		"next"
+		"go forward"
+		"show me next"
+		"switch to the next"
+		"go to the next step"
+		"tell me the next step"
+		"show me the next"
+		"show me the following"
 	}
 	creates context CONTEXT_Test2 with lifespan 5
-	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
-}
-
-intent Test3 {
-	requires context CONTEXT_Test2
-	inputs {
-		"testing"
-	}
-	creates context CONTEXT_Test3 with lifespan 5
-	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
-}
-
-intent Test4 {
-	requires context CONTEXT_Test3
-	inputs {
-		"testing"
-	}
-	creates context CONTEXT_Test4 with lifespan 5
 	creates context SUBJECT_CONTEXT_Who_Does_It with lifespan 5
 }
 
