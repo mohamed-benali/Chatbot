@@ -28,18 +28,7 @@ public class BpmnAlgorithm {
     }
 
 
-    /*
-     * HELPERS
-     */
 
-    // Get following flow nodes(task, gateway, etc) of a FlowNode.
-    public Collection<FlowNode> getFlowingFlowNodes(FlowNode node) {
-        Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
-        for (SequenceFlow sequenceFlow : node.getOutgoing()) {
-            followingFlowNodes.add(sequenceFlow.getTarget());
-        }
-        return followingFlowNodes;
-    }
 
     /*
      * Parser
@@ -50,7 +39,11 @@ public class BpmnAlgorithm {
         for(Participant participant : ParticipantInstances) {
             this.intents.add(this.parseParticipant(participant));
         }
+        // TODO: Incoming y Outgoing intents ¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
+        // TODO: POSSIBLE IDEA: In the parsing generate the intents for the BPMN.
+        // TODO: THEN, calculate for each intent whcih intents are the following and wich are incoming.
+        // TODO: THAT can be done here, after all participants are parsed.
         return this.intents;
     }
 
@@ -94,7 +87,7 @@ public class BpmnAlgorithm {
         else if(node.getElementType() == sequenceFlowType)     intents.add(this.parserFlowNodes.parseSequenceFlow    (participant, process, node));
         else if(node.getElementType() == endEventType)         intents.add(this.parserFlowNodes.parseEndEvent        (participant, process, node));
 
-        Collection<FlowNode> flowNodes = getFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
+        Collection<FlowNode> flowNodes = parserFlowNodes.getFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
         for(FlowNode flowNode: flowNodes) {
             intents.add(this.parseFlowNode(participant, process, flowNode));
         }

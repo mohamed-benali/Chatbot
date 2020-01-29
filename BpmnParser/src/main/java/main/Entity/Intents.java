@@ -2,30 +2,35 @@ package main.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Intents {
 
-    private List<Intent> intents;
+    private Map<String, Intent> intents; // String: name(identificador)
 
     /*
      * CONSTRUCTORS
      */
     public Intents() {
-        intents = new ArrayList<Intent>();
+        intents = new TreeMap<String, Intent>();
     }
 
     /*
      * GETTERS & SETTERS
      */
-    public List<Intent> getIntents() { return this.intents; }
-    public void setIntents(List<Intent> intents) { this.intents = intents; }
+    public Map<String, Intent> getIntents() { return this.intents; }
+    public void setIntents(Map<String, Intent> intents) { this.intents = intents; }
 
     /*
      * Add intents
      */
-    public void add(Intent intent) { this.intents.add(intent); }
-    public void add(List<Intent> intents) {
-        for(Intent intent : intents) this.add(intent);
+    public void add(Intent intent) { this.intents.put(intent.getId(), intent); }
+
+    public void add(Map<String,Intent> intents) {
+        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+            this.add(entry.getValue());
+        }
     }
     public void add(Intents intents) {
         this.add(intents.getIntents());
