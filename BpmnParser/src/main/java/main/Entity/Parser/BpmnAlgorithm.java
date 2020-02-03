@@ -1,12 +1,11 @@
 package main.Entity.Parser;
 
-import main.Entity.Intents;
+import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class BpmnAlgorithm {
@@ -44,7 +43,25 @@ public class BpmnAlgorithm {
         // TODO: POSSIBLE IDEA: In the parsing generate the intents for the BPMN.
         // TODO: THEN, calculate for each intent whcih intents are the following and wich are incoming.
         // TODO: THAT can be done here, after all participants are parsed.
+
+        Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
+        for(MessageFlow messageFlow : messageFlowIntsances) {
+            this.parseMessageFlow(messageFlow); // this.intents es actualitzada dintre la funcio
+        }
+
         return this.intents;
+    }
+
+    private void parseMessageFlow(MessageFlow messageFlow) {
+        String sourceID = messageFlow.getSource().getId();
+        String targetID = messageFlow.getTarget().getId();
+
+        FlowNode sourceNode = this.modelInstance.getModelElementById(sourceID);
+        FlowNode targetNode = this.modelInstance.getModelElementById(targetID);
+
+        // TODO: Generate a new intent for the messageFLow.
+        //       Update the incoming/outgoing intents of the source & target..
+
     }
 
     private Intents parseParticipant(Participant participant) {
@@ -66,7 +83,6 @@ public class BpmnAlgorithm {
 
     /*
      * Each node parses itself, then, calls recursively the function to parse outgoing nodes
-     *
      */
     private Intents parseFlowNode(Participant participant, Process process, FlowNode node) {
         Intents intents = new Intents();
@@ -84,10 +100,10 @@ public class BpmnAlgorithm {
         else if(node.getElementType() == taskType)             intents.add(this.parserFlowNodes.parseTask            (participant, process, node));
         else if(node.getElementType() == exclusiveGatewayType) intents.add(this.parserFlowNodes.parseExclusiveGateway(participant, process, node));
         else if(node.getElementType() == messageFlowType)      intents.add(this.parserFlowNodes.parseMessageFlow     (participant, process, node));
-        else if(node.getElementType() == sequenceFlowType)     intents.add(this.parserFlowNodes.parseSequenceFlow    (participant, process, node));
         else if(node.getElementType() == endEventType)         intents.add(this.parserFlowNodes.parseEndEvent        (participant, process, node));
+        else intents.add(this.parserFlowNodes.parseFlowNode(participant, process, node));
 
-        Collection<FlowNode> flowNodes = parserFlowNodes.getFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
+        Collection<FlowNode> flowNodes = parserFlowNodes.getRelevantFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
         for(FlowNode flowNode: flowNodes) {
             intents.add(this.parseFlowNode(participant, process, flowNode));
         }

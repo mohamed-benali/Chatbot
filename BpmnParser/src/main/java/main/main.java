@@ -1,13 +1,7 @@
 package main;
 
-import main.Entity.Intents;
+import main.Entity.Intent.Intents;
 import main.Entity.Parser.Parser;
-
-import org.camunda.bpm.model.bpmn.instance.*;
-
-import java.util.Collection;
-
-
 
 
 public class main {
@@ -23,5 +17,7 @@ public class main {
         parser.parse();
         Intents intents = parser.getIntents();
         intents.translateIntoDialogFlow();
+
+        intents.print();
     }
 }

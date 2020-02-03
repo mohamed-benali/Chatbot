@@ -1,15 +1,10 @@
 package main.Entity.Parser;
 
-import main.Entity.Intents;
+import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.*;
-import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 public class Parser {

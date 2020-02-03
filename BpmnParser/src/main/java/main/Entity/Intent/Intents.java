@@ -1,11 +1,10 @@
-package main.Entity;
+package main.Entity.Intent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Intents {
+    public static void println(String s) { System.out.println(s); }
 
     private Map<String, Intent> intents; // String: name(identificador)
 
@@ -36,11 +35,36 @@ public class Intents {
         this.add(intents.getIntents());
     }
 
+    public void add_null_intent(String intentID) { this.intents.put(intentID, null); }
+
+
+
+
+
+    /*
+     * PRINT Intents
+     */
+    public void print() {
+        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+            Intent intent = entry.getValue();
+            intent.print();
+        }
+    }
+
+    public void printIDs() {
+        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+            println(entry.getKey());
+        }
+    }
+
     /*
      * Translate into Dialogflow(use library?)
      */
     public void translateIntoDialogFlow() {
-
+        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+            Intent intent = entry.getValue();
+            intent.translateIntoDialogFlow();
+        }
     }
 
 
