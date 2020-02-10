@@ -53,9 +53,6 @@ public class ParserFlowNodes {
             FlowNode followingNode = sequenceFlow.getTarget();
             if(followingNode.getName() != null) followingFlowNodes.add(followingNode);
             else followingFlowNodes.addAll(this.getRelevantFlowingFlowNodes(followingNode));
-
-            // TODO: Consider if the next flowNode is a closing exlusiveGateway(with no text) or similar.
-            // TODO: If its the case, then the following nodes are the following of the gateway,
         }
         return followingFlowNodes;
     }
@@ -68,8 +65,6 @@ public class ParserFlowNodes {
             FlowNode incomingNode = sequenceFlow.getSource();
             if(incomingNode.getName() != null) incomingFlowNodes.add(incomingNode);
             else incomingFlowNodes.addAll(this.getRelevantIncomingFlowNodes(incomingNode));
-            // TODO: Consider if the incoming flowNode is a closing exlusiveGateway(with no text) or similar.
-            // TODO: If its the case, then the incoming nodes are the incoming of that gateway,
         }
         return incomingFlowNodes;
     }
@@ -109,8 +104,8 @@ public class ParserFlowNodes {
 
         for(SequenceFlow sequenceFlow : incomingSequenceFlow) intent.addTrainingPhrase(sequenceFlow.getName());
 
-        for(FlowNode flowNode : incomingFlowNodes) intent.addEmptyInputIntent (createName(participant, process, flowNode));
-        for(FlowNode flowNode : outgoingFlowNodes) intent.addEmptyOutputIntent(createName(participant, process, flowNode));
+        for(FlowNode flowNode : incomingFlowNodes) intent.addInputIntentID (createName(participant, process, flowNode));
+        for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
 
 
         intents.add(intent);

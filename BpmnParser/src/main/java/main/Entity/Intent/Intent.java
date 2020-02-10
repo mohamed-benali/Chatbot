@@ -2,6 +2,7 @@ package main.Entity.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Intent {
     public static void println(String s) { System.out.println(s); }
@@ -11,23 +12,23 @@ public class Intent {
     private String subject; // Who does it
     private String task;    // What is done
 
-    private Intents inputIntents;  // Intents before
+    private List<String> inputIntents;  // Intents before
 
-    private Intents outputIntents; // Intents after
+    private List<String> outputIntents; // Intents after
 
     private List<String> trainingPhrases; // Training phrases
 
     public Intent() {
-        inputIntents = new Intents();
-        outputIntents = new Intents();
+        inputIntents = new ArrayList<String>();
+        outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
     }
 
     public Intent(String name) {
         this.name = name;
 
-        inputIntents = new Intents();
-        outputIntents = new Intents();
+        inputIntents = new ArrayList<String>();
+        outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
     }
 
@@ -36,8 +37,8 @@ public class Intent {
         this.subject = subject;
         this.task = task;
 
-        inputIntents = new Intents();
-        outputIntents = new Intents();
+        inputIntents = new ArrayList<String>();
+        outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
     }
 
@@ -55,21 +56,41 @@ public class Intent {
     public String getTask()          { return task; }
     public void setTask(String task) { this.task = task; }
 
-    public Intents getInputIntents()                  { return inputIntents; }
-    public void setInputIntents(Intents inputIntents) { this.inputIntents = inputIntents; }
-    public void addInputIntent(Intent intent) { inputIntents.add(intent); }
-    public void addEmptyInputIntent(String intentID) { inputIntents.add_null_intent(intentID); }
+   /*
+    * INPUT
+    */
+    public List<String> getInputIntents()                  { return this.inputIntents; }
+    public void setInputIntents(List<String> inputIntents) { this.inputIntents = inputIntents; }
+
+    public void addInputIntentID(String intent) { this.inputIntents.add(intent); }
+    // TODO: Update the Outgoing intents of the targetInputIntents
+    // TODO: Requieres the modelInstance(singleton???)
+    public void addInputIntentIDs(List<String> intents) { this.inputIntents.addAll(intents); }
 
 
-    public Intents getOutputIntents()                   { return outputIntents; }
-    public void setOutputIntents(Intents outputIntents) { this.outputIntents = outputIntents; }
-    public void addOutputIntent(Intent intent) { outputIntents.add(intent); }
-    public void addEmptyOutputIntent(String intentID) { outputIntents.add_null_intent(intentID); }
+    public void clearInputIntents() { inputIntents.clear(); }
 
+    /*
+     * OUTPUT
+     */
+    public List<String> getOutputIntents()                   { return this.outputIntents; }
+    public void setOutputIntents(List<String> outputIntents) { this.outputIntents = outputIntents; }
 
-    public List<String> getTrainingPhrases()                     { return trainingPhrases; }
+    public void addOutputIntentID(String intent) { this.outputIntents.add(intent); }
+    // TODO: Update the incoming intents of the sourceOutputIntents
+    // TODO: Requieres the modelInstance(singleton???)
+    public void addOutputIntentIDs(List<String> intents) { this.outputIntents.addAll(intents); }
+
+    public void clearOutputIntents() { outputIntents.clear(); }
+
+    /*
+     * TRAINING PHRASES
+     */
+    public List<String> getTrainingPhrases()                     { return this.trainingPhrases; }
     public void setTrainingPhrases(List<String> trainingPhrases) { this.trainingPhrases = trainingPhrases; }
-    public void addTrainingPhrase(String trainingPhrase) { trainingPhrases.add(trainingPhrase); }
+    public void addTrainingPhrase(String trainingPhrase) { this.trainingPhrases.add(trainingPhrase); }
+    public void addTrainingPhrases(List<String> trainingPhrases) { this.trainingPhrases.addAll(trainingPhrases); }
+    public void clearTrainingPhrases() { trainingPhrases.clear(); }
 
 
 
@@ -86,9 +107,9 @@ public class Intent {
         println("Subject: " + this.getSubject());
         println("Task:    " + this.getTask());
         println("Input Intents:");
-        inputIntents.printIDs();
+        printIDs(inputIntents);
         println("Output Intents:");
-        outputIntents.printIDs();
+        printIDs(outputIntents);
         println("Training Phrases:");
         for(String trainingPhrase : this.trainingPhrases) {
             println(trainingPhrase);
@@ -96,6 +117,12 @@ public class Intent {
 
         println("");
         println("");
+    }
+
+    public void printIDs(List<String> list) {
+        for(String id : list) {
+            println(id);
+        }
     }
 
     public void translateIntoDialogFlow() {
@@ -114,4 +141,6 @@ public class Intent {
     private String makeResponse() {
         return this.getSubject() + " " + this.getTask();
     }
+
+
 }

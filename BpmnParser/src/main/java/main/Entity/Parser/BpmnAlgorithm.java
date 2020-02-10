@@ -1,5 +1,6 @@
 package main.Entity.Parser;
 
+import main.Entity.Intent.Intent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
@@ -38,11 +39,6 @@ public class BpmnAlgorithm {
         for(Participant participant : ParticipantInstances) {
             this.intents.add(this.parseParticipant(participant));
         }
-        // TODO: Incoming y Outgoing intents ¿?¿?¿?¿?¿?¿?¿?¿?¿?
-
-        // TODO: POSSIBLE IDEA: In the parsing generate the intents for the BPMN.
-        // TODO: THEN, calculate for each intent whcih intents are the following and wich are incoming.
-        // TODO: THAT can be done here, after all participants are parsed.
 
         Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
         for(MessageFlow messageFlow : messageFlowIntsances) {
@@ -59,9 +55,14 @@ public class BpmnAlgorithm {
         FlowNode sourceNode = this.modelInstance.getModelElementById(sourceID);
         FlowNode targetNode = this.modelInstance.getModelElementById(targetID);
 
-        // TODO: Generate a new intent for the messageFLow.
-        //       Update the incoming/outgoing intents of the source & target..
 
+        String name = messageFlow.getId();
+        String sourceSubject = this.getSourceSubject(messageFlow);
+        String targetSubject = this.getTargetSubject(messageFlow);
+        String task = messageFlow.getName();
+        Intent intent = new CollaborationIntent(name, sourceSubject, targetSubject, task);
+
+        this.intents.insertIntent(intent, sourceID, targetID);
     }
 
     private Intents parseParticipant(Participant participant) {
@@ -103,6 +104,7 @@ public class BpmnAlgorithm {
         else if(node.getElementType() == endEventType)         intents.add(this.parserFlowNodes.parseEndEvent        (participant, process, node));
         else intents.add(this.parserFlowNodes.parseFlowNode(participant, process, node));
 
+        // Recursively parse the outgoing flownodes.
         Collection<FlowNode> flowNodes = parserFlowNodes.getRelevantFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
         for(FlowNode flowNode: flowNodes) {
             intents.add(this.parseFlowNode(participant, process, flowNode));

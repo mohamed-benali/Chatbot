@@ -1,5 +1,6 @@
 package main.Entity.Intent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,8 +38,31 @@ public class Intents {
 
     public void add_null_intent(String intentID) { this.intents.put(intentID, null); }
 
+    /*
+     * Inserts an intent between the intents identified by *sourceID* and *targetID*
+     */
+    public void insertIntent(Intent intent, String sourceID, String targetID) {
+        Intent sourceIntent = this.intents.get(sourceID); // Outgoing
+
+        List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
+        intent.addOutputIntentIDs(sourceOutputIntents); // TODO: Update the incoming intents of the sourceOutputIntents
+
+        sourceIntent.clearOutputIntents();
+        sourceIntent.addOutputIntentID(intent.getId());
+        intent.addInputIntentID(sourceIntent.getId());
 
 
+
+
+
+        Intent targetIntent = this.intents.get(targetID); // Incoming
+        List<String> targetInputIntents = targetIntent.getInputIntents();
+        intent.addInputIntentIDs(targetInputIntents); // TODO: Update the Outgoing intents of the targetInputIntents
+
+        targetIntent.clearInputIntents();
+        targetIntent.addInputIntentID(intent.getId());
+        intent.addOutputIntentID(targetIntent.getId());
+    }
 
 
     /*
@@ -66,6 +90,7 @@ public class Intents {
             intent.translateIntoDialogFlow();
         }
     }
+
 
 
 }
