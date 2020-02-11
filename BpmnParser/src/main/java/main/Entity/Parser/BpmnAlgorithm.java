@@ -1,5 +1,6 @@
 package main.Entity.Parser;
 
+import main.Entity.Intent.CollaborationIntent;
 import main.Entity.Intent.Intent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -52,15 +53,15 @@ public class BpmnAlgorithm {
         String sourceID = messageFlow.getSource().getId();
         String targetID = messageFlow.getTarget().getId();
 
-        FlowNode sourceNode = this.modelInstance.getModelElementById(sourceID);
-        FlowNode targetNode = this.modelInstance.getModelElementById(targetID);
-
-
         String name = messageFlow.getId();
-        String sourceSubject = this.getSourceSubject(messageFlow);
-        String targetSubject = this.getTargetSubject(messageFlow);
+        String sourceSubject = this.parserFlowNodes.getSourceSubject(messageFlow);
+        String targetSubject = this.parserFlowNodes.getTargetSubject(messageFlow);
         String task = messageFlow.getName();
         Intent intent = new CollaborationIntent(name, sourceSubject, targetSubject, task);
+
+        /* TODO: INCORRECT!!    NEEDS FIXING!!
+         * TODO: The insert should be between the apropiate IDs.
+         */
 
         this.intents.insertIntent(intent, sourceID, targetID);
     }

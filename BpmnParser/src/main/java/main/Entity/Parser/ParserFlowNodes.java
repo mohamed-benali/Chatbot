@@ -5,6 +5,7 @@ import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,6 +70,44 @@ public class ParserFlowNodes {
         return incomingFlowNodes;
     }
 
+    // Gives the source subject (ex:"Departament", "Empleat") of the message flow
+    public String getSourceSubject(MessageFlow messageFlow) {
+        String sourceSubject = null;
+
+        InteractionNode interactionNode = messageFlow.getSource();
+        String nodeID = interactionNode.getId();
+
+        FlowNode flowNode = this.modelInstance.getModelElementById(nodeID);
+        Process process = (Process) flowNode.getParentElement();
+        String processID = process.getId();
+
+        Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
+        for(Participant participant : participants) {
+            if(processID.equals(participant.getProcess().getId() ) ) sourceSubject = participant.getName();
+        }
+
+        return sourceSubject;
+    }
+
+    // Gives the target subject (ex:"Departament", "Empleat") of the message flow
+    public String getTargetSubject(MessageFlow messageFlow) {
+        String targetSubject = null;
+
+        InteractionNode interactionNode = messageFlow.getTarget();
+        String nodeID = interactionNode.getId();
+
+        FlowNode flowNode = this.modelInstance.getModelElementById(nodeID);
+        Process process = (Process) flowNode.getParentElement();
+        String processID = process.getId();
+
+        Collection<Participant> participants = this.modelInstance.getModelElementsByType(Participant.class);
+        for(Participant participant : participants) {
+            if(processID.equals(participant.getProcess().getId() ) ) targetSubject = participant.getName();
+        }
+
+        return targetSubject;
+    }
+
 
     /*
      * AUXILIAR METHODS
@@ -81,32 +120,38 @@ public class ParserFlowNodes {
     }
 
 
+
+
     /*
      * PARSE FLOW NODES
      */
 
+    private void addTrainingPhrases(Intent intent, FlowNode node) {
+        Collection<SequenceFlow> incomingSequenceFlow = node.getIncoming();
+        for(SequenceFlow sequenceFlow : incomingSequenceFlow) intent.addTrainingPhrase(sequenceFlow.getName());
+    }
 
+    private void addInputIntentIDs(Intent intent, FlowNode node, Participant participant, Process process) {
+        Collection<FlowNode> incomingFlowNodes = getRelevantIncomingFlowNodes(node);
+        for(FlowNode flowNode : incomingFlowNodes) intent.addInputIntentID (createName(participant, process, flowNode));
+    }
+
+    private void addOutputIntentIDs(Intent intent, FlowNode node, Participant participant, Process process) {
+        Collection<FlowNode> outgoingFlowNodes = getRelevantFlowingFlowNodes(node);
+        for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
+    }
 
     public Intents parseFlowNode(Participant participant, Process process, FlowNode node) {
         Intents intents = new Intents();
 
-        Collection<SequenceFlow> incomingSequenceFlow = node.getIncoming();
-        Collection<SequenceFlow> outgoingSequenceFlow = node.getOutgoing();
-
-        Collection<FlowNode> incomingFlowNodes = getRelevantIncomingFlowNodes(node);
-        Collection<FlowNode> outgoingFlowNodes = getRelevantFlowingFlowNodes(node);
-
         String name = createName(participant, process, node); // The name is the identificator
         String subject = participant.getName();
         String tasca = node.getName();
-
         Intent intent = new Intent(name, subject, tasca);
 
-        for(SequenceFlow sequenceFlow : incomingSequenceFlow) intent.addTrainingPhrase(sequenceFlow.getName());
-
-        for(FlowNode flowNode : incomingFlowNodes) intent.addInputIntentID (createName(participant, process, flowNode));
-        for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
-
+        addTrainingPhrases(intent, node);
+        addInputIntentIDs (intent, node, participant, process);
+        addOutputIntentIDs(intent, node, participant, process);
 
         intents.add(intent);
 
@@ -161,4 +206,6 @@ public class ParserFlowNodes {
 
         return intents;
     }
+
+
 }

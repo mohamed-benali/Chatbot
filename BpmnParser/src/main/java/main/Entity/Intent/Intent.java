@@ -8,15 +8,15 @@ public class Intent {
     public static void println(String s) { System.out.println(s); }
 
 
-    private String name; // Nom del Intent, IDENTIFICADOR
-    private String subject; // Who does it
-    private String task;    // What is done
+    protected String name; // Nom del Intent, IDENTIFICADOR
+    protected String subject; // Who does it
+    protected String task;    // What is done
 
-    private List<String> inputIntents;  // Intents before
+    protected List<String> inputIntents;  // Intents before
 
-    private List<String> outputIntents; // Intents after
+    protected List<String> outputIntents; // Intents after
 
-    private List<String> trainingPhrases; // Training phrases
+    protected List<String> trainingPhrases; // Training phrases
 
     public Intent() {
         inputIntents = new ArrayList<String>();
@@ -63,7 +63,7 @@ public class Intent {
     public void setInputIntents(List<String> inputIntents) { this.inputIntents = inputIntents; }
 
     public void addInputIntentID(String intent) { this.inputIntents.add(intent); }
-    // TODO: Update the Outgoing intents of the targetInputIntents
+    // TODO: Update the Outgoing intents of the targetInputIntents?? OR leave it to "void insertIntent(...)" from Intents.java
     // TODO: Requieres the modelInstance(singleton???)
     public void addInputIntentIDs(List<String> intents) { this.inputIntents.addAll(intents); }
 
@@ -138,7 +138,7 @@ public class Intent {
         String response = this.makeResponse();
     }
 
-    private String makeResponse() {
+    protected String makeResponse() {
         return this.getSubject() + " " + this.getTask();
     }
 

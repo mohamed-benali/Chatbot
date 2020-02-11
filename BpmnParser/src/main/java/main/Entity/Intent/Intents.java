@@ -45,7 +45,7 @@ public class Intents {
         Intent sourceIntent = this.intents.get(sourceID); // Outgoing
 
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
-        intent.addOutputIntentIDs(sourceOutputIntents); // TODO: Update the incoming intents of the sourceOutputIntents
+        intent.addOutputIntentIDs(sourceOutputIntents); // TODO: Update the incoming intents of the sourceOutputIntents ¿?
 
         sourceIntent.clearOutputIntents();
         sourceIntent.addOutputIntentID(intent.getId());
@@ -57,11 +57,13 @@ public class Intents {
 
         Intent targetIntent = this.intents.get(targetID); // Incoming
         List<String> targetInputIntents = targetIntent.getInputIntents();
-        intent.addInputIntentIDs(targetInputIntents); // TODO: Update the Outgoing intents of the targetInputIntents
+        intent.addInputIntentIDs(targetInputIntents); // TODO: Update the Outgoing intents of the targetInputIntents ¿?
 
         targetIntent.clearInputIntents();
         targetIntent.addInputIntentID(intent.getId());
         intent.addOutputIntentID(targetIntent.getId());
+
+        this.add(intent);
     }
 
 
