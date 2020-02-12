@@ -9,7 +9,8 @@ public class CollaborationIntent extends Intent {
         super(name);
         this.setTask(task);
 
-        this.setSourceSubject(subject);
+        this.setSourceSubject(sourceSubject);
+        this.setTargetSubject(targetSubject);
 
     }
 

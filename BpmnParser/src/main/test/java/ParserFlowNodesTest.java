@@ -1,10 +1,11 @@
 import main.Entity.Parser.ParserFlowNodes;
+
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.xml.ModelInstance;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.camunda.bpm.model.bpmn.instance.MessageFlow;
+
+
+import org.junit.jupiter.api.*;
 
 
 import java.io.File;
@@ -13,20 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ParserFlowNodesTest {
 
-    ParserFlowNodes parserFlowNodes;
+    static BpmnModelInstance modelInstance;
+    static ParserFlowNodes parserFlowNodes;
 
-    @BeforeEach
-    void setUp() {
-        String packagePath = "./src/main/java/main";
-        String bpmnPath = packagePath + "/../Data/diagram.bpmn";
+    @BeforeAll
+    static void setUp() {
+        String packageTestingPath = "./src/main/test";
+        String bpmnPath = packageTestingPath + "/testing_files/ParserFlowNodes/diagram.bpmn";
         File file = new File(bpmnPath);
-        BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
+        modelInstance = Bpmn.readModelFromFile(file);
 
         parserFlowNodes = new ParserFlowNodes(modelInstance);
     }
 
-    @AfterEach
-    void tearDown() {
+    @AfterAll
+    static void tearDown() {
     }
 
 
@@ -49,11 +51,23 @@ class ParserFlowNodesTest {
     }
 
     @Test
+    @DisplayName("Gets the subject of the source of a messageFlow")
     void getSourceSubject() {
+        String messageFlowID = "MessageFlow_0awsr48";
+        MessageFlow messageFlow = modelInstance.getModelElementById(messageFlowID);
+        String sourceSubject = parserFlowNodes.getSourceSubject(messageFlow);
+
+        assertEquals("Empleat", sourceSubject);
     }
 
     @Test
+    @DisplayName("Gets the subject of the target of a messageFlow")
     void getTargetSubject() {
+        String messageFlowID = "MessageFlow_0awsr48";
+        MessageFlow messageFlow = modelInstance.getModelElementById(messageFlowID);
+        String targetSubject = parserFlowNodes.getTargetSubject(messageFlow);
+
+        assertEquals("Departament", targetSubject);
     }
 
     @Test

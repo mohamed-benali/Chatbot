@@ -1,5 +1,6 @@
 package main.Entity.Parser;
 
+import main.Entity.Intent.CollaborationIntent;
 import main.Entity.Intent.Intent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -118,6 +119,10 @@ public class ParserFlowNodes {
         String name = node.getId();
         return name;
     }
+    public String createName(MessageFlow messageFlow, String subject) {
+        String name = messageFlow.getId() + " " + subject;
+        return name;
+    }
 
 
 
@@ -207,5 +212,33 @@ public class ParserFlowNodes {
         return intents;
     }
 
+
+    /*
+     * Generates an intent for the source node
+     */
+    public Intent parseSourceMessageFlow(MessageFlow messageFlow) {
+        String task = messageFlow.getName();
+        String sourceSubject = this.getSourceSubject(messageFlow);
+        String targetSubject = this.getTargetSubject(messageFlow);
+
+        String sourceIntentName = createName(messageFlow, sourceSubject);
+        Intent sourceIntent = new CollaborationIntent(sourceIntentName, sourceSubject, targetSubject, task);
+
+        return sourceIntent;
+    }
+
+    /*
+     * Generates an intent for the target node
+     */
+    public Intent parseTargetMessageFlow(MessageFlow messageFlow) {
+        String task = messageFlow.getName();
+        String sourceSubject = this.getSourceSubject(messageFlow);
+        String targetSubject = this.getTargetSubject(messageFlow);
+
+        String targetIntentName = createName(messageFlow, targetSubject);
+        Intent targetIntent = new CollaborationIntent(targetIntentName, sourceSubject, targetSubject, task);
+
+        return targetIntent;
+    }
 
 }

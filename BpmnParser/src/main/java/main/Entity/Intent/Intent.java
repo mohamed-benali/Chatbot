@@ -66,7 +66,7 @@ public class Intent {
     // TODO: Update the Outgoing intents of the targetInputIntents?? OR leave it to "void insertIntent(...)" from Intents.java
     // TODO: Requieres the modelInstance(singleton???)
     public void addInputIntentIDs(List<String> intents) { this.inputIntents.addAll(intents); }
-
+    public void removeInputIntentID(String intentID) { this.inputIntents.remove(intentID); }
 
     public void clearInputIntents() { inputIntents.clear(); }
 
@@ -80,7 +80,7 @@ public class Intent {
     // TODO: Update the incoming intents of the sourceOutputIntents
     // TODO: Requieres the modelInstance(singleton???)
     public void addOutputIntentIDs(List<String> intents) { this.outputIntents.addAll(intents); }
-
+    public void removeOutputIntentID(String intentID) { this.outputIntents.remove(intentID); }
     public void clearOutputIntents() { outputIntents.clear(); }
 
     /*
@@ -141,6 +141,7 @@ public class Intent {
     protected String makeResponse() {
         return this.getSubject() + " " + this.getTask();
     }
+
 
 
 }

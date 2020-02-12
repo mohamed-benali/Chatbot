@@ -43,28 +43,17 @@ public class BpmnAlgorithm {
 
         Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
         for(MessageFlow messageFlow : messageFlowIntsances) {
-            this.parseMessageFlow(messageFlow); // this.intents es actualitzada dintre la funcio
+            Intent sourceIntent = this.parserFlowNodes.parseSourceMessageFlow(messageFlow);
+            Intent targetIntent = this.parserFlowNodes.parseTargetMessageFlow(messageFlow);
+
+            this.intents.insertAfterIntent (sourceIntent, messageFlow.getSource().getId());
+            this.intents.insertBeforeIntent(targetIntent, messageFlow.getTarget().getId());
         }
 
         return this.intents;
     }
 
-    private void parseMessageFlow(MessageFlow messageFlow) {
-        String sourceID = messageFlow.getSource().getId();
-        String targetID = messageFlow.getTarget().getId();
 
-        String name = messageFlow.getId();
-        String sourceSubject = this.parserFlowNodes.getSourceSubject(messageFlow);
-        String targetSubject = this.parserFlowNodes.getTargetSubject(messageFlow);
-        String task = messageFlow.getName();
-        Intent intent = new CollaborationIntent(name, sourceSubject, targetSubject, task);
-
-        /* TODO: INCORRECT!!    NEEDS FIXING!!
-         * TODO: The insert should be between the apropiate IDs.
-         */
-
-        this.intents.insertIntent(intent, sourceID, targetID);
-    }
 
     private Intents parseParticipant(Participant participant) {
         Process process = participant.getProcess();

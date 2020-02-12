@@ -39,25 +39,38 @@ public class Intents {
     public void add_null_intent(String intentID) { this.intents.put(intentID, null); }
 
     /*
-     * Inserts an intent between the intents identified by *sourceID* and *targetID*
+     * Inserts an intent after the intent identified by *intentId*
      */
-    public void insertIntent(Intent intent, String sourceID, String targetID) {
-        Intent sourceIntent = this.intents.get(sourceID); // Outgoing
+    public void insertAfterIntent(Intent intent, String intentId) {
+        Intent sourceIntent = this.intents.get(intentId); // Outgoing
 
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
-        intent.addOutputIntentIDs(sourceOutputIntents); // TODO: Update the incoming intents of the sourceOutputIntents ¿?
+        intent.addOutputIntentIDs(sourceOutputIntents);
+        for (String outputIntentID : intent.getOutputIntents() ) {
+            Intent outputIntent = this.intents.get(outputIntentID);
+            outputIntent.addInputIntentID(intent.getId());
+            outputIntent.removeInputIntentID(intentId);
+        }
 
         sourceIntent.clearOutputIntents();
         sourceIntent.addOutputIntentID(intent.getId());
         intent.addInputIntentID(sourceIntent.getId());
 
+        this.add(intent);
+    }
 
-
-
-
-        Intent targetIntent = this.intents.get(targetID); // Incoming
+    /*
+     * Inserts an intent before the intent identified by *intentId*
+     */
+    public void insertBeforeIntent(Intent intent, String intentId) {
+        Intent targetIntent = this.intents.get(intentId); // Incoming
         List<String> targetInputIntents = targetIntent.getInputIntents();
-        intent.addInputIntentIDs(targetInputIntents); // TODO: Update the Outgoing intents of the targetInputIntents ¿?
+        intent.addInputIntentIDs(targetInputIntents);
+        for (String inputIntentID : intent.getInputIntents() ) {
+            Intent inputIntent = this.intents.get(inputIntentID);
+            inputIntent.addOutputIntentID(intent.getId());
+            inputIntent.removeOutputIntentID(intentId);
+        }
 
         targetIntent.clearInputIntents();
         targetIntent.addInputIntentID(intent.getId());
