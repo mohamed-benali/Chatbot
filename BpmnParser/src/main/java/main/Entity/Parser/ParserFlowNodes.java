@@ -1,12 +1,11 @@
 package main.Entity.Parser;
 
 import main.Entity.Intent.CollaborationIntent;
-import main.Entity.Intent.Intent;
+import main.Entity.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -120,7 +119,7 @@ public class ParserFlowNodes {
         return name;
     }
     public String createName(MessageFlow messageFlow, String subject) {
-        String name = messageFlow.getId() + " " + subject;
+        String name = messageFlow.getId() + "_" + subject;
         return name;
     }
 
@@ -131,17 +130,17 @@ public class ParserFlowNodes {
      * PARSE FLOW NODES
      */
 
-    private void addTrainingPhrases(Intent intent, FlowNode node) {
+    private void addTrainingPhrases(myIntent intent, FlowNode node) {
         Collection<SequenceFlow> incomingSequenceFlow = node.getIncoming();
         for(SequenceFlow sequenceFlow : incomingSequenceFlow) intent.addTrainingPhrase(sequenceFlow.getName());
     }
 
-    private void addInputIntentIDs(Intent intent, FlowNode node, Participant participant, Process process) {
+    private void addInputIntentIDs(myIntent intent, FlowNode node, Participant participant, Process process) {
         Collection<FlowNode> incomingFlowNodes = getRelevantIncomingFlowNodes(node);
         for(FlowNode flowNode : incomingFlowNodes) intent.addInputIntentID (createName(participant, process, flowNode));
     }
 
-    private void addOutputIntentIDs(Intent intent, FlowNode node, Participant participant, Process process) {
+    private void addOutputIntentIDs(myIntent intent, FlowNode node, Participant participant, Process process) {
         Collection<FlowNode> outgoingFlowNodes = getRelevantFlowingFlowNodes(node);
         for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
     }
@@ -152,7 +151,7 @@ public class ParserFlowNodes {
         String name = createName(participant, process, node); // The name is the identificator
         String subject = participant.getName();
         String tasca = node.getName();
-        Intent intent = new Intent(name, subject, tasca);
+        myIntent intent = new myIntent(name, subject, tasca);
 
         addTrainingPhrases(intent, node);
         addInputIntentIDs (intent, node, participant, process);
@@ -216,13 +215,13 @@ public class ParserFlowNodes {
     /*
      * Generates an intent for the source node
      */
-    public Intent parseSourceMessageFlow(MessageFlow messageFlow) {
+    public myIntent parseSourceMessageFlow(MessageFlow messageFlow) {
         String task = messageFlow.getName();
         String sourceSubject = this.getSourceSubject(messageFlow);
         String targetSubject = this.getTargetSubject(messageFlow);
 
         String sourceIntentName = createName(messageFlow, sourceSubject);
-        Intent sourceIntent = new CollaborationIntent(sourceIntentName, sourceSubject, targetSubject, task);
+        myIntent sourceIntent = new CollaborationIntent(sourceIntentName, sourceSubject, targetSubject, task);
 
         return sourceIntent;
     }
@@ -230,13 +229,13 @@ public class ParserFlowNodes {
     /*
      * Generates an intent for the target node
      */
-    public Intent parseTargetMessageFlow(MessageFlow messageFlow) {
+    public myIntent parseTargetMessageFlow(MessageFlow messageFlow) {
         String task = messageFlow.getName();
         String sourceSubject = this.getSourceSubject(messageFlow);
         String targetSubject = this.getTargetSubject(messageFlow);
 
         String targetIntentName = createName(messageFlow, targetSubject);
-        Intent targetIntent = new CollaborationIntent(targetIntentName, sourceSubject, targetSubject, task);
+        myIntent targetIntent = new CollaborationIntent(targetIntentName, sourceSubject, targetSubject, task);
 
         return targetIntent;
     }

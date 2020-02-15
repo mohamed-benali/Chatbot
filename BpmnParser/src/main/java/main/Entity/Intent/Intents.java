@@ -7,28 +7,28 @@ import java.util.TreeMap;
 public class Intents {
     public static void println(String s) { System.out.println(s); }
 
-    private Map<String, Intent> intents; // String: name(identificador)
+    private Map<String, myIntent> intents; // String: name(identificador)
 
     /*
      * CONSTRUCTORS
      */
     public Intents() {
-        intents = new TreeMap<String, Intent>();
+        intents = new TreeMap<String, myIntent>();
     }
 
     /*
      * GETTERS & SETTERS
      */
-    public Map<String, Intent> getIntents() { return this.intents; }
-    public void setIntents(Map<String, Intent> intents) { this.intents = intents; }
+    public Map<String, myIntent> getIntents() { return this.intents; }
+    public void setIntents(Map<String, myIntent> intents) { this.intents = intents; }
 
     /*
      * Add intents
      */
-    public void add(Intent intent) { this.intents.put(intent.getId(), intent); }
+    public void add(myIntent intent) { this.intents.put(intent.getId(), intent); }
 
-    public void add(Map<String,Intent> intents) {
-        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+    public void add(Map<String, myIntent> intents) {
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
             this.add(entry.getValue());
         }
     }
@@ -41,13 +41,13 @@ public class Intents {
     /*
      * Inserts an intent after the intent identified by *intentId*
      */
-    public void insertAfterIntent(Intent intent, String intentId) {
-        Intent sourceIntent = this.intents.get(intentId); // Outgoing
+    public void insertAfterIntent(myIntent intent, String intentId) {
+        myIntent sourceIntent = this.intents.get(intentId); // Outgoing
 
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
         intent.addOutputIntentIDs(sourceOutputIntents);
         for (String outputIntentID : intent.getOutputIntents() ) {
-            Intent outputIntent = this.intents.get(outputIntentID);
+            myIntent outputIntent = this.intents.get(outputIntentID);
             outputIntent.addInputIntentID(intent.getId());
             outputIntent.removeInputIntentID(intentId);
         }
@@ -62,12 +62,12 @@ public class Intents {
     /*
      * Inserts an intent before the intent identified by *intentId*
      */
-    public void insertBeforeIntent(Intent intent, String intentId) {
-        Intent targetIntent = this.intents.get(intentId); // Incoming
+    public void insertBeforeIntent(myIntent intent, String intentId) {
+        myIntent targetIntent = this.intents.get(intentId); // Incoming
         List<String> targetInputIntents = targetIntent.getInputIntents();
         intent.addInputIntentIDs(targetInputIntents);
         for (String inputIntentID : intent.getInputIntents() ) {
-            Intent inputIntent = this.intents.get(inputIntentID);
+            myIntent inputIntent = this.intents.get(inputIntentID);
             inputIntent.addOutputIntentID(intent.getId());
             inputIntent.removeOutputIntentID(intentId);
         }
@@ -84,14 +84,14 @@ public class Intents {
      * PRINT Intents
      */
     public void print() {
-        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
-            Intent intent = entry.getValue();
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            myIntent intent = entry.getValue();
             intent.print();
         }
     }
 
     public void printIDs() {
-        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
             println(entry.getKey());
         }
     }
@@ -100,9 +100,13 @@ public class Intents {
      * Translate into Dialogflow(use library?)
      */
     public void translateIntoDialogFlow() {
-        for(Map.Entry<String,Intent> entry : intents.entrySet()) {
-            Intent intent = entry.getValue();
-            intent.translateIntoDialogFlow();
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            myIntent intent = entry.getValue();
+            try {
+                intent.translateIntoDialogFlow();
+            } catch (Exception e) {
+                println(e.getMessage());
+            }
         }
     }
 

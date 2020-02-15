@@ -1,7 +1,6 @@
 package main.Entity.Parser;
 
-import main.Entity.Intent.CollaborationIntent;
-import main.Entity.Intent.Intent;
+import main.Entity.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
@@ -43,8 +42,8 @@ public class BpmnAlgorithm {
 
         Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
         for(MessageFlow messageFlow : messageFlowIntsances) {
-            Intent sourceIntent = this.parserFlowNodes.parseSourceMessageFlow(messageFlow);
-            Intent targetIntent = this.parserFlowNodes.parseTargetMessageFlow(messageFlow);
+            myIntent sourceIntent = this.parserFlowNodes.parseSourceMessageFlow(messageFlow);
+            myIntent targetIntent = this.parserFlowNodes.parseTargetMessageFlow(messageFlow);
 
             this.intents.insertAfterIntent (sourceIntent, messageFlow.getSource().getId());
             this.intents.insertBeforeIntent(targetIntent, messageFlow.getTarget().getId());

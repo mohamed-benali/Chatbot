@@ -1,6 +1,6 @@
 package main.Entity.Intent;
 
-public class CollaborationIntent extends Intent {
+public class CollaborationIntent extends myIntent {
 
     private String sourceSubject;
     private String targetSubject;
@@ -51,7 +51,7 @@ public class CollaborationIntent extends Intent {
 
         //this.getTrainingPhrases();
 
-        String response = this.makeResponse();
+        //String response = this.makeResponse();
     }
 
 }

@@ -16,8 +16,10 @@ public class main {
         Parser parser = new Parser(bpmnPath);
         parser.parse();
         Intents intents = parser.getIntents();
-        intents.translateIntoDialogFlow();
 
         intents.print();
+
+        intents.translateIntoDialogFlow();
+
     }
 }
