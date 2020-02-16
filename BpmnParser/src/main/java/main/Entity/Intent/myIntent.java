@@ -19,6 +19,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import io.grpc.Context;
 import io.opencensus.metrics.export.Distribution;
+import main.Entity.DialogFlow.IntentManagment;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,21 +45,28 @@ public class myIntent {
 
     protected List<String> trainingPhrases; // Training phrases
 
-    public myIntent() {
+    protected IntentManagment intentManagment;
+
+    public myIntent() throws IOException {
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
+
+        intentManagment = new IntentManagment();
     }
 
-    public myIntent(String name) {
+    public myIntent(String name) throws IOException {
         this.name = name;
 
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
+
+        intentManagment = new IntentManagment();
+
     }
 
-    public myIntent(String name, String subject, String task) {
+    public myIntent(String name, String subject, String task) throws IOException {
         this.name = name;
         this.subject = subject;
         this.task = task;
@@ -66,6 +74,9 @@ public class myIntent {
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
+
+        intentManagment = new IntentManagment();
+
     }
 
     /*
@@ -225,31 +236,46 @@ public class myIntent {
         List<String> trainingPhrases = this.buildTrainingPhrases(this.getTrainingPhrases());
         List<String> responses = this.makeResponse();
 
+        List<String> inputContextNames = this.buildInputContext(this.getInputIntents());
+        List<String> outputContextNames = this.buildOutputContext(this.getOutputIntents());
+
 
         String projectId = "greetingsbot-qtakwv";
 
-        String jsonPath = "./greetingsbot-qtakwv-c046349de531.json";
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(jsonPath));
-        //Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        println(credentials.getAuthenticationType());
-
-        IntentsSettings intentsSettings =
-                IntentsSettings.newBuilder()
-                        .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-                        .build();
-        this.intentsClient = IntentsClient.create(intentsSettings);
-
-        this.createIntent(title, projectId, trainingPhrases, responses);
+        // TODO: Provide the correct contexts(input, output, etc) (fix makeResponse, buildTrainingPhrases, etc)
+        this.intentManagment.createIntent(title, projectId, trainingPhrases,
+                                            responses, inputContextNames, outputContextNames);
 
 
 
 
     }
 
+    private List<String> buildOutputContext(List<String> outputIntents) {
+        return outputIntents;
+    }
+
+    private List<String> buildInputContext(List<String> inputIntents) {
+        return inputIntents;
+    }
+
     protected List<String> buildTrainingPhrases(List<String> trainingPhrases) {
+        println("Name: " + this.getId());
         System.out.println("-Size: " + trainingPhrases.size());
-        println("-Phrases: ");
-        for (String phrase: trainingPhrases) println(phrase);
+        println("-Before Phrases: ");
+        for (String phrase : trainingPhrases) println(phrase);
+
+        if(trainingPhrases.size() == 0) {
+            //
+        }
+        else {
+            for(int i = 0; i < trainingPhrases.size(); ++i) {
+                if(trainingPhrases.get(i) == null) trainingPhrases.set(i, "Next");
+            }
+        }
+
+        println("-After Phrases: ");
+        for (String phrase : trainingPhrases) println(phrase);
         return trainingPhrases;
     }
 
@@ -261,53 +287,5 @@ public class myIntent {
         return responses;
     }
 
-
-    /**
-     * Create an intent of the given intent type
-     *
-     * @param displayName          The display name of the intent.
-     * @param projectId            Project/Agent Id.
-     * @param trainingPhrasesParts Training phrases.
-     * @param messageTexts         Message texts for the agent's response when the intent is detected.
-     * @return The created Intent.
-     */
-    public Intent createIntent(
-            String displayName,
-            String projectId,
-            List<String> trainingPhrasesParts,
-            List<String> messageTexts) throws Exception {
-
-        // Set the project agent name using the projectID (my-project-id)
-        ProjectAgentName parent = ProjectAgentName.of(projectId);
-
-        // Build the trainingPhrases from the trainingPhrasesParts
-        List<Intent.TrainingPhrase> trainingPhrases = new ArrayList<Intent.TrainingPhrase>();
-        for (String trainingPhrase : trainingPhrasesParts) {
-            trainingPhrases.add(
-                    Intent.TrainingPhrase.newBuilder().addParts(
-                            Intent.TrainingPhrase.Part.newBuilder().setText(trainingPhrase).build())
-                            .build());
-        }
-
-        // Build the message texts for the agent's response
-        Intent.Message message = Intent.Message.newBuilder()
-                .setText(
-                        Intent.Message.Text.newBuilder()
-                                .addAllText(messageTexts).build()
-                ).build();
-
-        // Build the intent
-        Intent intent = Intent.newBuilder()
-                .setDisplayName(displayName)
-                .addMessages(message)
-                .addAllTrainingPhrases(trainingPhrases)
-                .build();
-
-        // Performs the create intent request
-        Intent response = intentsClient.createIntent(parent, intent);
-        System.out.format("Intent created: %s\n", response);
-
-        return response;
-    }
 
 }

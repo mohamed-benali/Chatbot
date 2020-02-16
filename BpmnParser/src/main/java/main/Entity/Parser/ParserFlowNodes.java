@@ -7,6 +7,7 @@ import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -145,7 +146,7 @@ public class ParserFlowNodes {
         for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
     }
 
-    public Intents parseFlowNode(Participant participant, Process process, FlowNode node) {
+    public Intents parseFlowNode(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         String name = createName(participant, process, node); // The name is the identificator
@@ -162,7 +163,7 @@ public class ParserFlowNodes {
         return intents;
     }
 
-    public Intents parseStartEvent(Participant participant, Process process, FlowNode node) {
+    public Intents parseStartEvent(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         StartEvent startEvent = modelInstance.getModelElementById(node.getId());
@@ -170,7 +171,7 @@ public class ParserFlowNodes {
         return intents;
     }
 
-    public Intents parseTask(Participant participant, Process process, FlowNode node) {
+    public Intents parseTask(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         Task task = modelInstance.getModelElementById(node.getId());
@@ -185,7 +186,7 @@ public class ParserFlowNodes {
 
 
 
-    public Intents parseExclusiveGateway(Participant participant, Process process, FlowNode node) {
+    public Intents parseExclusiveGateway(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         ExclusiveGateway exclusiveGateway = modelInstance.getModelElementById(node.getId());
@@ -202,7 +203,7 @@ public class ParserFlowNodes {
         return intents;
     }
 
-    public Intents parseEndEvent(Participant participant, Process process, FlowNode node) {
+    public Intents parseEndEvent(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         EndEvent endEvent = modelInstance.getModelElementById(node.getId());
@@ -215,7 +216,7 @@ public class ParserFlowNodes {
     /*
      * Generates an intent for the source node
      */
-    public myIntent parseSourceMessageFlow(MessageFlow messageFlow) {
+    public myIntent parseSourceMessageFlow(MessageFlow messageFlow) throws IOException {
         String task = messageFlow.getName();
         String sourceSubject = this.getSourceSubject(messageFlow);
         String targetSubject = this.getTargetSubject(messageFlow);
@@ -229,7 +230,7 @@ public class ParserFlowNodes {
     /*
      * Generates an intent for the target node
      */
-    public myIntent parseTargetMessageFlow(MessageFlow messageFlow) {
+    public myIntent parseTargetMessageFlow(MessageFlow messageFlow) throws IOException {
         String task = messageFlow.getName();
         String sourceSubject = this.getSourceSubject(messageFlow);
         String targetSubject = this.getTargetSubject(messageFlow);

@@ -1,11 +1,13 @@
 package main.Entity.Intent;
 
+import java.io.IOException;
+
 public class CollaborationIntent extends myIntent {
 
     private String sourceSubject;
     private String targetSubject;
 
-    public CollaborationIntent(String name, String sourceSubject, String targetSubject, String task) {
+    public CollaborationIntent(String name, String sourceSubject, String targetSubject, String task) throws IOException {
         super(name);
         this.setTask(task);
 

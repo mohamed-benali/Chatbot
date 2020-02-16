@@ -7,6 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public class BpmnAlgorithm {
@@ -34,7 +35,7 @@ public class BpmnAlgorithm {
      * Parser
      */
 
-    public Intents parse() {
+    public Intents parse() throws IOException {
         Collection<Participant> ParticipantInstances = modelInstance.getModelElementsByType(Participant.class);
         for(Participant participant : ParticipantInstances) {
             this.intents.add(this.parseParticipant(participant));
@@ -54,13 +55,13 @@ public class BpmnAlgorithm {
 
 
 
-    private Intents parseParticipant(Participant participant) {
+    private Intents parseParticipant(Participant participant) throws IOException {
         Process process = participant.getProcess();
         Intents intents = this.parseProcess(participant, process);
         return intents;
     }
 
-    private Intents parseProcess(Participant participant, Process process) {
+    private Intents parseProcess(Participant participant, Process process) throws IOException {
         Intents intents = new Intents();
 
         Collection<StartEvent> startEvents = process.getChildElementsByType(StartEvent.class);
@@ -74,7 +75,7 @@ public class BpmnAlgorithm {
     /*
      * Each node parses itself, then, calls recursively the function to parse outgoing nodes
      */
-    private Intents parseFlowNode(Participant participant, Process process, FlowNode node) {
+    private Intents parseFlowNode(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
         ModelElementType startEventType         = this.modelInstance.getModel().getType(StartEvent.class);
