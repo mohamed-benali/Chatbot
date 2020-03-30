@@ -11,10 +11,7 @@ import com.google.api.gax.paging.Page;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.dialogflow.v2.Intent;
-import com.google.cloud.dialogflow.v2.IntentsClient;
-import com.google.cloud.dialogflow.v2.IntentsSettings;
-import com.google.cloud.dialogflow.v2.ProjectAgentName;
+import com.google.cloud.dialogflow.v2.*;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import io.grpc.Context;
@@ -39,9 +36,12 @@ public class myIntent {
     protected String subject; // Who does it
     protected String task;    // What is done
 
-    protected List<String> inputIntents;  // Intents before
+    protected List<String> inputIntents;  // Intents that go before this intent
 
-    protected List<String> outputIntents; // Intents after
+    protected List<String> outputIntents; // Intents that go after this intent
+
+
+    protected List<String> outputContexts; // Output context to be placed on DialogFlow
 
     protected List<String> trainingPhrases; // Training phrases
 
@@ -50,6 +50,7 @@ public class myIntent {
     public myIntent() throws IOException {
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
+        outputContexts = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
 
         intentManagment = new IntentManagment();
@@ -61,6 +62,7 @@ public class myIntent {
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
+        outputContexts = new ArrayList<String>();
 
         intentManagment = new IntentManagment();
 
@@ -74,6 +76,7 @@ public class myIntent {
         inputIntents = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
+        outputContexts = new ArrayList<String>();
 
         intentManagment = new IntentManagment();
 
@@ -142,9 +145,7 @@ public class myIntent {
     /*
      * OUTPUT
      */
-    public List<String> getOutputIntents() {
-        return this.outputIntents;
-    }
+    public List<String> getOutputIntents() { return this.outputIntents; }
 
     public void setOutputIntents(List<String> outputIntents) {
         this.outputIntents = outputIntents;
@@ -167,6 +168,29 @@ public class myIntent {
     public void clearOutputIntents() {
         outputIntents.clear();
     }
+
+    /*
+     * OUTPUT CONTEXT
+     */
+    public List<String> getOutputContexts() { return outputContexts; }
+    public void setOutputContexts(List<String> outputContexts) { this.outputContexts = outputContexts; }
+
+
+    public void addOutputContextID(String intent) {
+        //this.outputContexts.add(intent);
+        outputContexts.add(intent);
+    }
+
+    public void addOutputContextIDs(List<String> intents) { this.outputContexts.addAll(intents); }
+
+    public void removeOutputContextID(String intentID) {
+        this.outputContexts.remove(intentID);
+    }
+
+    public void clearOutputContexts() {
+        outputContexts.clear();
+    }
+
 
     /*
      * TRAINING PHRASES
@@ -237,22 +261,30 @@ public class myIntent {
         List<String> responses = this.makeResponse();
 
         List<String> inputContextNames = this.buildInputContext(this.getInputIntents());
-        List<String> outputContextNames = this.buildOutputContext(this.getOutputIntents());
+        List<String> outputContextNames = this.buildOutputContext();
 
 
         String projectId = "greetingsbot-qtakwv";
+        //this.intentManagment.deleteIntent(projectId, title);
 
         // TODO: Provide the correct contexts(input, output, etc) (fix makeResponse, buildTrainingPhrases, etc)
         this.intentManagment.createIntent(title, projectId, trainingPhrases,
                                             responses, inputContextNames, outputContextNames);
 
-
-
-
     }
 
-    private List<String> buildOutputContext(List<String> outputIntents) {
-        return outputIntents;
+    // Returns the output contexts that this intent generates when is matched
+    private List<String> buildOutputContext() {
+        // Not Itself
+        //List<String> outputContexts = new ArrayList<String>(this.getOutputIntents());
+        List<String> outputContexts = new ArrayList<String>(this.getOutputContexts());
+        //outputContexts.add(this.getId());
+
+        // Delete Input context
+        // TODO: Per ara els eliminare directament al crearlos aprofitant que
+        //  ja els passo en la variable "inputContextNames"[en intentManagment.createIntent(...)]
+
+        return outputContexts;
     }
 
     private List<String> buildInputContext(List<String> inputIntents) {
@@ -286,6 +318,7 @@ public class myIntent {
         responses.add(response);
         return responses;
     }
+
 
 
 }

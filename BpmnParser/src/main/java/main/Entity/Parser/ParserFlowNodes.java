@@ -1,11 +1,10 @@
 package main.Entity.Parser;
 
-import main.Entity.Intent.CollaborationIntent;
-import main.Entity.Intent.myIntent;
-import main.Entity.Intent.Intents;
+import main.Entity.Intent.*;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,6 +145,12 @@ public class ParserFlowNodes {
         for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputIntentID(createName(participant, process, flowNode));
     }
 
+    private void addOutputContextIDs(myIntent intent, FlowNode node, Participant participant, Process process) {
+        Collection<FlowNode> outgoingFlowNodes = getRelevantFlowingFlowNodes(node);
+        for(FlowNode flowNode : outgoingFlowNodes) intent.addOutputContextID(createName(participant, process, flowNode));
+    }
+
+
     public Intents parseFlowNode(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
@@ -157,6 +162,9 @@ public class ParserFlowNodes {
         addTrainingPhrases(intent, node);
         addInputIntentIDs (intent, node, participant, process);
         addOutputIntentIDs(intent, node, participant, process);
+        //addOutputContextIDs(intent, node, participant, process); // Add itself
+        intent.addOutputContextID(name); // Add itself
+
 
         intents.add(intent);
 
@@ -167,7 +175,19 @@ public class ParserFlowNodes {
         Intents intents = new Intents();
 
         StartEvent startEvent = modelInstance.getModelElementById(node.getId());
-        intents.add(this.parseFlowNode(participant, process, startEvent));
+
+        String name = createName(participant, process, startEvent); // The name is the identificator
+        String subject = participant.getName();
+        String tasca = startEvent.getName();
+        myIntent intent = new StartIntent(name, subject, tasca);
+
+        addTrainingPhrases(intent, startEvent);
+        addInputIntentIDs (intent, startEvent, participant, process);
+        addOutputIntentIDs(intent, startEvent, participant, process);
+        intent.addOutputContextID(name); // Add itself
+
+        intents.add(intent);
+
         return intents;
     }
 
@@ -175,15 +195,67 @@ public class ParserFlowNodes {
         Intents intents = new Intents();
 
         Task task = modelInstance.getModelElementById(node.getId());
+        String name = createName(participant, process, task); // The name is the identificator
+        String subject = participant.getName();
+        String tasca = task.getName();
+        TaskIntent intent = new TaskIntent(name, subject, tasca);
 
-        intents.add(this.parseFlowNode(participant, process, node));
+        addTrainingPhrases(intent, task);
 
-        // TODO: LOOK AT BpmnAlgorithm.java on function: public Intents parse()
-        // TODO: CONSIDER THAT IDEA
+        // TODO: Document this(the idea for doing this[Dialoglow dont has OR in inpt context, so in an if structure, only+
+        //  one context can be requiered. So some nodes have to give/require the same context])
+        if(this.after_exclusive_gateway(task) ) {
+            Collection<FlowNode> flowNodes = getAllIncomingFlowNodes(task); // Should only be the gateway TODO: Test it
+            FlowNode first = flowNodes.iterator().next();
+            intent.addInputIntentID(first.getId());
+        }
+        else addInputIntentIDs (intent, task, participant, process);
+
+        if(this.before_exlusive_gateway(task) ) {
+            Collection<FlowNode> flowNodes = getAllFlowingFlowNodes(task); // Should only be the gateway TODO: Test it
+            FlowNode first = flowNodes.iterator().next();
+            intent.addOutputIntentID(first.getId()); // TODO: Think if change the outputIntent for "addOutputIntentIDs(intent, task, participant, process);
+            intent.addOutputContextID(first.getId());
+        }
+        else {
+            addOutputIntentIDs(intent, task, participant, process);
+            intent.addOutputContextID(name); // Add itself
+        }
+
+        intents.add(intent);
 
         return intents;
     }
 
+    // Tells if the node is before ONLY one NON EMPTY exlusive gateway
+    public boolean before_exlusive_gateway(FlowNode node) {
+        // TODO: This function can be refactored because shares code with
+        //  "private boolean after_exclusive_gateway(FlowNode node) {
+        //  Only would be necesary to give the type ModelElementType to be compared and the flowNodes"
+        Collection<FlowNode> flowNodes = getAllFlowingFlowNodes(node); // Should only be the gateway TODO: Test it
+        if(flowNodes.size() == 1) {
+            FlowNode only_node = flowNodes.iterator().next();
+
+            ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
+            if(only_node.getElementType() == exclusiveGatewayType && only_node.getName() == null) return true;
+            else return false;
+        }
+        else return false;
+    }
+
+    // Tells if the node is after ONLY one NON EMPTY exlusive gateway
+    public boolean after_exclusive_gateway(FlowNode node) {
+        // TODO: Possible Refactoring, look at "private boolean before_exlusive_gateway(FlowNode node) {"
+        Collection<FlowNode> flowNodes = getAllIncomingFlowNodes(node); // Should only be the gateway TODO: Test it
+        if(flowNodes.size() == 1) {
+            FlowNode only_node = flowNodes.iterator().next();
+
+            ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
+            if(only_node.getElementType() == exclusiveGatewayType && only_node.getName() == null) return true;
+            else return false;
+        }
+        else return false;
+    }
 
 
     public Intents parseExclusiveGateway(Participant participant, Process process, FlowNode node) throws IOException {

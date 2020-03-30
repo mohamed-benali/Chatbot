@@ -1,6 +1,8 @@
 package main.Entity.Intent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CollaborationIntent extends myIntent {
 
@@ -14,6 +16,9 @@ public class CollaborationIntent extends myIntent {
         this.setSourceSubject(sourceSubject);
         this.setTargetSubject(targetSubject);
 
+        //this.addOutputContextID(BEGIN_CONTEXT);
+
+        this.addTrainingPhrase("Next");
     }
 
     public String getSourceSubject() { return sourceSubject; }
@@ -43,17 +48,10 @@ public class CollaborationIntent extends myIntent {
         println("");
     }
 
-    public void translateIntoDialogFlow() {
-        // DialogFlow info
-        String title = this.getName();
-
-        // Contexts
-        //this.getInputIntents();
-        //this.getOutputIntents();
-
-        //this.getTrainingPhrases();
-
-        //String response = this.makeResponse();
+    protected List<String> makeResponse() {
+        List<String> responses = new ArrayList<String>();
+        String response = this.getSourceSubject() + " " + this.getTask() + " to " + this.getTargetSubject();
+        responses.add(response);
+        return responses;
     }
-
 }

@@ -40,12 +40,13 @@ public class Intents {
 
     /*
      * Inserts an intent after the intent identified by *intentId*
-     */
+     */ // todo: should take into account if this is near a gateway(so can put the proper output context)
     public void insertAfterIntent(myIntent intent, String intentId) {
         myIntent sourceIntent = this.intents.get(intentId); // Outgoing
 
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
-        intent.addOutputIntentIDs(sourceOutputIntents);
+        intent.addOutputIntentIDs(sourceOutputIntents); // Intent
+        intent.addOutputContextID(intent.getId()); // Context
         for (String outputIntentID : intent.getOutputIntents() ) {
             myIntent outputIntent = this.intents.get(outputIntentID);
             outputIntent.addInputIntentID(intent.getId());
@@ -54,6 +55,7 @@ public class Intents {
 
         sourceIntent.clearOutputIntents();
         sourceIntent.addOutputIntentID(intent.getId());
+        //sourceIntent.addOutputContextID(intent.getId());
         intent.addInputIntentID(sourceIntent.getId());
 
         this.add(intent);
@@ -75,6 +77,7 @@ public class Intents {
         targetIntent.clearInputIntents();
         targetIntent.addInputIntentID(intent.getId());
         intent.addOutputIntentID(targetIntent.getId());
+        intent.addOutputContextID(intent.getId()); // Context
 
         this.add(intent);
     }

@@ -127,7 +127,7 @@ public class IntentManagment {
                 inputContextNamesStringList.add(contextName.toString());
             }
 
-
+            // Output context, lifespan 100
             List<Context> outputContexts = new ArrayList<Context>();
             for(String outputContext : outputContextNames) {
                 ContextName contextName = ContextName.newBuilder()
@@ -141,6 +141,25 @@ public class IntentManagment {
                 Context context = Context.newBuilder()
                         .setName(contextName.toString()) // The unique identifier of the context
                         .setLifespanCount(100) // Number of query requests before the context expires. // TODO: Hardcoded for now
+                        .build();
+
+                outputContexts.add(context);
+            }
+
+
+            // Output context to be deleted lifespan 0   (for now use inputContextsNames)
+            for(String inputContextName : inputContextsNames) {
+                ContextName contextName = ContextName.newBuilder()
+                        .setProject(projectId)
+                        .setSession("-")
+                        .setContext(inputContextName)
+                        .build();
+
+
+                // Create the context with the context name and lifespan count
+                Context context = Context.newBuilder()
+                        .setName(contextName.toString()) // The unique identifier of the context
+                        .setLifespanCount(0) // Number of query requests before the context expires. // TODO: Hardcoded for now
                         .build();
 
                 outputContexts.add(context);

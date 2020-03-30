@@ -1,5 +1,6 @@
 package main.Entity.Parser;
 
+import main.Entity.Intent.BeginIntent_Special;
 import main.Entity.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -8,15 +9,18 @@ import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BpmnAlgorithm {
     public static void println(String s) { System.out.println(s); }
 
     public Intents intents;
-    public BpmnModelInstance modelInstance;
+    public BpmnModelInstance modelInstance; //TODO: Create a Wrapper class of modelInstance, so can create custom methods
 
     public ParserFlowNodes parserFlowNodes;
+
 
 
     /*
@@ -36,11 +40,22 @@ public class BpmnAlgorithm {
      */
 
     public Intents parse() throws IOException {
+        // Participants
+        List<String> participantNames = new ArrayList<String>();
         Collection<Participant> ParticipantInstances = modelInstance.getModelElementsByType(Participant.class);
         for(Participant participant : ParticipantInstances) {
             this.intents.add(this.parseParticipant(participant));
-        }
 
+            participantNames.add(participant.getName());
+        }
+        //TODO: Add contexts    beginIntent.addDeleteContexts(???)
+
+        // Begin intent
+        BeginIntent_Special beginIntentSpecial = new BeginIntent_Special();
+        beginIntentSpecial.setParticipantNames(participantNames);
+        this.intents.add(beginIntentSpecial);
+
+        // Collaboration
         Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
         for(MessageFlow messageFlow : messageFlowIntsances) {
             myIntent sourceIntent = this.parserFlowNodes.parseSourceMessageFlow(messageFlow);
