@@ -96,15 +96,20 @@ public class BpmnAlgorithm {
         ModelElementType startEventType         = this.modelInstance.getModel().getType(StartEvent.class);
         ModelElementType taskType               = this.modelInstance.getModel().getType(Task.class);
         ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
+        ModelElementType ParallelGatewayType    = this.modelInstance.getModel().getType(ParallelGateway.class);
         ModelElementType messageFlowType        = this.modelInstance.getModel().getType(MessageFlow.class);
         ModelElementType sequenceFlowType       = this.modelInstance.getModel().getType(SequenceFlow.class);
         ModelElementType endEventType           = this.modelInstance.getModel().getType(EndEvent.class);
 
 
-
         if     (node.getElementType() == startEventType)       intents.add(this.parserFlowNodes.parseStartEvent      (participant, process, node));
         else if(node.getElementType() == taskType)             intents.add(this.parserFlowNodes.parseTask            (participant, process, node));
         else if(node.getElementType() == exclusiveGatewayType) intents.add(this.parserFlowNodes.parseExclusiveGateway(participant, process, node));
+        else if(node.getElementType() == ParallelGatewayType) {
+            // After the execution of "parseParallelGateway", *node* changes to the closing parallelGateway
+            Intents parsedIntents = this.parserFlowNodes.parseParallelGateway(participant, process, node);
+            intents.add(parsedIntents);
+        }
         else if(node.getElementType() == messageFlowType)      intents.add(this.parserFlowNodes.parseMessageFlow     (participant, process, node));
         else if(node.getElementType() == endEventType)         intents.add(this.parserFlowNodes.parseEndEvent        (participant, process, node));
         else intents.add(this.parserFlowNodes.parseFlowNode(participant, process, node));

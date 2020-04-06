@@ -1,5 +1,6 @@
 package main.Entity.Parser;
 
+import com.google.cloud.dialogflow.v2.Intent;
 import main.Entity.Intent.*;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
@@ -7,8 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class ParserFlowNodes {
     public static void println(String s) { System.out.println(s); }
@@ -202,7 +202,7 @@ public class ParserFlowNodes {
 
         addTrainingPhrases(intent, task);
 
-        // TODO: Document this(the idea for doing this[Dialoglow dont has OR in inpt context, so in an if structure, only+
+        // TODO: Document this(the idea for doing this[Dialoglow dont has OR in input context, so in an if structure, only+
         //  one context can be requiered. So some nodes have to give/require the same context])
         if(this.after_exclusive_gateway(task) ) {
             Collection<FlowNode> flowNodes = getAllIncomingFlowNodes(task); // Should only be the gateway TODO: Test it
@@ -318,4 +318,69 @@ public class ParserFlowNodes {
         return targetIntent;
     }
 
+    public Intents parseParallelGateway(Participant participant, Process process, FlowNode node) {
+        Intents intents = new Intents();
+        ParallelGateway parallelGateway = modelInstance.getModelElementById(node.getId());
+
+        Collection<FlowNode> followingNodes = this.getRelevantFlowingFlowNodes(parallelGateway);
+        int nBranques = followingNodes.size();
+        FlowNode[] firstNodesArray = followingNodes.toArray(new FlowNode[nBranques]); // Primers nodes de les branques
+        List<FlowNode> firstNodes = new ArrayList<FlowNode>(Arrays.asList(firstNodesArray));
+
+        Map<String, FlowNode> firstNodesMap = new TreeMap<String, FlowNode>();
+        for(FlowNode flowNode : firstNodes) { firstNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
+        /* // TODO: Intenta Actualitzar la versio de java
+        Map<Integer, Animal> map = list.stream()
+                .collect(Collectors.toMap(Animal::getId, animal -> animal));
+        */
+
+        ParallelGateway closingParallelGateway = getFinalParallelGateway(parallelGateway); // Gateway on convergeixen
+
+        List<Intents> branques = new ArrayList<Intents>(nBranques);
+        List<FlowNode> lastNodes = new ArrayList<FlowNode>(nBranques); // Ultims nodes de les branques
+
+        for(int i = 0; i < nBranques; ++i) {
+            FlowNode lastNode = null;
+            Intents branchIntents = parseTillClosingParallelGateway(firstNodes.get(i), closingParallelGateway, lastNode);
+            branques.set(i, branchIntents);
+            lastNodes.set(i, lastNode);
+        }
+
+        Map<String, FlowNode> lastNodesMap = new TreeMap<String, FlowNode>();
+        for(FlowNode flowNode : lastNodes) { lastNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
+
+        for(int i = 0; i < nBranques; ++i) {
+            if(i==0) continue;
+            String firstNodeId = firstNodes.get(i).getId();
+            String lastNodeId  =  lastNodes.get(i).getId();
+
+            myIntent firstNodeIntent = branques.get(i).getIntentByID(firstNodeId);
+            myIntent lastNodeIntent =  branques.get(i-1).getIntentByID(lastNodeId);
+
+            // TODO: Arregla bug(del context que es requerix) quan l'ultim node d'una branca te una colaboracio de sortida
+            // TODO: Tenir en compte que el parsing del messageflow, ara mateix es fa a posteriori)
+            firstNodeIntent.addInputIntentID(lastNodeId);
+
+            // TODO: Rename OutputIntent to an appropiate name(following)
+            lastNodeIntent.clearOutputContexts();
+            lastNodeIntent.clearOutputIntents();
+            lastNodeIntent.addOutputContextID(lastNodeIntent.getId());
+            lastNodeIntent.addOutputIntentID(firstNodeIntent.getId());
+        }
+
+        FlowNode lastNode = lastNodes.get(nBranques-1); // Ultima branca
+        myIntent lastNodeIntent = branques.get(nBranques-1).getIntentByID(lastNode.getId());
+        lastNodeIntent.clearOutputIntents();
+        lastNodeIntent.clearOutputContexts();
+
+        lastNodeIntent.addOutputContextID(closingParallelGateway.getId());
+        lastNodeIntent.addOutputIntentID(closingParallelGateway.getId());
+        // TODO: Tenir en compte que si l'ultim node es(per exemple) un *exclusiveGateway* que tanca, llavors el
+        // TODO: output Context que s'haura de crea es el del *closingParallelGateway*. Les tasques previes al
+        // TODO: *exclusiveGateway* tambe hauran de crear el context del *closingParallelGateway*
+
+        node = closingParallelGateway; // Cambia el node per continua parsejant desde el closing
+
+        return intents;
+    }
 }

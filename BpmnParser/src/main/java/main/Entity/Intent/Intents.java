@@ -1,5 +1,7 @@
 package main.Entity.Intent;
 
+import com.google.cloud.dialogflow.v2.Intent;
+
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -114,5 +116,7 @@ public class Intents {
     }
 
 
-
+    public myIntent getIntentByID(String firstNodeId) {
+        return intents.get(firstNodeId);
+    }
 }
