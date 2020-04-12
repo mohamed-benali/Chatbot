@@ -9,9 +9,13 @@ public class main {
         System.out.println(s);
     }
 
+    public static String diagramName = "diagram.bpmn";
+    public static String diagramParallelGatewayName = "diagramParallelGateway.bpmn";
+
     public static void main(String[] args) {
         String packagePath = "./src/main/java/main";
-        String bpmnPath = packagePath + "/../Data/diagram.bpmn";
+        String dataPath = "/../Data/";
+        String bpmnPath = packagePath + dataPath + diagramParallelGatewayName;
 
         Parser parser = new Parser(bpmnPath);
         parser.parse();

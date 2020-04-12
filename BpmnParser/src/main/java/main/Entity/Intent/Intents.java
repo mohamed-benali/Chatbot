@@ -18,6 +18,21 @@ public class Intents {
         intents = new TreeMap<String, myIntent>();
     }
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Intents) {
+            Intents otherIntents = (Intents) obj;
+            if (this.getIntents().equals(otherIntents.getIntents())) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return intents.toString();
+    }
+
     /*
      * GETTERS & SETTERS
      */
@@ -49,16 +64,17 @@ public class Intents {
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
         intent.addOutputIntentIDs(sourceOutputIntents); // Intent
         intent.addOutputContextID(intent.getId()); // Context
+        //TODO: Consider the gateways when creating the output context
         for (String outputIntentID : intent.getOutputIntents() ) {
             myIntent outputIntent = this.intents.get(outputIntentID);
-            outputIntent.addInputIntentID(intent.getId());
-            outputIntent.removeInputIntentID(intentId);
+            outputIntent.addInputContextID(intent.getId());
+            outputIntent.removeInputContextID(intentId); // TODO: Consider the gateways when creating the context
         }
 
         sourceIntent.clearOutputIntents();
         sourceIntent.addOutputIntentID(intent.getId());
         //sourceIntent.addOutputContextID(intent.getId());
-        intent.addInputIntentID(sourceIntent.getId());
+        intent.addInputContextID(sourceIntent.getId());
 
         this.add(intent);
     }
@@ -68,16 +84,16 @@ public class Intents {
      */
     public void insertBeforeIntent(myIntent intent, String intentId) {
         myIntent targetIntent = this.intents.get(intentId); // Incoming
-        List<String> targetInputIntents = targetIntent.getInputIntents();
-        intent.addInputIntentIDs(targetInputIntents);
-        for (String inputIntentID : intent.getInputIntents() ) {
+        List<String> targetInputIntents = targetIntent.getInputContexts();
+        intent.addInputContextIDs(targetInputIntents);
+        for (String inputIntentID : intent.getInputContexts() ) {
             myIntent inputIntent = this.intents.get(inputIntentID);
             inputIntent.addOutputIntentID(intent.getId());
             inputIntent.removeOutputIntentID(intentId);
         }
 
-        targetIntent.clearInputIntents();
-        targetIntent.addInputIntentID(intent.getId());
+        targetIntent.clearInputContexts();
+        targetIntent.addInputContextID(intent.getId());
         intent.addOutputIntentID(targetIntent.getId());
         intent.addOutputContextID(intent.getId()); // Context
 

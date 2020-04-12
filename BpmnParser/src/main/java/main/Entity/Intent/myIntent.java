@@ -36,7 +36,7 @@ public class myIntent {
     protected String subject; // Who does it
     protected String task;    // What is done
 
-    protected List<String> inputIntents;  // Intents that go before this intent
+    protected List<String> inputContexts;  // Contexts that go before this intent
 
     protected List<String> outputIntents; // Intents that go after this intent
 
@@ -48,7 +48,7 @@ public class myIntent {
     protected IntentManagment intentManagment;
 
     public myIntent() throws IOException {
-        inputIntents = new ArrayList<String>();
+        inputContexts = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         outputContexts = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
@@ -59,7 +59,7 @@ public class myIntent {
     public myIntent(String name) throws IOException {
         this.name = name;
 
-        inputIntents = new ArrayList<String>();
+        inputContexts = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
         outputContexts = new ArrayList<String>();
@@ -73,7 +73,7 @@ public class myIntent {
         this.subject = subject;
         this.task = task;
 
-        inputIntents = new ArrayList<String>();
+        inputContexts = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         trainingPhrases = new ArrayList<String>();
         outputContexts = new ArrayList<String>();
@@ -81,6 +81,56 @@ public class myIntent {
         intentManagment = new IntentManagment();
 
     }
+
+
+    public void addBasicInfo(String inputContextID, String outputContextID,
+                             String outputIntentID, String trainingPhrase) {
+        this.addInputContextID(inputContextID);
+        this.addOutputContextID(outputContextID);
+        this.addOutputIntentID(outputIntentID);
+        this.addTrainingPhrase(trainingPhrase);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof myIntent) {
+            myIntent otherIntent = (myIntent) o;
+            if (this.getId().equals(otherIntent.getId()) &&
+                this.getName().equals(otherIntent.getName()) &&
+                this.getSubject().equals(otherIntent.getSubject()) &&
+                this.getTask().equals(otherIntent.getTask()) &&
+                this.getInputContexts().equals(otherIntent.getInputContexts()) &&
+                this.getOutputContexts().equals(otherIntent.getOutputContexts()) &&
+                this.getOutputIntents().equals(otherIntent.getOutputIntents()) &&
+                this.getTrainingPhrases().equals(otherIntent.getTrainingPhrases()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+
+        result += "Name:    " + this.getName() + "\n";
+        result += "Subject: " + this.getSubject() + "\n";
+        result += "Task:    " + this.getTask() + "\n";
+        result += "Input Contexts:" + "\n";
+        result += inputContexts.toString() + "\n";
+        result += "Output Contexts:" + "\n";
+        result += outputContexts.toString() + "\n";
+        result += "Output Intents:" + "\n";
+        result += outputIntents.toString() + "\n";
+        result += "Training Phrases:" + "\n";
+        result += trainingPhrases.toString() + "\n";
+        result += "\n";
+
+        return result;
+    }
+
 
     /*
      * GETTERS & SETTERS
@@ -116,30 +166,30 @@ public class myIntent {
     /*
      * INPUT
      */
-    public List<String> getInputIntents() {
-        return this.inputIntents;
+    public List<String> getInputContexts() {
+        return this.inputContexts;
     }
 
-    public void setInputIntents(List<String> inputIntents) {
-        this.inputIntents = inputIntents;
+    public void setInputContexts(List<String> inputIntents) {
+        this.inputContexts = inputIntents;
     }
 
-    public void addInputIntentID(String intent) {
-        this.inputIntents.add(intent);
+    public void addInputContextID(String intent) {
+        this.inputContexts.add(intent);
     }
 
     // TODO: Update the Outgoing intents of the targetInputIntents?? OR leave it to "void insertIntent(...)" from Intents.java
     // TODO: Requieres the modelInstance(singleton???)
-    public void addInputIntentIDs(List<String> intents) {
-        this.inputIntents.addAll(intents);
+    public void addInputContextIDs(List<String> intents) {
+        this.inputContexts.addAll(intents);
     }
 
-    public void removeInputIntentID(String intentID) {
-        this.inputIntents.remove(intentID);
+    public void removeInputContextID(String intentID) {
+        this.inputContexts.remove(intentID);
     }
 
-    public void clearInputIntents() {
-        inputIntents.clear();
+    public void clearInputContexts() {
+        inputContexts.clear();
     }
 
     /*
@@ -230,7 +280,7 @@ public class myIntent {
         println("Subject: " + this.getSubject());
         println("Task:    " + this.getTask());
         println("Input Intents:");
-        printIDs(inputIntents);
+        printIDs(inputContexts);
         println("Output Intents:");
         printIDs(outputIntents);
         println("Training Phrases:");
@@ -260,7 +310,7 @@ public class myIntent {
         List<String> trainingPhrases = this.buildTrainingPhrases(this.getTrainingPhrases());
         List<String> responses = this.makeResponse();
 
-        List<String> inputContextNames = this.buildInputContext(this.getInputIntents());
+        List<String> inputContextNames = this.buildInputContext(this.getInputContexts());
         List<String> outputContextNames = this.buildOutputContext();
 
 

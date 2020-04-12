@@ -36,7 +36,7 @@ public class CollaborationIntent extends myIntent {
         println("Subject Target: " + this.getTargetSubject());
         println("Task:    " + this.getTask());
         println("Input Intents:");
-        printIDs(inputIntents);
+        printIDs(inputContexts);
         println("Output Intents:");
         printIDs(outputIntents);
         println("Training Phrases:");

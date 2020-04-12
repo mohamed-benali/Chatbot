@@ -8,7 +8,7 @@ public class StartIntent extends myIntent {
 
     public StartIntent(String name, String subject, String tasca) throws IOException {
         super(name, subject, tasca);
-        this.addInputIntentID(BEGIN_CONTEXT);
+        this.addInputContextID(BEGIN_CONTEXT);
         this.addTrainingPhrase(subject);
     }
 }
