@@ -2,6 +2,7 @@ package ParserFlowNodesTest.ParallelGateway;
 
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
+import main.Entity.Parser.BpmnAlgorithm;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -10,10 +11,7 @@ import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.Participant;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.Task;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,11 +37,18 @@ class ParserFlowNodes_ParallelGatewayTest {
     static void setUp() {
         File fileParallelGateway = new File(bpmnPathParallelGateway);
         modelInstanceParallelGateway = Bpmn.readModelFromFile(fileParallelGateway);
+    }
+
+    @BeforeEach
+    void setUpEach() {
+
         parserFlowNodesParallelGateway = new ParserFlowNodes(modelInstanceParallelGateway);
+        BpmnAlgorithm.resetVisitedFlowNodesInstance(); // Reset it
     }
 
     @AfterAll
     static void tearDown() {
+        parserFlowNodesParallelGateway = null;
     }
 
 

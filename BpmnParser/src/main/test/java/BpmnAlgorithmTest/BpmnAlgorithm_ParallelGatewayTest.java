@@ -6,10 +6,7 @@ import main.Entity.Parser.BpmnAlgorithm;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Participant;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,20 +27,20 @@ class BpmnAlgorithm_ParallelGatewayTest {
 
     static String bpmnPathParallelGateway = componentTestingPath + "/diagramParallelGateway.bpmn";
 
-
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         File fileParallelGateway = new File(bpmnPathParallelGateway);
         modelInstanceParallelGateway = Bpmn.readModelFromFile(fileParallelGateway);
+    }
 
+    @BeforeEach
+    void setUpEach() {
         bpmnAlgorithmParallelGateway = new BpmnAlgorithm(modelInstanceParallelGateway);
     }
 
     @AfterEach
     void tearDown() {
     }
-
-    // TODO: Convert to Intents to string, compare the string so it tells where is the difference
 
 
     /*

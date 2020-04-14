@@ -36,6 +36,10 @@ class ParserFlowNodesTest {
     static void setUp() {
         File file = new File(bpmnPath);
         modelInstance = Bpmn.readModelFromFile(file);
+    }
+
+    @BeforeEach
+    void setUpEach() {
         parserFlowNodes = new ParserFlowNodes(modelInstance);
     }
 

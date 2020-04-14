@@ -63,7 +63,7 @@ public class Intents {
 
         List<String> sourceOutputIntents = sourceIntent.getOutputIntents();
         intent.addOutputIntentIDs(sourceOutputIntents); // Intent
-        intent.addOutputContextID(intent.getId()); // Context
+        intent.addOutputContextID(intent.getId()); // TODO: Put the correct output Context(ex: if there is a gateway)
         //TODO: Consider the gateways when creating the output context
         for (String outputIntentID : intent.getOutputIntents() ) {
             myIntent outputIntent = this.intents.get(outputIntentID);
@@ -81,7 +81,8 @@ public class Intents {
 
     /*
      * Inserts an intent before the intent identified by *intentId*
-     */
+     */ // TODO: Inserir per tots aquells que tenen al intent com a outputIntent(aprofitar que si jo soc el outputIntent,
+    // TODO: tu ets el meu inputIntent
     public void insertBeforeIntent(myIntent intent, String intentId) {
         myIntent targetIntent = this.intents.get(intentId); // Incoming
         List<String> targetInputIntents = targetIntent.getInputContexts();

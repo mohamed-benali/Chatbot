@@ -4,10 +4,7 @@ import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 
@@ -30,6 +27,10 @@ class CamundaHelperTest {
     static void setUp() {
         File file = new File(bpmnPath);
         modelInstance = Bpmn.readModelFromFile(file);
+    }
+
+    @BeforeEach
+    void setUpEach() {
         parserFlowNodes = new ParserFlowNodes(modelInstance);
     }
 

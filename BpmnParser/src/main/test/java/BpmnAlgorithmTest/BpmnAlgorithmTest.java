@@ -8,10 +8,7 @@ import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Participant;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +32,14 @@ class BpmnAlgorithmTest {
 
     static String bpmnPath = componentTestingPath + "/diagram.bpmn";
 
-
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         File file = new File(bpmnPath);
         modelInstance = Bpmn.readModelFromFile(file);
+    }
+
+    @BeforeEach
+    void setUpEach() {
         bpmnAlgorithm = new BpmnAlgorithm(modelInstance);
     }
 

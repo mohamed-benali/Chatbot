@@ -11,17 +11,22 @@ public class main {
 
     public static String diagramName = "diagram.bpmn";
     public static String diagramParallelGatewayName = "diagramParallelGateway.bpmn";
+    public static String diagramExclusiveGateway_If_without_elseName = "exclusiveGateway_If_without_else.bpmn";
+    public static String diagramLoopName = "diagramLoop.bpmn";
+    public static String diagramLoopWithoutCollaborationsName = "diagramLoopWithoutCollaborations.bpmn";
+
+
 
     public static void main(String[] args) {
         String packagePath = "./src/main/java/main";
         String dataPath = "/../Data/";
-        String bpmnPath = packagePath + dataPath + diagramParallelGatewayName;
+        String bpmnPath = packagePath + dataPath + diagramLoopWithoutCollaborationsName;
 
         Parser parser = new Parser(bpmnPath);
         parser.parse();
         Intents intents = parser.getIntents();
 
-        intents.print();
+        //intents.print();
 
         intents.translateIntoDialogFlow();
 

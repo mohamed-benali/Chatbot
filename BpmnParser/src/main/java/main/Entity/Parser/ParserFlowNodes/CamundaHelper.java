@@ -7,6 +7,7 @@ import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class CamundaHelper {
     public BpmnModelInstance modelInstance;
@@ -37,13 +38,29 @@ public class CamundaHelper {
         return followingFlowNodes;
     }
 
+    // Get following flow nodes(task, gateway, etc) of a FlowNode as List.
+    public List<FlowNode> getAllFlowingFlowNodesAsList(FlowNode node) {
+        List<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
+        for (SequenceFlow sequenceFlow : node.getOutgoing()) {
+            followingFlowNodes.add(sequenceFlow.getTarget());
+        }
+        return followingFlowNodes;
+    }
+
     // Get previous flow nodes(task, gateway, etc) of a FlowNode.
     public Collection<FlowNode> getAllIncomingFlowNodes(FlowNode node) {
         Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
         for (SequenceFlow sequenceFlow : node.getIncoming()) {
             followingFlowNodes.add(sequenceFlow.getSource());
-            // TODO: Consider if the incoming flowNode is a closing exlusiveGateway(with no text) or similar.
-            // TODO: If its the case, then the incoming nodes are the incoming of that gateway,
+        }
+        return followingFlowNodes;
+    }
+
+    // Get previous flow nodes(task, gateway, etc) of a FlowNode  as List
+    public List<FlowNode> getAllIncomingFlowNodesAsList(FlowNode node) {
+        List<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
+        for (SequenceFlow sequenceFlow : node.getIncoming()) {
+            followingFlowNodes.add(sequenceFlow.getSource());
         }
         return followingFlowNodes;
     }

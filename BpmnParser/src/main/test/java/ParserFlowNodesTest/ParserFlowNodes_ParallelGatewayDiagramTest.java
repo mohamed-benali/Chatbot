@@ -7,10 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.Task;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,11 +32,15 @@ class ParserFlowNodes_ParallelGatewayDiagramTest {
     static void setUp() {
         File fileParallelGateway = new File(bpmnPathParallelGateway);
         modelInstanceParallelGateway = Bpmn.readModelFromFile(fileParallelGateway);
+    }
+
+    @BeforeEach
+    void setUpEach() {
         parserFlowNodesParallelGateway = new ParserFlowNodes(modelInstanceParallelGateway);
     }
 
-    @AfterAll
-    static void tearDown() {
+    @AfterEach
+    void tearDown() {
     }
 
 
@@ -206,7 +207,21 @@ class ParserFlowNodes_ParallelGatewayDiagramTest {
      */
 
     @Test
-    @DisplayName("Gets the output context IDs of a TASK before a closing Exclusive Gateway")
+    @DisplayName("Gets the output intent ID of a TASK before a TASK")
+    void getOutputIntentIDs_Of_FlowNode_before_a_task() {
+        String taskID = "Task_1vunmit"; // Get items
+        FlowNode flowNode = modelInstanceParallelGateway.getModelElementById(taskID);
+
+        List<String> outputIntentIds = parserFlowNodesParallelGateway.getOutputIntentIDs(flowNode);
+
+        List<String> expectedOutpuIntentIds = new ArrayList<String>();
+        expectedOutpuIntentIds.add("Task_1wuzo3e"); // Prepare the items
+
+        assertEquals(expectedOutpuIntentIds, outputIntentIds);
+    }
+
+    @Test
+    @DisplayName("Gets the output intent ID of a TASK before a closing Exclusive Gateway")
     void getOutputIntentIDs_Of_FlowNode_before_closing_exclusive_gateway() {
         String taskID = "Task_1t8hbl4"; // Ship a Parcel with Transport insurance
         FlowNode flowNode = modelInstanceParallelGateway.getModelElementById(taskID);
@@ -215,6 +230,36 @@ class ParserFlowNodes_ParallelGatewayDiagramTest {
 
         List<String> expectedOutpuIntentIds = new ArrayList<String>();
         expectedOutpuIntentIds.add("Task_1pynbur"); // Deliver Order
+
+        assertEquals(expectedOutpuIntentIds, outputIntentIds);
+    }
+
+    @Test
+    @DisplayName("Gets the output intent ID of a TASK before an opening Parallel Gateway")
+    void getOutputIntentIDs_Of_FlowNode_before_opening_parallel_gateway() {
+        String taskID = "Task_1wuzo3e"; // Prepare the items
+        FlowNode flowNode = modelInstanceParallelGateway.getModelElementById(taskID);
+
+        List<String> outputIntentIds = parserFlowNodesParallelGateway.getOutputIntentIDs(flowNode);
+
+        List<String> expectedOutpuIntentIds = new ArrayList<String>();
+        expectedOutpuIntentIds.add("Activity_1o8a9ib"); // Check stock
+
+        assertEquals(expectedOutpuIntentIds, outputIntentIds);
+    }
+
+    // TODO: REMEMBER THAT IN THE PARALLEL GATEWAY PARSING, THERE IS A POST PROCESSING OF THE EDGING FLOWNODES
+    // SO THE BEST WAY TO TEST IT, IS TO DO IT WITH THE FULL PARALLEL GATEWAY
+    @Test
+    @DisplayName("Gets the output intent ID of a TASK before an closing Parallel Gateway")
+    void getOutputIntentIDs_Of_FlowNode_before_closing_parallel_gateway() {
+        String taskID = "Activity_114hvc6"; // Update records
+        FlowNode flowNode = modelInstanceParallelGateway.getModelElementById(taskID);
+
+        List<String> outputIntentIds = parserFlowNodesParallelGateway.getOutputIntentIDs(flowNode);
+
+        List<String> expectedOutpuIntentIds = new ArrayList<String>();
+        expectedOutpuIntentIds.add("EndEvent_0irzcwa"); //
 
         assertEquals(expectedOutpuIntentIds, outputIntentIds);
     }

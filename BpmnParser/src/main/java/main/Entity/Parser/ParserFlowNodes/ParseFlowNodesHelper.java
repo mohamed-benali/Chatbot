@@ -41,13 +41,31 @@ public class ParseFlowNodesHelper {
         return name;
     }
 
+    public String createName(Participant participant, Process process, FlowNode node,
+                             String textAtStart, String textAtEnd)
+    {
+        String name = createName(participant, process, node);
+        name = textAtStart + name + textAtEnd;
+        return name;
+    }
 
-    public List<FlowNode> convertToList(Collection<FlowNode> nodes) {
+
+    // TODO: USe some wildcard
+    public List<FlowNode> convertToFlowNodeList(Collection<FlowNode> nodes) {
         int nBranques = nodes.size();
         FlowNode[] firstNodesArray = nodes.toArray(new FlowNode[nBranques]); // Primers nodes de les branques
         List<FlowNode> firstNodes = new ArrayList<FlowNode>(Arrays.asList(firstNodesArray));
         return firstNodes;
     }
+
+    public List<SequenceFlow> convertToSequenceFlowList(Collection<SequenceFlow> nodes) {
+        int nBranques = nodes.size();
+        SequenceFlow[] firstNodesArray = nodes.toArray(new SequenceFlow[nBranques]); // Primers nodes de les branques
+        List<SequenceFlow> firstNodes = new ArrayList<SequenceFlow>(Arrays.asList(firstNodesArray));
+        return firstNodes;
+    }
+
+
 
 
 

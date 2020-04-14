@@ -8,10 +8,7 @@ import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.Task;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,13 +22,22 @@ class ParserFlowNodesHelperTest {
     static ParseFlowNodesHelper parseFlowNodesHelper;
 
 
+    /*
+     * PATHS
+     */
+    static String packageTestingPath = "./src/main/test";
+    static String componentTestingPath = packageTestingPath + "/testing_files/ParserFlowNodes";
+
+    static String bpmnPath = componentTestingPath + "/diagramParallelGateway.bpmn";
+
     @BeforeAll
     static void setUp() {
-        String packageTestingPath = "./src/main/test";
-        String bpmnPath = packageTestingPath + "/testing_files/ParserFlowNodes/diagramParallelGateway.bpmn";
         File file = new File(bpmnPath);
         modelInstance = Bpmn.readModelFromFile(file);
+    }
 
+    @BeforeEach
+    void setUpEach() {
         parseFlowNodesHelper = new ParseFlowNodesHelper(modelInstance);
     }
 

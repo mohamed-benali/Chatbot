@@ -4,15 +4,14 @@ import main.Entity.Intent.BeginIntent_Special;
 import main.Entity.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class BpmnAlgorithm {
     public static void println(String s) { System.out.println(s); }
@@ -22,7 +21,16 @@ public class BpmnAlgorithm {
 
     public ParserFlowNodes parserFlowNodes;
 
+    private static Set<String> visitedFlowNodesInstance;
 
+    public static Set<String> getVisitedFlowNodesInstance() {
+        if(visitedFlowNodesInstance == null) visitedFlowNodesInstance = new TreeSet<>();
+        return visitedFlowNodesInstance;
+    }
+
+    public static void resetVisitedFlowNodesInstance() {
+        visitedFlowNodesInstance = null;
+    }
 
     /*
      * CONSTRUCTORS
@@ -31,6 +39,8 @@ public class BpmnAlgorithm {
         this.modelInstance = modelInstance;
         this.intents = new Intents();
         this.parserFlowNodes = new ParserFlowNodes(modelInstance);
+
+        BpmnAlgorithm.resetVisitedFlowNodesInstance(); // Reset it
     }
 
 
@@ -55,6 +65,11 @@ public class BpmnAlgorithm {
         BeginIntent_Special beginIntentSpecial = new BeginIntent_Special();
         beginIntentSpecial.setParticipantNames(participantNames);
         this.intents.add(beginIntentSpecial);
+
+        // TODO: Crea i Actualitzar els input Intent abans de continuar
+
+        // TODO: Inserir per tots aquells que tenen al intent com a outputIntent(aprofitar que si jo soc el outputIntent,
+        // TODO: tu ets el meu inputIntent
 
         // Collaboration
         Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
@@ -94,36 +109,54 @@ public class BpmnAlgorithm {
     public Intents parseFlowNode(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
 
-        ModelElementType startEventType         = this.modelInstance.getModel().getType(StartEvent.class);
-        ModelElementType taskType               = this.modelInstance.getModel().getType(Task.class);
-        ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
-        ModelElementType ParallelGatewayType    = this.modelInstance.getModel().getType(ParallelGateway.class);
-        ModelElementType messageFlowType        = this.modelInstance.getModel().getType(MessageFlow.class);
-        ModelElementType sequenceFlowType       = this.modelInstance.getModel().getType(SequenceFlow.class);
-        ModelElementType endEventType           = this.modelInstance.getModel().getType(EndEvent.class);
+        Set<String> visitedFlowNodes = BpmnAlgorithm.getVisitedFlowNodesInstance();
+        String flowNodeId = node.getId();
+        if (visitedFlowNodes.contains(flowNodeId)) return intents; // Stop parsing, return empty intents
+        else {
+            visitedFlowNodes.add(flowNodeId);
+
+            ModelElementType startEventType = this.modelInstance.getModel().getType(StartEvent.class);
+            ModelElementType taskType = this.modelInstance.getModel().getType(Task.class);
+            ModelElementType exclusiveGatewayType = this.modelInstance.getModel().getType(ExclusiveGateway.class);
+            ModelElementType ParallelGatewayType = this.modelInstance.getModel().getType(ParallelGateway.class);
+            ModelElementType messageFlowType = this.modelInstance.getModel().getType(MessageFlow.class);
+            ModelElementType sequenceFlowType = this.modelInstance.getModel().getType(SequenceFlow.class);
+            ModelElementType endEventType = this.modelInstance.getModel().getType(EndEvent.class);
 
 
-        if     (node.getElementType() == startEventType)       intents.add(this.parserFlowNodes.parseStartEvent      (participant, process, node));
-        else if(node.getElementType() == taskType)             intents.add(this.parserFlowNodes.parseTask            (participant, process, node));
-        else if(node.getElementType() == exclusiveGatewayType) intents.add(this.parserFlowNodes.parseExclusiveGateway(participant, process, node));
-        else if(node.getElementType() == ParallelGatewayType) {
-            // After the execution of "parseParallelGateway", *node* changes to the closing parallelGateway
-            List<FlowNode> workAroundChangeNodeInsideMethod = new ArrayList<FlowNode>();
-            workAroundChangeNodeInsideMethod.add(node);
-            Intents parsedIntents = this.parserFlowNodes.parseParallelGateway(participant, process, workAroundChangeNodeInsideMethod);
-            node = workAroundChangeNodeInsideMethod.get(0);
-            intents.add(parsedIntents);
+            if (node.getElementType() == startEventType)
+                intents.add(this.parserFlowNodes.parseStartEvent(participant, process, node));
+            else if (node.getElementType() == taskType)
+                intents.add(this.parserFlowNodes.parseTask(participant, process, node));
+            else if (node.getElementType() == exclusiveGatewayType)
+                intents.add(this.parserFlowNodes.parseExclusiveGateway(participant, process, node));
+            else if (node.getElementType() == ParallelGatewayType) {
+                // After the execution of "parseParallelGateway", *node* changes to the closing parallelGateway
+                List<FlowNode> workAroundChangeNodeInsideMethod = new ArrayList<FlowNode>();
+                workAroundChangeNodeInsideMethod.add(node);
+                Intents parsedIntents = this.parserFlowNodes.parseParallelGateway(participant, process, workAroundChangeNodeInsideMethod);
+                node = workAroundChangeNodeInsideMethod.get(0);
+                intents.add(parsedIntents);
+            } else if (node.getElementType() == messageFlowType)
+                intents.add(this.parserFlowNodes.parseMessageFlow(participant, process, node));
+            else if (node.getElementType() == endEventType)
+                intents.add(this.parserFlowNodes.parseEndEvent(participant, process, node));
+            else intents.add(this.parserFlowNodes.parseFlowNode(participant, process, node));
+
+            // Recursively parse the outgoing flownodes.
+            Collection<FlowNode> flowNodes = parserFlowNodes.getCamundaHelper().getRelevantFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
+            for (FlowNode flowNode : flowNodes) {
+                intents.add(this.parseFlowNode(participant, process, flowNode));
+            }
+
+            return intents;
         }
-        else if(node.getElementType() == messageFlowType)      intents.add(this.parserFlowNodes.parseMessageFlow     (participant, process, node));
-        else if(node.getElementType() == endEventType)         intents.add(this.parserFlowNodes.parseEndEvent        (participant, process, node));
-        else intents.add(this.parserFlowNodes.parseFlowNode(participant, process, node));
-
-        // Recursively parse the outgoing flownodes.
-        Collection<FlowNode> flowNodes = parserFlowNodes.getCamundaHelper().getRelevantFlowingFlowNodes(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
-        for(FlowNode flowNode: flowNodes) {
-            intents.add(this.parseFlowNode(participant, process, flowNode));
-        }
-
-        return intents;
     }
+
+
+
+
+
+
+
 }
