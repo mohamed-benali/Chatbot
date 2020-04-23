@@ -1,6 +1,5 @@
 package IntentsTest;
 
-import com.google.cloud.dialogflow.v2.Intent;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
 import org.junit.jupiter.api.AfterEach;
