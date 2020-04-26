@@ -142,17 +142,34 @@ public class ParserFlowNodes {
     }
 
 
-    /*
+    /**
      * Parses an opening exclusive gateway
-     * PRE: node is a opening exclusive gateway
-     * POST: Returns the intents generated
+     * @param participant
+     * @param process
+     * @param node {@code node} is an opening exclusive gateway
+     * @return Returns the intents generated
+     * @throws IOException
      */
     public Intents parseExclusiveGateway(Participant participant, Process process, FlowNode node) throws IOException {
         Intents intents = new Intents();
         String openExclusiveGatewayID = node.getId();
 
         ExclusiveGateway exclusiveGateway = modelInstance.getModelElementById(openExclusiveGatewayID);
-        intents.add(this.parseFlowNode(participant, process, exclusiveGateway));
+
+        //***** CODI REPETIT ******//
+        String gatewayName = this.getParseFlowNodesHelper().createName(participant, process, exclusiveGateway); // The name is the identificator
+        String gatewaySubject = participant.getName();
+        String gatewayTasca = exclusiveGateway.getName();
+        myIntent exclusiveGatewayIntent = new ExclusiveGatewayIntent(gatewayName, gatewaySubject, gatewayTasca);
+
+        addTrainingPhrases(exclusiveGatewayIntent, exclusiveGateway);
+        exclusiveGatewayIntent.addInputContextIDs(this.getInputContextIDs(exclusiveGateway));
+        exclusiveGatewayIntent.addOutputContextIDs(this.getOutputContextIDs(exclusiveGateway));
+        exclusiveGatewayIntent.addOutputIntentIDs(this.getOutputIntentIDs(exclusiveGateway));
+
+        intents.add(exclusiveGatewayIntent);
+        //***** CODI REPETIT ******//
+
 
         List<FlowNode> flowingFlowNodes = this.getCamundaHelper().getAllFlowingFlowNodesAsList(exclusiveGateway);
         for(int i =0; i < flowingFlowNodes.size(); ++i) {
@@ -174,7 +191,7 @@ public class ParserFlowNodes {
                     nextIntent.addOutputContextIDs(this.getOutputContextIDs(nextNode));
                     nextIntent.addOutputIntentIDs(this.getOutputIntentIDs(nextNode));
 
-                    Collection<SequenceFlow> sequenceFlowsCollection = node.getOutgoing();
+                    Collection<SequenceFlow> sequenceFlowsCollection = exclusiveGateway.getOutgoing();
                     List<SequenceFlow> sequenceFlows = this.parseFlowNodesHelper.convertToSequenceFlowList(sequenceFlowsCollection);
                     SequenceFlow sequenceFlow = sequenceFlows.get(i); // TODO: Test that it works(same i)
                     String trainingPhrase = sequenceFlow.getName();

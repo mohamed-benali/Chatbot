@@ -1,7 +1,8 @@
-package SentenceGeneration.SentenceGeneratorServiceAdapter;
+package main.SentenceGeneration.SentenceGeneratorServiceAdapter;
 
-import SentenceGeneration.Entity.SentenceAnalysis.SentenceAnalysis;
-import SentenceGeneration.Entity.SentenceAnalysis.SimpleSentenceAnalysis;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SimpleSentenceAnalysis;
+import main.Exceptions.NoFreelingKeyException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +25,12 @@ class SentenceGeneratorServiceAdapterTest {
 
 
     @Test
-    @DisplayName("Generate simple sentence correctly with (Subject, Verb, Object")
-    void generateSimpleSentenceWith_Subject_Verb_Object() {
-        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis( "chase",
-                                                                        "the monkey",
-                                                                        null);
+    @DisplayName("Generate simple sentence correctly with  (Subject=Mary, Predicate=chase, Object=the monkey)")
+    void generateSimpleSentenceWith_Subject_Verb_Object() throws NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("chase", "noun",
+                null, "singular",
+                "the monkey", "singular",
+                null, null);
 
         SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
         String subject = "Mary";
@@ -42,10 +44,12 @@ class SentenceGeneratorServiceAdapterTest {
 
     @Test
     @DisplayName("Generate simple sentence correctly with (Subject, Verb, Object, Complement)")
-    void generateSimpleSentenceWith_Subject_Verb_Object_Complement() {
-        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis( "send",
-                                                                        "finished documents",
-                                                                        "to marketing department");
+    void generateSimpleSentenceWith_Subject_Verb_Object_Complement() throws NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis;
+        sentenceAnalysis = new SimpleSentenceAnalysis("send", "verb",
+                                                    "infinitive", null,
+                                                    "finished documents", "plural",
+                                                    "to marketing department", "singular");
 
         SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
         String subject = "Mary";
@@ -59,16 +63,17 @@ class SentenceGeneratorServiceAdapterTest {
 
     @Test
     @DisplayName("Generate simple sentence correctly with: Request items")
-    void generateSimpleSentenceWith_Subject_Verb_Object_2() {
-        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis( "request",
-                "items",
-                null);
+    void generateSimpleSentenceWith_Subject_Verb_Object_2() throws NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("request", "noun",
+                                                                        null, "singular",
+                                                                        "items", "plural",
+                                                                        null, null);
 
         SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
         String subject = "Employee";
         String generatedSentence = sentenceGeneratorServiceAdapter.generateSimpleSentence(sentenceAnalysis, subject);
 
-        String expectedGeneratedSentence = "Employee requests items";
+        String expectedGeneratedSentence = "Employee requests items.";
 
 
         assertEquals(expectedGeneratedSentence, generatedSentence);

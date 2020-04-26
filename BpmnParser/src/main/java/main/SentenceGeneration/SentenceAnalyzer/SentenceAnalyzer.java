@@ -1,10 +1,9 @@
-package SentenceGeneration.SentenceAnalyzer;
+package main.SentenceGeneration.SentenceAnalyzer;
 
-import SentenceGeneration.Entity.SentenceAnalysis.SentenceAnalysis;
-import SentenceGeneration.Entity.SentenceAnalysis.SimpleSentenceAnalysis;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
+import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -68,5 +67,5 @@ public interface SentenceAnalyzer {
      * @throws IOException
      * @throws InterruptedException
      */
-    SentenceAnalysis analyzeSentence(String sentence) throws IOException, InterruptedException, SentenceAnalyzerException;
+    SentenceAnalysis analyzeSentence(String sentence) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException;
 }

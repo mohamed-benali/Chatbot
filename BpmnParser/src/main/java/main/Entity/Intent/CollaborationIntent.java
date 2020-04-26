@@ -1,5 +1,10 @@
 package main.Entity.Intent;
 
+import main.Exceptions.NoFreelingKeyException;
+import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +53,16 @@ public class CollaborationIntent extends myIntent {
         println("");
     }
 
-    protected List<String> makeResponse() {
+    protected List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         List<String> responses = new ArrayList<String>();
-        String response = this.getSourceSubject() + " " + this.getTask() + " to " + this.getTargetSubject();
+
+        String sentence = this.getTask();
+        String sourceSubject = this.getSourceSubject();
+        String targetSubject = this.getTargetSubject();
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl();
+        String response = sentenceBuilder.buildSentence(sentence, sourceSubject, targetSubject);
+
         responses.add(response);
         return responses;
     }

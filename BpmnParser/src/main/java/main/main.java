@@ -9,18 +9,18 @@ public class main {
         System.out.println(s);
     }
 
-    public static String diagramName = "diagram.bpmn";
+    public static String basicDiagramName = "diagram.bpmn";
     public static String diagramParallelGatewayName = "diagramParallelGateway.bpmn";
     public static String diagramExclusiveGateway_If_without_elseName = "exclusiveGateway_If_without_else.bpmn";
     public static String diagramLoopName = "diagramLoop.bpmn";
     public static String diagramLoopWithoutCollaborationsName = "diagramLoopWithoutCollaborations.bpmn";
 
+    public static String diagram = diagramParallelGatewayName;
 
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String packagePath = "./src/main/java/main";
         String dataPath = "/../Data/";
-        String bpmnPath = packagePath + dataPath + diagramLoopWithoutCollaborationsName;
+        String bpmnPath = packagePath + dataPath + diagram;
 
         Parser parser = new Parser(bpmnPath);
         parser.parse();

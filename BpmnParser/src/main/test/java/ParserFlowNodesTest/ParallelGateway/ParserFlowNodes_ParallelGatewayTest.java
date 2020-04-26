@@ -116,23 +116,23 @@ class ParserFlowNodes_ParallelGatewayTest {
     private Intents createExpectedIntentsParallelGateway() throws IOException {
         Intents expectedIntents = new Intents();
 
-        myIntent intent2 = new myIntent("Activity_0941ghy", "Departament", "Update Stock");
+        myIntent intent2 = new myIntent("Activity_0941ghy", "Department", "Update the Stock");
         intent2.addBasicInfo("Activity_1o8a9ib","Activity_0941ghy",
                 "Activity_114hvc6", null);
-        myIntent intent2_query = new myIntent("Activity_0941ghy_query", "Departament", "Update Stock");
-        intent2_query.addTrainingPhrase("Who Update Stock");
+        myIntent intent2_query = new myIntent("Activity_0941ghy_query", "Department", "Update the Stock");
+        intent2_query.addTrainingPhrase("Who Update the Stock");
 
-        myIntent intent3 = new myIntent("Activity_114hvc6", "Departament", "Update records");
+        myIntent intent3 = new myIntent("Activity_114hvc6", "Department", "Update the records");
         intent3.addBasicInfo("Activity_0941ghy","Gateway_1pv0p63",
                 "EndEvent_0irzcwa", null); // TODO: OutputIntentID EndEvent
-        myIntent intent3_query = new myIntent("Activity_114hvc6_query", "Departament", "Update records");
-        intent3_query.addTrainingPhrase("Who Update records");
+        myIntent intent3_query = new myIntent("Activity_114hvc6_query", "Department", "Update the records");
+        intent3_query.addTrainingPhrase("Who Update the records");
 
-        myIntent intent4 = new myIntent("Activity_1o8a9ib", "Departament", "Check stock");
+        myIntent intent4 = new myIntent("Activity_1o8a9ib", "Department", "Check the stock");
         intent4.addBasicInfo("Task_1wuzo3e","Activity_1o8a9ib", // TODO: Put the correct input Context(task instead of gateway)
                 "Activity_0941ghy", null);
-        myIntent intent4_query = new myIntent("Activity_1o8a9ib_query", "Departament", "Check stock");
-        intent4_query.addTrainingPhrase("Who Check stock");
+        myIntent intent4_query = new myIntent("Activity_1o8a9ib_query", "Department", "Check the stock");
+        intent4_query.addTrainingPhrase("Who Check the stock");
 
         expectedIntents.add(intent2);
         expectedIntents.add(intent2_query);

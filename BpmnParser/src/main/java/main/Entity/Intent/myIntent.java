@@ -1,28 +1,15 @@
 package main.Entity.Intent;
 
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.util.Lists;
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.paging.Page;
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
+import main.Exceptions.NoFreelingKeyException;
+import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
 import com.google.cloud.dialogflow.v2.*;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import io.grpc.Context;
-import io.opencensus.metrics.export.Distribution;
 import main.Entity.DialogFlow.IntentManagment;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class myIntent {
     protected IntentsClient intentsClient;
@@ -362,9 +349,16 @@ public class myIntent {
     }
 
 
-    protected List<String> makeResponse() {
+    protected List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         List<String> responses = new ArrayList<String>();
-        String response = this.getSubject() + " " + this.getTask();
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl();
+
+        String sentence = this.getTask();
+        String subject = this.getSubject();
+        String response = sentenceBuilder.buildSentence(sentence, subject);
+
+
+        //String response = this.getSubject() + " " + this.getTask();
         responses.add(response);
         return responses;
     }

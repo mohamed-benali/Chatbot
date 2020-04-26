@@ -121,14 +121,17 @@ public class Intents {
     /*
      * Translate into Dialogflow(use library?)
      */
-    public void translateIntoDialogFlow() {
+    public void translateIntoDialogFlow() throws Exception {
         for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
             myIntent intent = entry.getValue();
+            /*
             try {
                 intent.translateIntoDialogFlow();
             } catch (Exception e) {
                 println(e.getMessage());
-            }
+            }*/
+            intent.translateIntoDialogFlow(); // For debugging
+
         }
     }
 
