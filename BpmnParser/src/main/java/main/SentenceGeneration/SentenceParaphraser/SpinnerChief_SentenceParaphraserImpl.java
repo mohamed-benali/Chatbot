@@ -2,6 +2,7 @@ package main.SentenceGeneration.SentenceParaphraser;
 
 import com.google.common.net.MediaType;
 import main.Exceptions.SentenceAnalyzerException;
+import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -15,7 +16,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser {
@@ -47,13 +50,13 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     /**
      * ***DEFAULT*** is 4 (1/4 = 25% of the words)
      */
-    private String spinfreq = "4"; // % of words spinned (percentage equals to 1/spinfreq)
+    private String spinfreq = "1"; // % of words spinned (percentage equals to 1/spinfreq)
 
     /**
      *  0 --> Removes the original word  ***DEFAULT***
      *  1--> keeps the original word
      */
-    private String original = "0";
+    private String original = "1";
 
     /**
      * ***DEFAULT*** is 5
@@ -61,7 +64,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * For example, if the article is “hello”, Wordscount=3, the result will be {hello|hi|hey}.
      *  If Wordscount=2, the result will be {hello|hi}.
      */
-    private String Wordscount = "5";
+    private String Wordscount = "4";
 
     /**
      * ***DEFAULT*** is 0
@@ -123,11 +126,30 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     }
 
     private String addParameters(String uri) {
-        return null;
+        uri = addParameter(uri, "spintype", spintype);
+        uri = addParameter(uri, "spinfreq", spinfreq);
+        uri = addParameter(uri, "original", original);
+
+        uri = addParameter(uri, "Wordscount", Wordscount);
+        uri = addParameter(uri, "wordquality", wordquality);
+        uri = addParameter(uri, "orderly", orderly);
+
+        uri = addParameter(uri, "querytimes", querytimes);
+        // uri = addParameter(uri, "tagprotect", tagprotect ); TODO: no pot enviar ls caracter [] en la URL, deixa el
+                                                            // TODO:    valor per defecte
+        uri = addParameter(uri, "phrasecount", phrasecount);
+
+
+        return uri;
+    }
+
+    private String addParameter(String uri, String key, String value) {
+        if(value != null) uri += "&" + key + "=" + value;
+        return uri;
     }
 
     @Override
-    public Sentences paraphraseSentence(String sentence) throws IOException, InterruptedException {
+    public Sentences paraphraseSentence(String sentence) throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
         System.out.println("Sentence: " + sentence);
         System.out.println("URI: " + uri);
         System.out.println();
@@ -135,13 +157,48 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
 
         String responseBody = makeHTTP_POST_Call(uri, sentence);
 
+        // TODO: Ha de ser un Map, <int, Set<String> > or <String, Set<String> >,
+        // TODO: On el value es un conjunt de frases generades, i la key es el identificador
+        // TODO: int per el ordre sequencial, String per la frase original
+        List<String> sentencesList = new ArrayList<>(); // TODO: Potser convertir en Map o Set i aixi
+                                                        // controla els posibles repetits
+
+        String[] responseSentencesArray = responseBody.split("\n");
+        for(String responseSentence: responseSentencesArray) {
+            System.out.println("Sentences: " + responseSentence);
+            System.out.println("\n\n");
+            sentencesList.add(responseSentence);
+        }
+
+
+
         Sentences sentences = new Sentences();
         sentences.addSentence(responseBody);
 
         return sentences;
     }
 
-    public String makeHTTP_POST_Call(String url, String textBody) throws IOException, InterruptedException {
+    /**
+     * Generate sentences for all the sentences
+     * @param sentences Should have atleast one element
+     * @return
+     * @throws InterruptedException
+     * @throws SpinnerChief_SentenceParaphraserException
+     * @throws IOException
+     */
+    @Override
+    public Sentences paraphraseSentence(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+        String sentence = "";
+        sentence += sentences.get(0);
+
+        for(int i = 1; i < sentences.size(); ++i) {
+            sentence += "\n" + sentences.get(i);
+        }
+
+        return this.paraphraseSentence(sentence);
+    }
+
+    public String makeHTTP_POST_Call(String url, String textBody) throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
         // Crear un client per connectar-se al servidor.
         HttpClient httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
@@ -164,6 +221,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
         // print status code (si es 200, es que es OK)
         if (response.statusCode() != 200) {
             System.out.println("HTTP ERROR " + response.statusCode());
+            throw new SpinnerChief_SentenceParaphraserException("Status code is not 200, it is: " + response.statusCode());
         }
         else { // Everything OK
             String responseBodyString = response.body();
@@ -172,46 +230,8 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
             return responseBodyString;
         }
 
-        return null;
     }
 
 
-
-
-    private void sendPost(String url, String text) throws Exception {
-
-        HttpClient httpClient = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .build();
-
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .POST(buildFormDataFromString(text))
-                .uri(URI.create(url))
-                .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        // print status code
-        System.out.println(response.statusCode());
-
-        // print response body
-        System.out.println(response.body());
-
-        StringEntity myEntity = new StringEntity("important message",
-                                                    ContentType.create("text/plain", "UTF-8"));
-
-    }
-
-    private static HttpRequest.BodyPublisher buildFormDataFromString(String data) {
-        var builder = new StringBuilder();
-
-        builder.append(URLEncoder.encode(data, StandardCharsets.UTF_8));
-        System.out.println(builder.toString());
-
-        return HttpRequest.BodyPublishers.ofString(builder.toString());
-    }
 
 }
