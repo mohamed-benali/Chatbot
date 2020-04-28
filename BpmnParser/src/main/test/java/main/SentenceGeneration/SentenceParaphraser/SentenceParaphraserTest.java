@@ -1,13 +1,11 @@
 package main.SentenceGeneration.SentenceParaphraser;
 
-import main.Exceptions.NoFreelingKeyException;
-import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 class SentenceParaphraserTest {
 
     @BeforeEach
@@ -28,55 +27,82 @@ class SentenceParaphraserTest {
     }
 
 
+
+
+
     @Test
-    @DisplayName("Paraphrase a sentence: Who requests the items?.") //TODO: Fix the DisplayName
-    void generateSentence() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
-        String sentence = "Who requests the items?\nWho requests the items?\n" +
-                "Who requests the items?\nWho requests the items?\nWho requests the items?";
-        //        String sentence = "Who requests the items?";  // TODO: Test after
+    @DisplayName("Paraphrase sentence: Who requests the items?")
+    void generateSentences() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
+
+        List<String> sentences = new ArrayList<>();
+        String sentence = "Who requests the items?";
+        sentences.add(sentence);
 
         SentenceParaphraser sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
-        Sentences similarSentences = sentenceParaphraser.paraphraseSentence(sentence);
 
-        Sentences expectedGeneratedSentences = generateExpectedSimilarSententces();
+        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseSentence(sentences);
+
+        ParaphrasedSentences expectedGeneratedSentences = generateExpectedSimilarSententces(sentence);
 
         assertEquals(expectedGeneratedSentences, similarSentences);
     }
 
-    private Sentences generateExpectedSimilarSententces() {
-        Sentences expectedSentences = new Sentences();
+    private ParaphrasedSentences generateExpectedSimilarSententces(String sentence) {
+        ParaphrasedSentences expectedSentences = new ParaphrasedSentences();
         // {Who|That|Who else} requests {the items|the things}?
-        expectedSentences.addSentence("Who requests the items?");
-        expectedSentences.addSentence("Who requests the things?");
 
-        expectedSentences.addSentence("That requests the items?");
-        expectedSentences.addSentence("That requests the things?");
+        Sentences sentences = new Sentences();
+        sentences.addSentence("Who requests the items?");
+        sentences.addSentence("Who requests the things?");
 
-        expectedSentences.addSentence("Who else requests the items?");
-        expectedSentences.addSentence("Who else requests the things?");
+        sentences.addSentence("That requests the items?");
+        sentences.addSentence("That requests the things?");
+
+        sentences.addSentence("Who else requests the items?");
+        sentences.addSentence("Who else requests the things?");
+
+        expectedSentences.addMultipleParaphrasedSentencesToNewSentence(sentence, sentences);
 
         return expectedSentences;
     }
 
 
-    // TODO: Create a paraphraseSentences passing a List¿?,, and inside i plice the \n
-    @Test
-    @DisplayName("Paraphrase a list of sentences") //TODO: Fix the DisplayName
-    void generateSentences() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
 
-        List<String> sentences = new ArrayList<>(); // TODO: Put diferent sentences
-        sentences.add("Who requests the items?");
-        sentences.add("Who requests the items?");
-        sentences.add("Who requests the items?");
-        sentences.add("Who requests the items?");
-        sentences.add("Who requests the items?");
+
+    @Test
+    @DisplayName("Paraphrase sentence Backtracking: Who requests the items?") // TODO: Do it
+    void generateSentencesBacktracking() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
+
+        List<String> sentences = new ArrayList<>();
+        String sentence = "Who requests the items?";
+        sentences.add(sentence);
 
         SentenceParaphraser sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
-        Sentences similarSentences = sentenceParaphraser.paraphraseSentence(sentences);
 
-        Sentences expectedGeneratedSentences = generateExpectedSimilarSententces();
+        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseSentence(sentences);
+
+        ParaphrasedSentences expectedGeneratedSentences = generateExpectedSimilarSententces(sentence);
 
         assertEquals(expectedGeneratedSentences, similarSentences);
+    }
+
+    private ParaphrasedSentences generateExpectedSentencesBacktracking(String sentence) {
+        ParaphrasedSentences expectedSentences = new ParaphrasedSentences();
+        // {Who|That|Who else} requests {the items|the things}?
+
+        Sentences sentences = new Sentences();
+        sentences.addSentence("Who requests the items?");
+        sentences.addSentence("Who requests the things?");
+
+        sentences.addSentence("That requests the items?");
+        sentences.addSentence("That requests the things?");
+
+        sentences.addSentence("Who else requests the items?");
+        sentences.addSentence("Who else requests the things?");
+
+        expectedSentences.addMultipleParaphrasedSentencesToNewSentence(sentence, sentences);
+
+        return expectedSentences;
     }
 
 

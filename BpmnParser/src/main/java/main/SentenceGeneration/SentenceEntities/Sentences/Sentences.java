@@ -3,6 +3,7 @@ package main.SentenceGeneration.SentenceEntities.Sentences;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,6 +14,8 @@ public class Sentences {
      *
      */
     private Map<String, Sentence> sentences;
+
+
 
     public Sentences() {
         setSentences(new TreeMap<>());
@@ -34,7 +37,7 @@ public class Sentences {
 
     @Override
     public String toString() {
-        return sentences.toString();
+        return "\n" + sentences.toString();
     }
 
     /*

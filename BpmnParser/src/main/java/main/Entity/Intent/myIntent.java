@@ -30,7 +30,7 @@ public class myIntent {
 
     protected List<String> outputContexts; // Output context to be placed on DialogFlow
 
-    protected List<String> trainingPhrases; // Training phrases
+    protected List<String> trainingPhrases; // Training phrases // TODO: Cambiar a la clase training phrase
 
     protected IntentManagment intentManagment;
 

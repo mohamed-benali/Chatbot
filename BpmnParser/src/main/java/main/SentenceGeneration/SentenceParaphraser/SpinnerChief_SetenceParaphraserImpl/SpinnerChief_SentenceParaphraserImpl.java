@@ -1,25 +1,18 @@
-package main.SentenceGeneration.SentenceParaphraser;
+package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl;
 
-import com.google.common.net.MediaType;
-import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.json.JSONArray;
+import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.Word.*;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser {
 
@@ -37,6 +30,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     private String username = userUsername;
     private String password = userPassword;
 
+    //region REGION: Parameters of the API
     /**
      * ***DEFAULT***
      * When spintype=0, SpinnerChief will return the spun article in {} (Spyntax) format.
@@ -106,6 +100,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * ***DEFAULT*** is 2
      */
     private String phrasecount = null;
+    //endregion
 
 
 
@@ -118,13 +113,11 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     public SpinnerChief_SentenceParaphraserImpl() {
         this.uri = buildURI();
     }
-
     private String buildURI() {
         String uri = API + "apikey="+ apikey + "&username=" + username + "&password=" + password;
         uri = addParameters(uri);
         return uri;
     }
-
     private String addParameters(String uri) {
         uri = addParameter(uri, "spintype", spintype);
         uri = addParameter(uri, "spinfreq", spinfreq);
@@ -142,41 +135,11 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
 
         return uri;
     }
-
     private String addParameter(String uri, String key, String value) {
         if(value != null) uri += "&" + key + "=" + value;
         return uri;
     }
 
-    @Override
-    public Sentences paraphraseSentence(String sentence) throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
-        System.out.println("Sentence: " + sentence);
-        System.out.println("URI: " + uri);
-        System.out.println();
-
-
-        String responseBody = makeHTTP_POST_Call(uri, sentence);
-
-        // TODO: Ha de ser un Map, <int, Set<String> > or <String, Set<String> >,
-        // TODO: On el value es un conjunt de frases generades, i la key es el identificador
-        // TODO: int per el ordre sequencial, String per la frase original
-        List<String> sentencesList = new ArrayList<>(); // TODO: Potser convertir en Map o Set i aixi
-                                                        // controla els posibles repetits
-
-        String[] responseSentencesArray = responseBody.split("\n");
-        for(String responseSentence: responseSentencesArray) {
-            System.out.println("Sentences: " + responseSentence);
-            System.out.println("\n\n");
-            sentencesList.add(responseSentence);
-        }
-
-
-
-        Sentences sentences = new Sentences();
-        sentences.addSentence(responseBody);
-
-        return sentences;
-    }
 
     /**
      * Generate sentences for all the sentences
@@ -187,7 +150,151 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * @throws IOException
      */
     @Override
-    public Sentences paraphraseSentence(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+    public ParaphrasedSentences paraphraseSentence(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+        String sentence = this.buildSentences(sentences);
+
+        System.out.println("Sentence: " + sentence);
+        System.out.println("URI: " + uri);
+        System.out.println();
+
+        String responseBody = makeHTTP_POST_Call(uri, sentence);
+
+        return this.parseSentences(responseBody, sentences);
+    }
+
+    /**
+     * The sentence S_i appears in the same order as in sentences and therefore, S_i corresponds to sentences.get(i)
+     * @param responseBody A string with the paraphrased sentences anlysis separated by "\n", and in: {word, similar word}
+     * @param sentences Original sentences
+     * @return Returns the similar sentences with the generated sentences attached as a key
+     */
+    private ParaphrasedSentences parseSentences(String responseBody, List<String> sentences) {
+        List<String> sentencesList = new ArrayList<>();
+        // controla els posibles repetits
+        String[] responseSentencesArray = responseBody.split("\n");
+        for(String responseSentence: responseSentencesArray) {
+            System.out.println("Sentences: " + responseSentence);
+            System.out.println("\n\n");
+            sentencesList.add(responseSentence);
+        }
+
+        ParaphrasedSentences paraphrasedSentences = new ParaphrasedSentences();
+        for(int i = 0; i < sentencesList.size(); ++i)  {
+            String key = sentences.get(i);
+            Sentences similarParsedSentence = parseSentence(sentencesList.get(i));
+            paraphrasedSentences.addMultipleParaphrasedSentencesToNewSentence(key, similarParsedSentence);
+        }
+
+        return paraphrasedSentences;
+    }
+
+    private Sentences parseSentence(String sentenceToParse) {
+        Words words = new Words();
+
+        int i = 0;
+        while (i < sentenceToParse.length()) {
+            Word word = readWord(sentenceToParse, i);
+
+            words.add(word);
+
+            i+=word.numCharacters();
+        }
+
+
+        int index = 0;
+        Cjt_Words similarSentences = new Cjt_Words();
+        generateSentencesBacktracking(index, words, similarSentences);
+
+        Sentences parsedSentences = new Sentences();
+        parsedSentences.addSentences(similarSentences.buildSentences());
+
+        return parsedSentences;
+    }
+
+    //region REGION: Read(parse) word
+    private Word readWord(String sentenceToParse, int i) {
+        Word word;
+
+        char char_i = sentenceToParse.charAt(i);
+        if(startsMultipleWord(char_i)) {
+            word = readMultipleWord(sentenceToParse, i);
+        }
+        else { // SingleWord
+            word = readSingleWorld(sentenceToParse, i);
+        }
+
+        return word;
+    }
+
+    private Word readSingleWorld(String sentenceToParse, int i) {
+        StringBuilder wordStringBuilder = new StringBuilder();
+        char char_i;
+        do {
+            char_i = sentenceToParse.charAt(i);
+            wordStringBuilder.append(char_i);
+            ++i;
+        } while (i < sentenceToParse.length() && ! startsMultipleWord(char_i));
+
+        String wordString = wordStringBuilder.toString();
+
+        return new SingleWord(wordString);
+    }
+
+    private Word readMultipleWord(String sentenceToParse, int i) {
+        StringBuilder wordsStringBuilder = new StringBuilder();
+        ++i; // Skip initial '{'
+
+        char char_i = sentenceToParse.charAt(i);
+        while(i < sentenceToParse.length() && ! endsMultipleWord(char_i)) {
+            wordsStringBuilder.append(char_i);
+            ++i;
+            char_i = sentenceToParse.charAt(i);
+        }
+
+        String wordsString = wordsStringBuilder.toString();
+        String[] words = wordsString.split("\\|");
+
+        return new MultipleWord(words);
+    }
+
+    private boolean endsMultipleWord(char char_j) {
+        return char_j == '}';
+    }
+
+    private boolean startsMultipleWord(char char_i) {
+        return char_i == '{';
+    }
+    //endregion
+
+    /**
+     * Generates all te combinations for words form index to words.size()
+     * @param index 0 <= index <= words.size(),  indicates the word to proces
+     * @param words The words to use for the backtracking
+     * @param outSimilarSentences The result of all generated sentences
+     */
+    private void generateSentencesBacktracking(int index, Words words, Cjt_Words outSimilarSentences) {
+        if(index == words.size()) {
+            outSimilarSentences.add(words);
+        }
+        else {
+            Word word_index = words.get(index);
+            for(int i = 0; i < word_index.size(); ++i) {
+                String word_i = word_index.get(i);
+                Word word = new SingleWord(word_i);
+                //Words copyWords = new Words(words); // copy(i may preserve the word and put it back after backtracking)
+                //copyWords.set(index, word);
+                words.set(index, word);
+
+                Cjt_Words outSimilarSentences_inmersive = new Cjt_Words();
+                generateSentencesBacktracking(index+1, words/*copyWords*/, outSimilarSentences_inmersive);
+                outSimilarSentences.add(outSimilarSentences_inmersive);
+
+                //words.set(index, word_index); // Recover the value for next iteration
+            }
+        }
+    }
+
+    private String buildSentences(List<String> sentences) {
         String sentence = "";
         sentence += sentences.get(0);
 
@@ -195,7 +302,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
             sentence += "\n" + sentences.get(i);
         }
 
-        return this.paraphraseSentence(sentence);
+        return sentence;
     }
 
     public String makeHTTP_POST_Call(String url, String textBody) throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
