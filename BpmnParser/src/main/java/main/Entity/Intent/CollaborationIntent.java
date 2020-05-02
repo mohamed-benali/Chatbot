@@ -45,9 +45,7 @@ public class CollaborationIntent extends myIntent {
         println("Output Intents:");
         printIDs(outputIntents);
         println("Training Phrases:");
-        for(String trainingPhrase : this.trainingPhrases) {
-            println(trainingPhrase);
-        }
+        println(trainingPhrases.toString());
 
         println("");
         println("");

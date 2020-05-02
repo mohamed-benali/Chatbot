@@ -42,6 +42,7 @@ public class Parser {
     public void parse() {
         try {
             this.intents.add(bpmnAlgorithm.parse());
+            this.intents.build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

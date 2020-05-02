@@ -1,5 +1,6 @@
 package main.SentenceGeneration.SentenceEntities.Sentences;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,6 +21,15 @@ public class ParaphrasedSentences {
     public Map<String, Sentences> getParaphrasedSentences() { return paraphrasedSentences; }
     public void setParaphrasedSentences(Map<String, Sentences> paraphrasedSentences) { this.paraphrasedSentences = paraphrasedSentences; }
 
+    public List<String> getParaphrasedSentencesList() {
+        List<String> sentencesList = new ArrayList<>();
+        for(Map.Entry<String, Sentences> entry : paraphrasedSentences.entrySet()) {
+            String key = entry.getKey();
+            Sentences sentences = entry.getValue();
+            sentencesList.addAll(sentences.getSentencesList());
+        }
+        return sentencesList;
+    }
 
 
     @Override
@@ -144,6 +154,7 @@ public class ParaphrasedSentences {
         sentences.addSentences(sentencesToAdd);
         //TODO: Hauria de ser suficient perque es una referencia
     }
+
 
     /*
     public void addMultipleParaphrasedSentences(String key, Sentences sentencesToAdd) { // TODO!!

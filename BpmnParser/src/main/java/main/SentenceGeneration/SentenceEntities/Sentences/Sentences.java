@@ -3,9 +3,7 @@ package main.SentenceGeneration.SentenceEntities.Sentences;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Sentences {
     /**
@@ -24,6 +22,14 @@ public class Sentences {
 
     public Map<String, Sentence> getSentences() { return sentences; }
     public void setSentences(Map<String, Sentence> sentences) { this.sentences = sentences; }
+
+    public List<? extends String> getSentencesList() {
+        List<String> sentencesList = new ArrayList<>();
+        for(Map.Entry<String, Sentence> entry : sentences.entrySet()) {
+            sentencesList.add(entry.getValue().getSentence());
+        }
+        return sentencesList;
+    }
 
 
     @Override
@@ -58,7 +64,6 @@ public class Sentences {
     }
 
     public void addSentences(Sentences sentences) { this.addSentences(sentences.getSentences()); }
-
 
 
 

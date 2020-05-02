@@ -1,5 +1,6 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrases;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
@@ -31,44 +32,32 @@ public class myIntent {
 
     protected List<String> outputContexts; // Output context to be placed on DialogFlow
 
-    protected List<String> trainingPhrases; // Training phrases // TODO: Cambiar a la clase training phrase
-    //protected myTrainingPhrases trainingPhrases;
+    protected myTrainingPhrases trainingPhrases;
 
     protected IntentManagment intentManagment;
 
-    public myIntent() throws IOException {
+    private void basic_initialization() throws IOException {
         inputContexts = new ArrayList<String>();
         outputIntents = new ArrayList<String>();
         outputContexts = new ArrayList<String>();
-        trainingPhrases = new ArrayList<String>();
-
+        trainingPhrases = new myTrainingPhrases();
         intentManagment = new IntentManagment();
+    }
+
+    public myIntent() throws IOException {
+        basic_initialization();
     }
 
     public myIntent(String name) throws IOException {
         this.name = name;
-
-        inputContexts = new ArrayList<String>();
-        outputIntents = new ArrayList<String>();
-        trainingPhrases = new ArrayList<String>();
-        outputContexts = new ArrayList<String>();
-
-        intentManagment = new IntentManagment();
-
+        basic_initialization();
     }
 
     public myIntent(String name, String subject, String task) throws IOException {
         this.name = name;
         this.subject = subject;
         this.task = task;
-
-        inputContexts = new ArrayList<String>();
-        outputIntents = new ArrayList<String>();
-        trainingPhrases = new ArrayList<String>();
-        outputContexts = new ArrayList<String>();
-
-        intentManagment = new IntentManagment();
-
+        basic_initialization();
     }
 
 
@@ -152,6 +141,7 @@ public class myIntent {
         this.task = task;
     }
 
+    //region REGION: INPUT CONTEXTS
     /*
      * INPUT
      */
@@ -180,10 +170,14 @@ public class myIntent {
     public void clearInputContexts() {
         inputContexts.clear();
     }
+    //endregion
 
+    //region REGION: OUTPUT
     /*
      * OUTPUT
      */
+
+    //region REGION: OUTPUT INTENTS
     public List<String> getOutputIntents() { return this.outputIntents; }
 
     public void setOutputIntents(List<String> outputIntents) {
@@ -207,7 +201,9 @@ public class myIntent {
     public void clearOutputIntents() {
         outputIntents.clear();
     }
+    //endregion
 
+    //region REGION: OUTPUT CONTEXT
     /*
      * OUTPUT CONTEXT
      */
@@ -229,30 +225,33 @@ public class myIntent {
     public void clearOutputContexts() {
         outputContexts.clear();
     }
+    //endregion
+    //endregion
 
 
+    //region REGION: TRAINING PHRASES
     /*
      * TRAINING PHRASES
      */
-    public List<String> getTrainingPhrases() {
+    public myTrainingPhrases getTrainingPhrases() {
         return this.trainingPhrases;
     }
 
-    public void setTrainingPhrases(List<String> trainingPhrases) {
+    public void setTrainingPhrases(myTrainingPhrases trainingPhrases) {
         this.trainingPhrases = trainingPhrases;
     }
 
     public void addTrainingPhrase(String trainingPhrase) {
-        this.trainingPhrases.add(trainingPhrase);
+        this.trainingPhrases.addTrainingPhrase(trainingPhrase);
     }
+    public void addTrainingPhrases(myTrainingPhrase trainingPhrase) { this.trainingPhrases.addTrainingPhrase(trainingPhrase); }
 
-    public void addTrainingPhrases(List<String> trainingPhrases) {
-        this.trainingPhrases.addAll(trainingPhrases);
-    }
+    public void addTrainingPhrases(List<String> trainingPhrases) { this.trainingPhrases.addAllTrainingPhrases(trainingPhrases); }
+    public void addTrainingPhrases(myTrainingPhrases trainingPhrases) { this.trainingPhrases.addAllTrainingPhrases(trainingPhrases); }
 
-    public void clearTrainingPhrases() {
-        trainingPhrases.clear();
-    }
+
+    public void clearTrainingPhrases() { trainingPhrases.clear(); }
+    //endregion
 
 
 
@@ -273,9 +272,7 @@ public class myIntent {
         println("Output Intents:");
         printIDs(outputIntents);
         println("Training Phrases:");
-        for (String trainingPhrase : this.trainingPhrases) {
-            println(trainingPhrase);
-        }
+        println(trainingPhrases.toString());
 
         println("");
         println("");
@@ -296,7 +293,7 @@ public class myIntent {
         //this.getInputIntents();
         //this.getOutputIntents();
 
-        List<String> trainingPhrases = this.buildTrainingPhrases(this.getTrainingPhrases());
+        List<String> trainingPhrases = this.buildTrainingPhrases();
         List<String> responses = this.makeResponse();
 
         List<String> inputContextNames = this.buildInputContext(this.getInputContexts());
@@ -330,12 +327,8 @@ public class myIntent {
         return inputIntents;
     }
 
-    protected List<String> buildTrainingPhrases(List<String> trainingPhrases) {
-        println("Name: " + this.getId());
-        System.out.println("-Size: " + trainingPhrases.size());
-        println("-Before Phrases: ");
-        for (String phrase : trainingPhrases) println(phrase);
-
+    protected List<String> buildTrainingPhrases() {
+    /* TODO
         if(trainingPhrases.size() == 0) {
             //
         }
@@ -344,10 +337,9 @@ public class myIntent {
                 if(trainingPhrases.get(i) == null) trainingPhrases.set(i, "Next");
             }
         }
+    */
 
-        println("-After Phrases: ");
-        for (String phrase : trainingPhrases) println(phrase);
-        return trainingPhrases;
+        return trainingPhrases.getBuildedTrainingPhrases();
     }
 
 

@@ -19,6 +19,7 @@ public class Intents {
     }
 
 
+    //region REGION: Override(equals,toString)
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Intents) {
@@ -32,6 +33,7 @@ public class Intents {
     public String toString() {
         return intents.toString();
     }
+    //endregion
 
     /*
      * GETTERS & SETTERS
@@ -39,6 +41,11 @@ public class Intents {
     public Map<String, myIntent> getIntents() { return this.intents; }
     public void setIntents(Map<String, myIntent> intents) { this.intents = intents; }
 
+    public myIntent getIntentByID(String firstNodeId) {
+        return intents.get(firstNodeId);
+    }
+
+    //region REGION: Add Intent
     /*
      * Add intents
      */
@@ -54,7 +61,9 @@ public class Intents {
     }
 
     public void add_null_intent(String intentID) { this.intents.put(intentID, null); }
+    //endregion
 
+    //region REGION: Insert Intent
     /*
      * Inserts an intent after the intent identified by *intentId*
      */ // todo: should take into account if this is near a gateway(so can put the proper output context)
@@ -100,8 +109,10 @@ public class Intents {
 
         this.add(intent);
     }
+    //endregion
 
 
+    //region REGION: Print Intent
     /*
      * PRINT Intents
      */
@@ -117,9 +128,33 @@ public class Intents {
             println(entry.getKey());
         }
     }
+    //endregion
+
+
+
+    /**
+     * Builds the intents
+     * <br><br>
+     * Specifically builds(prepares) all the information, such as the TrainingPhrases, that will be uploaded on DialogFlow.
+     *
+     * dsdsd
+     */
+    public void build() {
+        /* TODO:
+             maybe create here(or in Parser.parse() ) the QueryTasks( createAdditionalTask or createQueryTasks)
+             Responses
+             TrainingPhrases
+             Some other thing
+        */
+
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            this.add(entry.getValue());
+        }
+        //
+    }
 
     /*
-     * Translate into Dialogflow(use library?)
+     * Translate into Dialogflow
      */
     public void translateIntoDialogFlow() throws Exception {
         for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
@@ -136,7 +171,8 @@ public class Intents {
     }
 
 
-    public myIntent getIntentByID(String firstNodeId) {
-        return intents.get(firstNodeId);
-    }
+
+
+
+
 }
