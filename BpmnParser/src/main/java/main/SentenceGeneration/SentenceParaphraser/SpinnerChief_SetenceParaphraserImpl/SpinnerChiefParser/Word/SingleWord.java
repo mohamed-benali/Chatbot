@@ -1,4 +1,4 @@
-package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.Word;
+package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word;
 
 public class SingleWord extends Word {
 

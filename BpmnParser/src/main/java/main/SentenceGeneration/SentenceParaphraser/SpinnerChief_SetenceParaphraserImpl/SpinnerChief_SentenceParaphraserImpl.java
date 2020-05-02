@@ -4,7 +4,9 @@ import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
-import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.Word.*;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParser;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserImpl;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,6 +18,7 @@ import java.util.List;
 
 public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser {
 
+    //region REGION: apikey, username, password
     private String developerApiKey = "aae7ae1d253c4dd89"; // Developer
 
     private String userUsername = "estudiantFIB"; // User
@@ -29,6 +32,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     private String apikey = developerApiKey;
     private String username = userUsername;
     private String password = userPassword;
+    //endregion
 
     //region REGION: Parameters of the API
     /**
@@ -102,7 +106,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     private String phrasecount = null;
     //endregion
 
-
+    private SpinnerChiefParser spinnerChiefParser;
 
 
     private String API = "http://api.spinnerchief.com:9001/";
@@ -112,6 +116,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
 
     public SpinnerChief_SentenceParaphraserImpl() {
         this.uri = buildURI();
+        spinnerChiefParser = new SpinnerChiefParserImpl();
     }
     private String buildURI() {
         String uri = API + "apikey="+ apikey + "&username=" + username + "&password=" + password;
@@ -144,7 +149,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     /**
      * Generate sentences for all the sentences
      * @param sentences Should have atleast one element
-     * @return
+     * @return Returns the paraphrased sentences for each sentence of the parameter {@code sentences}
      * @throws InterruptedException
      * @throws SpinnerChief_SentenceParaphraserException
      * @throws IOException
@@ -163,7 +168,8 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     }
 
     /**
-     * The sentence S_i appears in the same order as in sentences and therefore, S_i corresponds to sentences.get(i)
+     * The sentence S_i appears in the same order as in {@code sentences}
+     * and therefore, S_i corresponds to sentences.get(i)
      * @param responseBody A string with the paraphrased sentences anlysis separated by "\n", and in: {word, similar word}
      * @param sentences Original sentences
      * @return Returns the similar sentences with the generated sentences attached as a key
@@ -181,119 +187,27 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
         ParaphrasedSentences paraphrasedSentences = new ParaphrasedSentences();
         for(int i = 0; i < sentencesList.size(); ++i)  {
             String key = sentences.get(i);
-            Sentences similarParsedSentence = parseSentence(sentencesList.get(i));
-            paraphrasedSentences.addMultipleParaphrasedSentencesToNewSentence(key, similarParsedSentence);
+            ParaphrasedSentences similarParsedSentence = paraphraseOneSentence(sentencesList.get(i), key);
+            paraphrasedSentences.addParaphrasedSentences(similarParsedSentence);
         }
 
         return paraphrasedSentences;
     }
 
-    private Sentences parseSentence(String sentenceToParse) {
-        Words words = new Words();
-
-        int i = 0;
-        while (i < sentenceToParse.length()) {
-            Word word = readWord(sentenceToParse, i);
-
-            words.add(word);
-
-            i+=word.numCharacters();
-        }
-
-
-        int index = 0;
-        Cjt_Words similarSentences = new Cjt_Words();
-        generateSentencesBacktracking(index, words, similarSentences);
-
-        Sentences parsedSentences = new Sentences();
-        parsedSentences.addSentences(similarSentences.buildSentences());
-
-        return parsedSentences;
+    public ParaphrasedSentences paraphraseOneSentence(String sentenceToParse, String sentenceKey) {
+        Sentences sentences = spinnerChiefParser.parseSentence(sentenceToParse);
+        ParaphrasedSentences paraphrasedSentences = new ParaphrasedSentences();
+        paraphrasedSentences.addMultipleParaphrasedSentences(sentenceKey, sentences);
+        return paraphrasedSentences;
     }
 
-    //region REGION: Read(parse) word
-    private Word readWord(String sentenceToParse, int i) {
-        Word word;
 
-        char char_i = sentenceToParse.charAt(i);
-        if(startsMultipleWord(char_i)) {
-            word = readMultipleWord(sentenceToParse, i);
-        }
-        else { // SingleWord
-            word = readSingleWorld(sentenceToParse, i);
-        }
-
-        return word;
-    }
-
-    private Word readSingleWorld(String sentenceToParse, int i) {
-        StringBuilder wordStringBuilder = new StringBuilder();
-        char char_i;
-        do {
-            char_i = sentenceToParse.charAt(i);
-            wordStringBuilder.append(char_i);
-            ++i;
-        } while (i < sentenceToParse.length() && ! startsMultipleWord(char_i));
-
-        String wordString = wordStringBuilder.toString();
-
-        return new SingleWord(wordString);
-    }
-
-    private Word readMultipleWord(String sentenceToParse, int i) {
-        StringBuilder wordsStringBuilder = new StringBuilder();
-        ++i; // Skip initial '{'
-
-        char char_i = sentenceToParse.charAt(i);
-        while(i < sentenceToParse.length() && ! endsMultipleWord(char_i)) {
-            wordsStringBuilder.append(char_i);
-            ++i;
-            char_i = sentenceToParse.charAt(i);
-        }
-
-        String wordsString = wordsStringBuilder.toString();
-        String[] words = wordsString.split("\\|");
-
-        return new MultipleWord(words);
-    }
-
-    private boolean endsMultipleWord(char char_j) {
-        return char_j == '}';
-    }
-
-    private boolean startsMultipleWord(char char_i) {
-        return char_i == '{';
-    }
-    //endregion
 
     /**
-     * Generates all te combinations for words form index to words.size()
-     * @param index 0 <= index <= words.size(),  indicates the word to proces
-     * @param words The words to use for the backtracking
-     * @param outSimilarSentences The result of all generated sentences
+     *
+     * @param sentences A list of sentences
+     * @return Returns a string with the sentences of {@code sentences} separated by an "\n"
      */
-    private void generateSentencesBacktracking(int index, Words words, Cjt_Words outSimilarSentences) {
-        if(index == words.size()) {
-            outSimilarSentences.add(words);
-        }
-        else {
-            Word word_index = words.get(index);
-            for(int i = 0; i < word_index.size(); ++i) {
-                String word_i = word_index.get(i);
-                Word word = new SingleWord(word_i);
-                //Words copyWords = new Words(words); // copy(i may preserve the word and put it back after backtracking)
-                //copyWords.set(index, word);
-                words.set(index, word);
-
-                Cjt_Words outSimilarSentences_inmersive = new Cjt_Words();
-                generateSentencesBacktracking(index+1, words/*copyWords*/, outSimilarSentences_inmersive);
-                outSimilarSentences.add(outSimilarSentences_inmersive);
-
-                //words.set(index, word_index); // Recover the value for next iteration
-            }
-        }
-    }
-
     private String buildSentences(List<String> sentences) {
         String sentence = "";
         sentence += sentences.get(0);

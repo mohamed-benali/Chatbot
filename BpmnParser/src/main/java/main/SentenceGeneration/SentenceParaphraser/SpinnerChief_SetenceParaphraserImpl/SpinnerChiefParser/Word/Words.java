@@ -1,4 +1,4 @@
-package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.Word;
+package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word;
 
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 
@@ -39,7 +39,7 @@ public class Words {
             Word word = words.get(i);
 
             if(i==0) sentenceStringBuilder.append(word.getWord());
-            else sentenceStringBuilder.append(" ").append(word.getWord());
+            else sentenceStringBuilder.append(word.getWord());
         }
 
         Sentence sentence = new Sentence(sentenceStringBuilder .toString());

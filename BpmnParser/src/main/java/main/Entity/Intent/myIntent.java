@@ -1,5 +1,6 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrases;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
@@ -31,6 +32,7 @@ public class myIntent {
     protected List<String> outputContexts; // Output context to be placed on DialogFlow
 
     protected List<String> trainingPhrases; // Training phrases // TODO: Cambiar a la clase training phrase
+    //protected myTrainingPhrases trainingPhrases;
 
     protected IntentManagment intentManagment;
 

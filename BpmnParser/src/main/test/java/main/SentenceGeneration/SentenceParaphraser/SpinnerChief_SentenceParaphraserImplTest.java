@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled
-class SentenceParaphraserTest {
+class SpinnerChief_SentenceParaphraserImplTest {
 
     @BeforeEach
     void setUp() {
@@ -49,19 +49,30 @@ class SentenceParaphraserTest {
 
     private ParaphrasedSentences generateExpectedSimilarSententces(String sentence) {
         ParaphrasedSentences expectedSentences = new ParaphrasedSentences();
-        // {Who|That|Who else} requests {the items|the things}?
+        // {Who|That|Who else|Which} requests {the items|the things|the products|those items}?
 
         Sentences sentences = new Sentences();
         sentences.addSentence("Who requests the items?");
         sentences.addSentence("Who requests the things?");
+        sentences.addSentence("Who requests the products?");
+        sentences.addSentence("Who requests those items?");
 
         sentences.addSentence("That requests the items?");
         sentences.addSentence("That requests the things?");
+        sentences.addSentence("That requests the products?");
+        sentences.addSentence("That requests those items?");
 
         sentences.addSentence("Who else requests the items?");
         sentences.addSentence("Who else requests the things?");
+        sentences.addSentence("Who else requests the products?");
+        sentences.addSentence("Who else requests those items?");
 
-        expectedSentences.addMultipleParaphrasedSentencesToNewSentence(sentence, sentences);
+        sentences.addSentence("Which requests the items?");
+        sentences.addSentence("Which requests the things?");
+        sentences.addSentence("Which requests the products?");
+        sentences.addSentence("Which requests those items?");
+
+        expectedSentences.addMultipleParaphrasedSentences(sentence, sentences);
 
         return expectedSentences;
     }
@@ -70,18 +81,16 @@ class SentenceParaphraserTest {
 
 
     @Test
-    @DisplayName("Paraphrase sentence Backtracking: Who requests the items?") // TODO: Do it
+    @DisplayName("Paraphrase one sentence: {Who|That|Who else} requests {the items|the things}?") // TODO: Do it
     void generateSentencesBacktracking() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
 
-        List<String> sentences = new ArrayList<>();
-        String sentence = "Who requests the items?";
-        sentences.add(sentence);
+        String sentenceKey = "Who requests the items?";
+        String sentenceToParse = "{Who|That|Who else} requests {the items|the things}?";
 
-        SentenceParaphraser sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
+        SpinnerChief_SentenceParaphraserImpl sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
+        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseOneSentence(sentenceToParse, sentenceKey);
 
-        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseSentence(sentences);
-
-        ParaphrasedSentences expectedGeneratedSentences = generateExpectedSimilarSententces(sentence);
+        ParaphrasedSentences expectedGeneratedSentences = generateExpectedSentencesBacktracking(sentenceKey);
 
         assertEquals(expectedGeneratedSentences, similarSentences);
     }
@@ -100,7 +109,7 @@ class SentenceParaphraserTest {
         sentences.addSentence("Who else requests the items?");
         sentences.addSentence("Who else requests the things?");
 
-        expectedSentences.addMultipleParaphrasedSentencesToNewSentence(sentence, sentences);
+        expectedSentences.addMultipleParaphrasedSentences(sentence, sentences);
 
         return expectedSentences;
     }
