@@ -1,5 +1,9 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,5 +23,34 @@ public class QueryTaskIntent extends myIntent {
         String response = this.getSubject();
         responses.add(response);
         return responses;
+    }
+
+
+
+
+    @Override // TODO: Query
+    protected Intents buildExtraIntents() {
+        return null;
+    }
+
+    @Override
+    protected Sentences buildTrainingPhrases() {
+        Sentences sentences = new Sentences();
+        sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
+        /*if(this.getTrainingPhrases().hasNullTrainingPhrase()) {
+            Sentences nextSentences = myTrainingPhrase.getNextTrainingPhrases();
+            sentences.addSentences(nextSentences);
+        }*/
+        return sentences;
+    }
+
+    @Override
+    public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+        this.getTrainingPhrases().updateTrainingPhrases(paraphrasedSentences);
+    }
+
+    @Override
+    protected List<String> getBuildedTrainingPhrases() {
+        return this.getTrainingPhrases().getBuildedTrainingPhrases();
     }
 }

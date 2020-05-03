@@ -1,5 +1,9 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,28 @@ public class BeginIntent_Special extends myIntent {
         responses.add(response);
 
         return responses;
+    }
+
+
+
+
+    @Override
+    protected Intents buildExtraIntents() {
+        return null;
+    }
+
+    @Override
+    protected Sentences buildTrainingPhrases() {
+        return null;
+    }
+
+    @Override
+    public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+    }
+
+    @Override
+    protected List<String> getBuildedTrainingPhrases() {
+        return getTrainingPhrases().getTrainingPhrasesList();
     }
 
 }

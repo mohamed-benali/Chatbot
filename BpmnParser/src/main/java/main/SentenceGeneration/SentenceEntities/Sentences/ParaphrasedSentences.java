@@ -1,5 +1,7 @@
 package main.SentenceGeneration.SentenceEntities.Sentences;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrases;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,9 @@ public class ParaphrasedSentences {
     public void setParaphrasedSentencesOfSentence(String key, Sentences paraphrasedSentences) { this.paraphrasedSentences.put(key, paraphrasedSentences); }
     public Sentences getParaphrasedSentencesOfSentence(String key) { return this.paraphrasedSentences.get(key); }
 
+    public boolean containsKey(String key) {
+        return getParaphrasedSentences().containsKey(key);
+    }
 
 
     //region REGION: Adding sentences
@@ -154,6 +159,17 @@ public class ParaphrasedSentences {
         sentences.addSentences(sentencesToAdd);
         //TODO: Hauria de ser suficient perque es una referencia
     }
+
+    /**
+     * Gets the sentences associated with the parameter {@code key}
+     * @param key The key
+     * @return Returns the sentences associated with the parameter {@code key}
+     */
+    public Sentences getByKey(String key) {
+        return getParaphrasedSentences().get(key);
+    }
+
+
 
 
     /*

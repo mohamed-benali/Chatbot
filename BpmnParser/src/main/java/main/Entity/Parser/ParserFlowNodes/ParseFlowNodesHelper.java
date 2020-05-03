@@ -103,6 +103,7 @@ public class ParseFlowNodesHelper {
         return false;
     }
 
+    //region REGION: AFTER GATEWAY
     /*
      * AFTER GATEWAY
      */
@@ -142,8 +143,10 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
+    //endregion
 
 
+    //region REGION: BEFORE GATEWAY
     /*
      * BEFORE GATEWAY
      */
@@ -183,6 +186,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
+    //endregion
 
 
 }

@@ -2,8 +2,11 @@ package main.SentenceGeneration.SentenceBuilder;
 
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
+import main.Exceptions.SpinnerChief_SentenceParaphraserException;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface SentenceBuilder {
 
@@ -24,4 +27,14 @@ public interface SentenceBuilder {
      * @return Returns a sentence where the {@code sentence} and {@code targetSubject} are joined with {@code sourceSubject}
      */
     String buildSentence(String sentence, String sourceSubject, String targetSubject) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
+
+    /**
+     * Paraphrases all the sentences of {@code trainingPhrasesToParaphrase}
+     * <br><br>
+     * PRE CONDITION: The sentences are not null correct sentences
+     * <br<
+     * @param trainingPhrasesToParaphrase Training Phrases to paraphrase
+     * @return For each sentence, returns it's paraphrased sentences
+     */
+    ParaphrasedSentences paraphraseSentences(List<String> trainingPhrasesToParaphrase) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException;
 }

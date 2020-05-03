@@ -1,9 +1,12 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,5 +66,36 @@ public class CollaborationIntent extends myIntent {
 
         responses.add(response);
         return responses;
+    }
+
+
+
+    @Override // TODO  Query
+    protected Intents buildExtraIntents() {
+        return null;
+    }
+
+    // TODO
+    protected Sentences buildTrainingPhrases() {
+        /*
+        Sentences sentences = new Sentences();
+        sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
+        if(this.getTrainingPhrases().hasNullTrainingPhrase()) {
+            Sentences nextSentences = myTrainingPhrase.getNextTrainingPhrases();
+            sentences.addSentences(nextSentences);
+        }
+        return sentences;
+        */
+         return null;
+    }
+
+
+    @Override
+    public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+    }
+
+    @Override
+    protected List<String> getBuildedTrainingPhrases() {
+        return makeResponse();
     }
 }

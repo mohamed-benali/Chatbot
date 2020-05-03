@@ -8,10 +8,15 @@ import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
 import com.google.cloud.dialogflow.v2.*;
 import main.Entity.DialogFlow.IntentManagment;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class myIntent {
     protected IntentsClient intentsClient;
@@ -36,12 +41,16 @@ public class myIntent {
 
     protected IntentManagment intentManagment;
 
+    protected SentenceBuilder sentenceBuilder;
+
+    //region REGION: Constructors
     private void basic_initialization() throws IOException {
-        inputContexts = new ArrayList<String>();
-        outputIntents = new ArrayList<String>();
-        outputContexts = new ArrayList<String>();
+        inputContexts = new ArrayList<>();
+        outputIntents = new ArrayList<>();
+        outputContexts = new ArrayList<>();
         trainingPhrases = new myTrainingPhrases();
         intentManagment = new IntentManagment();
+        sentenceBuilder = new SentenceBuilderImpl();
     }
 
     public myIntent() throws IOException {
@@ -59,6 +68,7 @@ public class myIntent {
         this.task = task;
         basic_initialization();
     }
+    //endregion
 
 
     public void addBasicInfo(String inputContextID, String outputContextID,
@@ -70,6 +80,7 @@ public class myIntent {
     }
 
 
+    //region REGION: Override(equals, toString)
     @Override
     public boolean equals(Object o) {
         if (o instanceof myIntent) {
@@ -108,8 +119,10 @@ public class myIntent {
 
         return result;
     }
+    //endregion
 
 
+    //region REGION: Getters and setters of (Name, Task, Subject)
     /*
      * GETTERS & SETTERS
      */
@@ -140,6 +153,7 @@ public class myIntent {
     public void setTask(String task) {
         this.task = task;
     }
+    //endregion
 
     //region REGION: INPUT CONTEXTS
     /*
@@ -254,10 +268,7 @@ public class myIntent {
     //endregion
 
 
-
-
-
-
+    //region REGION: Prints
     /*
      * Methods
      */
@@ -283,6 +294,7 @@ public class myIntent {
             println(id);
         }
     }
+    //endregion
 
     public void translateIntoDialogFlow() throws Exception {
         // DialogFlow info
@@ -293,7 +305,7 @@ public class myIntent {
         //this.getInputIntents();
         //this.getOutputIntents();
 
-        List<String> trainingPhrases = this.buildTrainingPhrases();
+        List<String> trainingPhrases = this.getBuildedTrainingPhrases();
         List<String> responses = this.makeResponse();
 
         List<String> inputContextNames = this.buildInputContext(this.getInputContexts());
@@ -327,7 +339,11 @@ public class myIntent {
         return inputIntents;
     }
 
-    protected List<String> buildTrainingPhrases() {
+    /**
+     * Function that is called to build the training Phrases of the intent that will be uploaded into DialogFlow
+     * @return Returns the training Phrases of the intent that will be uploaded into DialogFlow
+     */
+    protected List<String> getBuildedTrainingPhrases() {
     /* TODO
         if(trainingPhrases.size() == 0) {
             //
@@ -358,5 +374,54 @@ public class myIntent {
     }
 
 
+    /**
+     * Builds the extra intents such as QueryTaskIntent
+     * @return Returns the extra intents that can be create from this intent
+     */
+    protected Intents buildExtraIntents() {
+        return new Intents();
+    }
 
+    /**
+     * Gets the training phrases to paraphrase
+     * @return Returns the training phrases to paraphrase
+     */
+    public Collection<? extends String> getTrainingPhrasesToParaphrase() {
+        Sentences trainingPhrases = this.buildTrainingPhrases();
+        return trainingPhrases.getSentencesList();
+    }
+
+
+    /**
+     * Builds the training phrases of this Intent
+     * <br>
+     * By builded we mean correct sentences. NOT the paraphrased sentences
+     * @return Returns the builded sentences. By default returns the sentences as if they are a TaskIntent
+     */
+    protected Sentences buildTrainingPhrases() {
+        Sentences sentences = new Sentences();
+        sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
+        if(this.getTrainingPhrases().hasNullTrainingPhrase()) {
+            Sentences nextSentences = myTrainingPhrase.getNextTrainingPhrases();
+            sentences.addSentences(nextSentences);
+        }
+        return sentences;
+    }
+
+
+    /**
+     * Updates the intent's trainingPhrases with the parameter {@code paraphrasedSentences}
+     * <br>
+     * Concretely, adds the similar sentences to {@code this.trainingPhrases} for each existing sentence in attribute {@code this.trainingPhrases} and parameter {@code paraphrasedSentences} at the same time
+     * @param paraphrasedSentences Paraphrased Sentences. Each sentence has associated similar sentences.
+     */
+    public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+        this.getTrainingPhrases().updateTrainingPhrases(paraphrasedSentences);
+    }
 }
+
+
+
+
+
+

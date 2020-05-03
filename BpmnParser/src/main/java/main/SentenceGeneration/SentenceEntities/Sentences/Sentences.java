@@ -23,7 +23,7 @@ public class Sentences {
     public Map<String, Sentence> getSentences() { return sentences; }
     public void setSentences(Map<String, Sentence> sentences) { this.sentences = sentences; }
 
-    public List<? extends String> getSentencesList() {
+    public List<String> getSentencesList() {
         List<String> sentencesList = new ArrayList<>();
         for(Map.Entry<String, Sentence> entry : sentences.entrySet()) {
             sentencesList.add(entry.getValue().getSentence());
@@ -63,8 +63,10 @@ public class Sentences {
         }
     }
 
-    public void addSentences(Sentences sentences) { this.addSentences(sentences.getSentences()); }
+    public void addSentences(Sentences sentences) { if(sentences!=null) this.addSentences(sentences.getSentences()); }
 
 
-
+    public void addSentences(List<String> trainingPhrasesList) {
+        for(String trainingPhrase : trainingPhrasesList) this.addSentence(trainingPhrase);
+    }
 }

@@ -133,10 +133,10 @@ public class ParserFlowNodes {
 
         intents.add(intent);
 
-        // Query intent
+        /*// Query intent
         QueryTaskIntent queryTaskIntent = new QueryTaskIntent(name, subject, tasca);
 
-        intents.add(queryTaskIntent);
+        intents.add(queryTaskIntent);*/
 
         return intents;
     }

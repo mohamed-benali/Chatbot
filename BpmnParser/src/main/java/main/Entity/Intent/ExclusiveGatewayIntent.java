@@ -1,9 +1,12 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,5 +31,26 @@ public class ExclusiveGatewayIntent extends myIntent {
 
         responses.add(response);
         return responses;
+    }
+
+
+
+    @Override
+    protected Intents buildExtraIntents() {
+        return null;
+    }
+
+    @Override
+    protected Sentences buildTrainingPhrases() {
+        return null;
+    }
+
+    @Override
+    public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+    }
+
+    @Override
+    protected List<String> getBuildedTrainingPhrases() {
+        return this.getTrainingPhrases().getTrainingPhrasesList(); // TODO: Pillar el null com a Next?
     }
 }

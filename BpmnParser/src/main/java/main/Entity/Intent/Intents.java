@@ -1,21 +1,27 @@
 package main.Entity.Intent;
 
 import com.google.cloud.dialogflow.v2.Intent;
+import main.Exceptions.SpinnerChief_SentenceParaphraserException;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
+import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.IOException;
+import java.util.*;
 
 public class Intents {
     public static void println(String s) { System.out.println(s); }
 
     private Map<String, myIntent> intents; // String: name(identificador)
 
+    private SentenceBuilder sentenceBuilder;
+
     /*
      * CONSTRUCTORS
      */
     public Intents() {
         intents = new TreeMap<String, myIntent>();
+        sentenceBuilder = new SentenceBuilderImpl();
     }
 
 
@@ -56,9 +62,7 @@ public class Intents {
             this.add(entry.getValue());
         }
     }
-    public void add(Intents intents) {
-        this.add(intents.getIntents());
-    }
+    public void add(Intents intents) { if(intents!=null) this.add(intents.getIntents()); }
 
     public void add_null_intent(String intentID) { this.intents.put(intentID, null); }
     //endregion
@@ -111,7 +115,6 @@ public class Intents {
     }
     //endregion
 
-
     //region REGION: Print Intent
     /*
      * PRINT Intents
@@ -136,10 +139,12 @@ public class Intents {
      * Builds the intents
      * <br><br>
      * Specifically builds(prepares) all the information, such as the TrainingPhrases, that will be uploaded on DialogFlow.
-     *
-     * dsdsd
+     *<br>
+     * It also prepares the the extraIntents, such as QueryTaskIntent
+     * <br><br>
+     * The order is: build extra intents, build Training Phrases
      */
-    public void build() {
+    public void build() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
         /* TODO:
              maybe create here(or in Parser.parse() ) the QueryTasks( createAdditionalTask or createQueryTasks)
              Responses
@@ -147,10 +152,56 @@ public class Intents {
              Some other thing
         */
 
+        this.buildExtraIntents();
+        this.buildTrainingPhrases();
+    }
+
+    /**
+     * Builds the extra intents such as QueryTaskIntent
+     *
+     */
+    private void buildExtraIntents() {
         for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
-            this.add(entry.getValue());
+            myIntent intent = entry.getValue();
+            Intents extraIntents = intent.buildExtraIntents();// TODO Intent sub class
+            this.add(extraIntents);
         }
-        //
+    }
+
+
+    /**
+     * For each intent, builds it's trainingPhrases, generates similar sentences, and adds them as training phrases.
+     */
+    private void buildTrainingPhrases() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+        List<String> trainingPhrasesToParaphrase = this.getTrainingPhrasesToParaphrase();
+        ParaphrasedSentences paraphrasedSentences = sentenceBuilder.paraphraseSentences(trainingPhrasesToParaphrase);
+        this.updateIntentsTrainingPhrases(paraphrasedSentences);
+    }
+
+    /**
+     * Updates the intent's trainingPhrases with the parameter {@code paraphrasedSentences}
+     * <br>
+     * Concretely, adds the similar sentences to {@code intent.trainingPhrases} for each existing sentence in attribute {@code intent.trainingPhrases} and parameter {@code paraphrasedSentences} at the same time
+     * @param paraphrasedSentences Paraphrased Sentences. Each sentence has associated similar sentences.
+     */
+    private void updateIntentsTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            myIntent intent = entry.getValue();
+            intent.updateTrainingPhrases(paraphrasedSentences);
+        }
+    }
+
+    /**
+     * Gets the training phrases to paraphrase
+     * @return Returns the training phrases to paraphrase
+     */
+    private List<String> getTrainingPhrasesToParaphrase() {
+        Set<String> resultSet = new TreeSet<>(); // Uses set to reduce the amount of words
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            myIntent intent = entry.getValue();
+            resultSet.addAll(intent.getTrainingPhrasesToParaphrase() );
+        }
+        return new ArrayList<>(resultSet);
     }
 
     /*
