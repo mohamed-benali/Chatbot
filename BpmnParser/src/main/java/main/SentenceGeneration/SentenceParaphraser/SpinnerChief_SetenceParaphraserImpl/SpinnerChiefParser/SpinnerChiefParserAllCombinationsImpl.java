@@ -2,86 +2,19 @@ package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphra
 
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
-import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.*;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.Entities.SingleWord;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.Entities.Word;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.Entities.Words;
 
-public class SpinnerChiefParserImpl implements SpinnerChiefParser {
+public class SpinnerChiefParserAllCombinationsImpl implements SpinnerChiefParser {
+
+
     @Override
-    public Sentences parseSentence(String sentenceToParse) {
-        Words words = new Words();
-
-        int i = 0;
-        while (i < sentenceToParse.length()) {
-            Word word = readWord(sentenceToParse, i);
-
-            words.add(word);
-
-            i+=word.numCharacters();
-        }
-
-        Sentences similarSentences = new Sentences();
+    public Sentences generateSentences(Words words, Sentences similarSentences) {
         return generateSentencesBacktracking(words, similarSentences);
     }
 
 
-
-    //region REGION: Read(parse) word
-    private Word readWord(String sentenceToParse, int i) {
-        Word word;
-
-        char char_i = sentenceToParse.charAt(i);
-        if(startsMultipleWord(char_i)) {
-            word = readMultipleWord(sentenceToParse, i);
-        }
-        else { // SingleWord
-            word = readSingleWorld(sentenceToParse, i);
-        }
-
-        return word;
-    }
-
-    private Word readSingleWorld(String sentenceToParse, int i) {
-        StringBuilder wordStringBuilder = new StringBuilder();
-
-        boolean isSingleWord = true;
-        while(i < sentenceToParse.length() && isSingleWord ) {
-            char char_i = sentenceToParse.charAt(i);
-            if(startsMultipleWord(char_i) ) isSingleWord = false;
-            else {
-                wordStringBuilder.append(char_i);
-                ++i;
-            }
-        }
-
-        String wordString = wordStringBuilder.toString();
-
-        return new SingleWord(wordString);
-    }
-
-    private Word readMultipleWord(String sentenceToParse, int i) {
-        StringBuilder wordsStringBuilder = new StringBuilder();
-        ++i; // Skip initial '{'
-
-        char char_i = sentenceToParse.charAt(i);
-        while(i < sentenceToParse.length() && ! endsMultipleWord(char_i)) {
-            wordsStringBuilder.append(char_i);
-            ++i;
-            char_i = sentenceToParse.charAt(i);
-        }
-
-        String wordsString = wordsStringBuilder.toString();
-        String[] words = wordsString.split("\\|");
-
-        return new MultipleWord(words);
-    }
-
-    private boolean endsMultipleWord(char char_j) {
-        return char_j == '}';
-    }
-
-    private boolean startsMultipleWord(char char_i) {
-        return char_i == '{';
-    }
-    //endregion
 
     //region REGION: BACKTRACKING(generate combinations of sentences)
     /**
@@ -128,5 +61,7 @@ public class SpinnerChiefParserImpl implements SpinnerChiefParser {
 
         }
     }
+
+
     //endregion
 }

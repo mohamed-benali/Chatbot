@@ -5,8 +5,7 @@ import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParser;
-import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserImpl;
-import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.*;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserAllCombinationsImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -121,7 +120,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
 
     public SpinnerChief_SentenceParaphraserImpl() {
         this.uri = buildURI();
-        spinnerChiefParser = new SpinnerChiefParserImpl();
+        spinnerChiefParser = new SpinnerChiefParserAllCombinationsImpl();
     }
     private String buildURI() {
         String uri = API + "apikey="+ apikey + "&username=" + username + "&password=" + password;
