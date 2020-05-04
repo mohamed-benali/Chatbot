@@ -49,6 +49,8 @@ public class myIntent {
         outputContexts = new ArrayList<>();
         trainingPhrases = new myTrainingPhrases();
         intentManagment = new IntentManagment();
+
+        //TODO: use factory
         setSentenceBuilder(new SentenceBuilderImpl());
     }
 
@@ -345,7 +347,6 @@ public class myIntent {
 
     protected List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         List<String> responses = new ArrayList<String>();
-        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl();
 
         String sentence = this.getTask();
         String subject = this.getSubject();

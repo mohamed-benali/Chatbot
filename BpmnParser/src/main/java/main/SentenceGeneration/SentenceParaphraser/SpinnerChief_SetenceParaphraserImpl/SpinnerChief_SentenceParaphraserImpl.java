@@ -6,6 +6,7 @@ import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserAllCombinationsImpl;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserDirectSubSetImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -117,11 +118,26 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
 
     private String uri;
 
-
+    /**
+     * Default constructor for SpinnerChiefParser: SpinnerChiefParserDirectSubSetImpl()
+     */
     public SpinnerChief_SentenceParaphraserImpl() {
         this.uri = buildURI();
-        spinnerChiefParser = new SpinnerChiefParserAllCombinationsImpl();
+        spinnerChiefParser = new SpinnerChiefParserDirectSubSetImpl();
     }
+
+    /**
+     * Custom constructor. It will use the parameters to define the behaviour
+     * @param spinnerChiefParser SpinnerChief sentences parsing strategy that will be used
+     */
+    public SpinnerChief_SentenceParaphraserImpl(SpinnerChiefParser spinnerChiefParser) {
+        // TODO: Document that i can chose the method of parsing in the constructor
+        this.uri = buildURI();
+        this.spinnerChiefParser = spinnerChiefParser;
+    }
+
+
+
     private String buildURI() {
         String uri = API + "apikey="+ apikey + "&username=" + username + "&password=" + password;
         uri = addParameters(uri);
@@ -159,7 +175,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * @throws IOException
      */
     @Override
-    public ParaphrasedSentences paraphraseSentence(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+    public ParaphrasedSentences paraphraseSentences(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
         String sentence = this.buildSentences(sentences);
 
         System.out.println("Sentence: " + sentence);

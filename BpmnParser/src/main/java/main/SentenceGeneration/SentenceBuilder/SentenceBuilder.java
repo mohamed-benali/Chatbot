@@ -28,15 +28,6 @@ public interface SentenceBuilder {
      */
     String buildSentence(String sentence, String sourceSubject, String targetSubject) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
 
-    /**
-     * Paraphrases all the sentences of {@code trainingPhrasesToParaphrase}
-     * <br><br>
-     * PRE CONDITION: The sentences are not null correct sentences
-     * <br<
-     * @param trainingPhrasesToParaphrase Training Phrases to paraphrase
-     * @return For each sentence, returns it's paraphrased sentences
-     */
-    ParaphrasedSentences paraphraseSentences(List<String> trainingPhrasesToParaphrase) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException;
 
     /**
      * Builds a question where is asked who does what is done in the {@code sentence} passed as a parameter<br>

@@ -4,6 +4,7 @@ import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserAllCombinationsImpl;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
 import org.junit.jupiter.api.*;
 
@@ -38,9 +39,9 @@ class SpinnerChief_SentenceParaphraserImplTest {
         String sentence = "Who requests the items?";
         sentences.add(sentence);
 
-        SentenceParaphraser sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
+        SentenceParaphraser sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl(new SpinnerChiefParserAllCombinationsImpl()) ;
 
-        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseSentence(sentences);
+        ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseSentences(sentences);
 
         ParaphrasedSentences expectedGeneratedSentences = generateExpectedSimilarSententces(sentence);
 

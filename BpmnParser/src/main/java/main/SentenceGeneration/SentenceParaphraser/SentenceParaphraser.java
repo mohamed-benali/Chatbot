@@ -7,5 +7,13 @@ import java.io.IOException;
 import java.util.List;
 
 public interface SentenceParaphraser {
-    ParaphrasedSentences paraphraseSentence(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException;
+    /**
+     * Paraphrases all the sentences of {@code sentences}
+     * <br><br>
+     * PRE CONDITION: The sentences are not null correct sentences
+     * <br
+     * @param sentences Sentences to paraphrase
+     * @return For each sentence, returns it's paraphrased sentences
+     */
+    ParaphrasedSentences paraphraseSentences(List<String> sentences) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException;
 }

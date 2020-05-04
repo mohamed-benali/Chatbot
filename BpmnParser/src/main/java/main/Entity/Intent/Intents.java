@@ -1,12 +1,11 @@
 package main.Entity.Intent;
 
-import com.google.cloud.dialogflow.v2.Intent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
-import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
-import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
+import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,15 +14,15 @@ public class Intents {
     public static void println(String s) { System.out.println(s); }
 
     private Map<String, myIntent> intents; // String: name(identificador)
-
-    private SentenceBuilder sentenceBuilder;
+    private SentenceParaphraser sentenceParaphraser;
 
     /*
      * CONSTRUCTORS
      */
     public Intents() {
-        intents = new TreeMap<String, myIntent>();
-        sentenceBuilder = new SentenceBuilderImpl();
+        intents = new TreeMap<>();
+        //TODO: use factory
+        sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl();
     }
 
 
@@ -186,7 +185,8 @@ public class Intents {
      */
     private void buildTrainingPhrases() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException, SentenceAnalyzerException, NoFreelingKeyException {
         List<String> trainingPhrasesToParaphrase = this.getTrainingPhrasesToParaphrase();
-        ParaphrasedSentences paraphrasedSentences = sentenceBuilder.paraphraseSentences(trainingPhrasesToParaphrase);
+
+        ParaphrasedSentences paraphrasedSentences = sentenceParaphraser.paraphraseSentences(trainingPhrasesToParaphrase);
         this.updateIntentsTrainingPhrases(paraphrasedSentences);
     }
 
