@@ -103,4 +103,58 @@ class SentenceBuilderTest {
         assertEquals(expectedGeneratedSentence, generatedSentence);
     }
 
+
+
+
+
+
+
+
+    @Test
+    @DisplayName("Generates a WHO_SUBJECT sentence: Who chases the monkey?.")
+    void generateSentence6() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "chase the monkey";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhoSubjectSentence(sentence);
+
+
+        String expectedGeneratedSentence = "Who chases the monkey?";
+
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("Generates a WHO_SUBJECT sentence: Who sends finished documents to marketing department?.")
+    void generateSentence7() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Send finished documents to Marketing Department";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhoSubjectSentence(sentence);
+
+        String expectedGeneratedSentence = "Who sends finished documents to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("Generates a WHO_SUBJECT sentence: Who ships a parcel?")
+    void generateSentence8() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Ship a Parcel";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhoSubjectSentence(sentence);
+
+
+        String expectedGeneratedSentence = "Who ships a parcel?";
+
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+
+
+
+
 }

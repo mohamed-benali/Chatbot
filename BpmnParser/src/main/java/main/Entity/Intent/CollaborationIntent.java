@@ -1,6 +1,7 @@
 package main.Entity.Intent;
 
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
+import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
@@ -26,7 +27,8 @@ public class CollaborationIntent extends myIntent {
 
         //this.addOutputContextID(BEGIN_CONTEXT);
 
-        this.addTrainingPhrase("Next");
+        //this.addTrainingPhrase("Next"); // S'indica en el metode setDefaultNullTrainingPhrase, d'aquesta classe
+        setDefaultNullTrainingPhrase();
     }
 
     public String getSourceSubject() { return sourceSubject; }
@@ -71,31 +73,31 @@ public class CollaborationIntent extends myIntent {
 
 
     @Override // TODO  Query
-    protected Intents buildExtraIntents() {
-        return null;
+    public Intents buildExtraIntents() {
+        return new Intents();
     }
 
-    // TODO
-    protected Sentences buildTrainingPhrases() {
-        /*
+    @Override
+    protected Sentences buildTrainingPhrasesToParaphrase() {
         Sentences sentences = new Sentences();
         sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
-        if(this.getTrainingPhrases().hasNullTrainingPhrase()) {
-            Sentences nextSentences = myTrainingPhrase.getNextTrainingPhrases();
-            sentences.addSentences(nextSentences);
-        }
         return sentences;
-        */
-         return null;
     }
-
 
     @Override
     public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+        this.getTrainingPhrases().updateTrainingPhrases(paraphrasedSentences);
     }
 
     @Override
     protected List<String> getBuildedTrainingPhrases() {
-        return makeResponse();
+        this.setDefaultNullTrainingPhrase();
+        return this.getTrainingPhrases().getBuildedTrainingPhrases();
+    }
+
+    @Override
+    protected void setDefaultNullTrainingPhrase() {
+        trainingPhrases.setHasNullTrainingPhrase(true);
+        trainingPhrases.setDefaultTrainingPhraseType(DefaultTrainingPhraseType.NEXT_TYPE);
     }
 }

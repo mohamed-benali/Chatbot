@@ -1,6 +1,7 @@
 package main.Entity.Intent;
 
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
+import main.Enums.DefaultTrainingPhraseType;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
@@ -19,13 +20,13 @@ public class StartIntent extends myIntent {
 
 
     @Override
-    protected Intents buildExtraIntents() {
-        return null;
+    public Intents buildExtraIntents() {
+        return new Intents();
     }
 
     @Override
-    protected Sentences buildTrainingPhrases() {
-        return null;
+    protected Sentences buildTrainingPhrasesToParaphrase() {
+        return new Sentences();
     }
 
     @Override
@@ -35,5 +36,11 @@ public class StartIntent extends myIntent {
     @Override
     protected List<String> getBuildedTrainingPhrases() {
         return getTrainingPhrases().getTrainingPhrasesList();
+    }
+
+    @Override
+    protected void setDefaultNullTrainingPhrase() {
+        trainingPhrases.setDefaultTrainingPhraseType(null);
+        trainingPhrases.setHasNullTrainingPhrase(false);
     }
 }

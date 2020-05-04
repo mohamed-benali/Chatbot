@@ -5,4 +5,6 @@ import main.Exceptions.NoFreelingKeyException;
 
 public interface SentenceGeneratorServiceAdapter {
     String generateSimpleSentence(SentenceAnalysis sentenceAnalysis, String subject) throws NoFreelingKeyException;
+
+    String generateWhoSubjectSentence(SentenceAnalysis sentenceAnalysis) throws NoFreelingKeyException;
 }

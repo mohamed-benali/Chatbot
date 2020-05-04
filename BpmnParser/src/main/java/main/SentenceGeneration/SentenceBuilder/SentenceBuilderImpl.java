@@ -53,5 +53,12 @@ public class SentenceBuilderImpl implements SentenceBuilder {
         return sentenceParaphraser.paraphraseSentence(trainingPhrasesToParaphrase);
     }
 
+    @Override
+    public String buildWhoSubjectSentence(String sentence) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        SentenceAnalysis sentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhoSubjectSentence(sentenceAnalysis);
+        return generatedSentence;
+    }
+
 
 }

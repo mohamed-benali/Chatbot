@@ -1,12 +1,18 @@
 package main.SentenceGeneration.SentenceGeneratorServiceAdapter;
 
+import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
+import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
 import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
 import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SimpleSentenceAnalysis;
 import main.Exceptions.NoFreelingKeyException;
+import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -75,6 +81,40 @@ class SentenceGeneratorServiceAdapterTest {
 
         String expectedGeneratedSentence = "Employee requests items.";
 
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+
+
+    @Test
+    @DisplayName("Generates a WHO_SUBJECT sentence: with (Verb, Object, Complement).")
+    void generateWHO_SUBJECT_Sentence2() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("send", "verb",
+                "infinitive", null,
+                "finished documents", "plural",
+                "to marketing department", "singular");
+
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhoSubjectSentence(sentenceAnalysis);
+
+        String expectedGeneratedSentence = "Who sends finished documents to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("Generates a WHO_SUBJECT sentence: Mary chases the monkey.")
+    void generateWHO_SUBJECT_Sentence() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("chase", "noun",
+                null, "singular",
+                "the monkey", "singular",
+                null, null);
+
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhoSubjectSentence(sentenceAnalysis);
+
+        String expectedGeneratedSentence = "Who chases the monkey?";
 
         assertEquals(expectedGeneratedSentence, generatedSentence);
     }

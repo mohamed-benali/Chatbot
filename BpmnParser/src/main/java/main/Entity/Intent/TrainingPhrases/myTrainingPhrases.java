@@ -1,5 +1,6 @@
 package main.Entity.Intent.TrainingPhrases;
 
+import main.Enums.DefaultTrainingPhraseType;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
@@ -16,7 +17,14 @@ public class myTrainingPhrases {
      */
     private Map<String, myTrainingPhrase> trainingPhrases;
 
-    private boolean hasNullTrainingPhrase;
+    private NullTrainingPhrase nullTrainingPhrase;
+
+
+
+    public myTrainingPhrases() {
+        setTrainingPhrases(new TreeMap<>());
+        setNullTrainingPhrase(new NullTrainingPhrase());
+    }
 
 
     //region REGION: Override(equals, toString)
@@ -24,7 +32,7 @@ public class myTrainingPhrases {
     public String toString() {
         String result = trainingPhrases.toString();
         result += "\n";
-        result += "Has Null Training Phrase: " + hasNullTrainingPhrase();
+        result += getNullTrainingPhrase().toString();
         result += "\n";
         result += "\n";
         return  result;
@@ -35,34 +43,44 @@ public class myTrainingPhrases {
         if (o instanceof myTrainingPhrases) {
             myTrainingPhrases otherTrainingPhrases = (myTrainingPhrases) o;
             if (this.getTrainingPhrases().equals(otherTrainingPhrases.getTrainingPhrases() ) &&
-             this.hasNullTrainingPhrase() == otherTrainingPhrases.hasNullTrainingPhrase() )
+             this.getNullTrainingPhrase().equals(otherTrainingPhrases.getNullTrainingPhrase()))
                 return true;
         }
         return false;
     }
 
-    public myTrainingPhrases() {
-        setTrainingPhrases(new TreeMap<>());
-        setHasNullTrainingPhrase(false);
-    }
+
     //endregion
 
+    //region REGION: Getters and setters
     public Map<String, myTrainingPhrase> getTrainingPhrases() { return trainingPhrases; }
     public void setTrainingPhrases(Map<String, myTrainingPhrase> trainingPhrases) { this.trainingPhrases = trainingPhrases; }
 
+    public NullTrainingPhrase getNullTrainingPhrase() { return nullTrainingPhrase; }
+    public void setNullTrainingPhrase(NullTrainingPhrase nullTrainingPhrase) { this.nullTrainingPhrase = nullTrainingPhrase; }
+
+
+    /**
+     * Gets the training phrases without considering if it has a Null Training Phrase. Therefore, the null trainigPhrase is not included in the returned response.
+     * @return Returns the training phrases without the null Training Phrase
+     */
     public List<String> getTrainingPhrasesList() {
         return new ArrayList<>(this.getTrainingPhrases().keySet());
     }
 
-    //region REGION: Has null training Phrase
+    //region REGION: Null training Phrase
     /**
      * Tells if it has a null Training Phrase. Its true if it's so.
      * TODO: Its a workaround, so i should see how i can include a null key on a map.
      */
-    public boolean hasNullTrainingPhrase() { return hasNullTrainingPhrase; }
-    public void setHasNullTrainingPhrase(boolean hasNullTrainingPhrase) { this.hasNullTrainingPhrase = hasNullTrainingPhrase; }
+    public boolean hasNullTrainingPhrase() { return this.getNullTrainingPhrase().hasNullTrainingPhrase(); }
+    public void setHasNullTrainingPhrase(boolean hasNullTrainingPhrase) { this.getNullTrainingPhrase().setHasNullTrainingPhrase(hasNullTrainingPhrase); }
+
+    public DefaultTrainingPhraseType getDefaultTrainingPhraseType() { return this.getNullTrainingPhrase().getDefaultTrainingPhraseType(); }
+    public void setDefaultTrainingPhraseType(DefaultTrainingPhraseType defaultTrainingPhraseType) { this.getNullTrainingPhrase().setDefaultTrainingPhraseType(defaultTrainingPhraseType); }
     //endregion
 
+    //endregion
 
 
     //region REGION: Add Training Phrase
@@ -112,38 +130,46 @@ public class myTrainingPhrases {
     /**
      * Adds the paraphrased sentences corresponding to the parameter {@code key} to the trainingPhrase identified by {@code key}
      * @param key The key corresponding to the Training phrase that will add the {@code paraphrasedSentences.getByKey(key);}
-     * @param paraphrasedSentences All the paraphrased sentences
+     * @param paraphrasedSentences All the paraphrased sentences of {@code sentence}
      */
-    private void addAllTrainingPhrasesToKeyAsBuilded(String key, ParaphrasedSentences paraphrasedSentences) {
+    public void addAllTrainingPhrasesToKeyAsBuilded(String key, ParaphrasedSentences paraphrasedSentences) {
         myTrainingPhrase myTrainingPhrase = getTrainingPhrases().get(key);
         myTrainingPhrase.addSimilarSentences(paraphrasedSentences.getByKey(key));
     }
 
-
-
-
-
+/*  /**
+     * Adds the paraphrased Next sentences corresponding to the parameter {@code sentence} to the new trainingPhrase identified by {@code sentence}
+     * @param sentence The sentence corresponding to the Training phrase that will add the {@code paraphrasedSentences.getByKey(sentence);}
+     * @param paraphrasedSentences All the paraphrased sentences of {@code sentence}
+     *//*
+    private void addAllNextTrainingPhrasesAsBuilded(String sentence, ParaphrasedSentences paraphrasedSentences) {
+        myTrainingPhrase myTrainingPhrase = new myTrainingPhrase(sentence);
+        myTrainingPhrase.addSimilarSentences(paraphrasedSentences.getByKey(sentence));
+        this.getTrainingPhrases().put(sentence, myTrainingPhrase);
+    }*/
     //endregion
 
     public void clear() { this.getTrainingPhrases().clear(); }
 
 
     /**
-     * Gets the builded paraphrased sentences of all trainingPhrases
+     * Gets the builded paraphrased sentences of all training Phrases,
+     * PLUS the sentences corresponding to the null training Phrase(if they exist) <br>
+     * This means that gets the paraphrased(similar) training phrases of all training Phrases<br>
      * <br>
-     * This means that gets the paraphrased(similar) training phrases of all trainingPhrases
-     * <br>
-     * PRE CONDITION: All the trainingPhrases are already paraphrased
-     * <br>
-     * @return Returns the paraphrased training sentences
+     * PRE CONDITION: All the training Phrases are already paraphrased. <br>
+     * PRE CONDITION: The null training phrase info has been set previously. Specifically this means that
+     * The type of the null and the attribute indicating if it has a null sentence, have been set before calling this method <br>
+     * @return Returns the paraphrased training sentences PLUS the sentences corresponding to the null trainingPhrase(if they exist)
      */
     public List<String> getBuildedTrainingPhrases() {
-        List<String> sentences = new ArrayList<>();
+        List<String> sentencesList = new ArrayList<>();
         for(Map.Entry<String, myTrainingPhrase> entry : trainingPhrases.entrySet()) {
             List<String> paraphrasedSentences = entry.getValue().getBuildedParaphrasedSentences();
-            sentences.addAll(paraphrasedSentences);
+            sentencesList.addAll(paraphrasedSentences);
         }
-        return sentences;
+        sentencesList.addAll(this.getNullTrainingPhrase().getTrainingPhrases());
+        return sentencesList;
     }
 
     public void buildTrainingPhrases() {
@@ -151,7 +177,7 @@ public class myTrainingPhrases {
     }
 
     /**
-     * Updates the trainingPhrases with the parameter {@code paraphrasedSentences}
+     * Updates the trainingPhrases with the parameter {@code paraphrasedSentences} without considering a possible null training phrase
      * <br>
      * Concretely, adds the similar sentence for each sentence existing in attribute {@code this.trainingPhrases} and parameter {@code paraphrasedSentences}
      * @param paraphrasedSentences Paraphrased Sentences. Each sentence has associated similar sentences.
@@ -162,8 +188,8 @@ public class myTrainingPhrases {
             //myTrainingPhrase trainingPhrase = entry.getValue();
             if(paraphrasedSentences.containsKey(key)) this.addAllTrainingPhrasesToKeyAsBuilded(key, paraphrasedSentences);
         }
-    }
 
+    }
 
 
 

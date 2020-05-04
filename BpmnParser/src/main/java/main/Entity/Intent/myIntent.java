@@ -2,6 +2,7 @@ package main.Entity.Intent;
 
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrases;
+import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
@@ -9,14 +10,12 @@ import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
 import com.google.cloud.dialogflow.v2.*;
 import main.Entity.DialogFlow.IntentManagment;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
-import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class myIntent {
     protected IntentsClient intentsClient;
@@ -41,7 +40,7 @@ public class myIntent {
 
     protected IntentManagment intentManagment;
 
-    protected SentenceBuilder sentenceBuilder;
+    private SentenceBuilder sentenceBuilder;
 
     //region REGION: Constructors
     private void basic_initialization() throws IOException {
@@ -50,7 +49,7 @@ public class myIntent {
         outputContexts = new ArrayList<>();
         trainingPhrases = new myTrainingPhrases();
         intentManagment = new IntentManagment();
-        sentenceBuilder = new SentenceBuilderImpl();
+        setSentenceBuilder(new SentenceBuilderImpl());
     }
 
     public myIntent() throws IOException {
@@ -267,6 +266,10 @@ public class myIntent {
     public void clearTrainingPhrases() { trainingPhrases.clear(); }
     //endregion
 
+    //region REGION: Getters & Setters of SentenceBuilder
+    public SentenceBuilder getSentenceBuilder() { return sentenceBuilder; }
+    public void setSentenceBuilder(SentenceBuilder sentenceBuilder) { this.sentenceBuilder = sentenceBuilder; }
+    //endregion
 
     //region REGION: Prints
     /*
@@ -339,25 +342,6 @@ public class myIntent {
         return inputIntents;
     }
 
-    /**
-     * Function that is called to build the training Phrases of the intent that will be uploaded into DialogFlow
-     * @return Returns the training Phrases of the intent that will be uploaded into DialogFlow
-     */
-    protected List<String> getBuildedTrainingPhrases() {
-    /* TODO
-        if(trainingPhrases.size() == 0) {
-            //
-        }
-        else {
-            for(int i = 0; i < trainingPhrases.size(); ++i) {
-                if(trainingPhrases.get(i) == null) trainingPhrases.set(i, "Next");
-            }
-        }
-    */
-
-        return trainingPhrases.getBuildedTrainingPhrases();
-    }
-
 
     protected List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         List<String> responses = new ArrayList<String>();
@@ -378,16 +362,36 @@ public class myIntent {
      * Builds the extra intents such as QueryTaskIntent
      * @return Returns the extra intents that can be create from this intent
      */
-    protected Intents buildExtraIntents() {
+    public Intents buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         return new Intents();
+    }
+
+
+    //region REGION: Training Phrases
+    /**
+     * Function that is called to build the training Phrases of the intent that will be uploaded into DialogFlow
+     * @return Returns the training Phrases of the intent that will be uploaded into DialogFlow
+     */
+    protected List<String> getBuildedTrainingPhrases() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        this.setDefaultNullTrainingPhrase(); // TODO: Patro plantilla pels que puguin? Y els que no pues override de tot
+        return this.getTrainingPhrases().getBuildedTrainingPhrases();
+    }
+
+    /**
+     * Sets the type of the default training phrase. Each intent subclass will use it to decide how the null trainingPhrases
+     * should be approached
+     */
+    protected void setDefaultNullTrainingPhrase() {
+        //this.getTrainingPhrases().setHasNullTrainingPhrase(true);This should come from the parse or from some specific subclassIntent
+        this.getTrainingPhrases().setDefaultTrainingPhraseType(DefaultTrainingPhraseType.NEXT_TYPE); // Default in case null is true
     }
 
     /**
      * Gets the training phrases to paraphrase
      * @return Returns the training phrases to paraphrase
      */
-    public Collection<? extends String> getTrainingPhrasesToParaphrase() {
-        Sentences trainingPhrases = this.buildTrainingPhrases();
+    public Collection<? extends String> getTrainingPhrasesToParaphrase() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        Sentences trainingPhrases = this.buildTrainingPhrasesToParaphrase();
         return trainingPhrases.getSentencesList();
     }
 
@@ -396,15 +400,30 @@ public class myIntent {
      * Builds the training phrases of this Intent
      * <br>
      * By builded we mean correct sentences. NOT the paraphrased sentences
+     * <br>
+     * The null training Phrases are not included because they are create manually.
      * @return Returns the builded sentences. By default returns the sentences as if they are a TaskIntent
      */
-    protected Sentences buildTrainingPhrases() {
+    protected Sentences buildTrainingPhrasesToParaphrase() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+    // TODO: Should this.getTrainingPhrases().getTrainingPhrasesList() include the sentences corresponding to the null type?
+    // TODO: Should the null sentences be added outside?
+
+    /* TODO******:
+        Should they be paraphrased? Probably NOT, because they are generated manually, so in update, null sentences are not checked
+             How i will tell which type of trainingPhrase is? Next by default?
+             - Create function getAllTrainingPhrasesList or getTrainingPhrasesListWithNullIncluded ?
+             - ****** When i get a getBuildedTrainingPhrases(), i should add the manual sentences to the paraphrases ones
+
+
+             TODO: Dont include null in this function
+                    Dont consider them when updating
+                    When getBuildedTrainingPhrases(), add manually the *null sentences* to the paraphrased ones
+                        - If there is a null trainigPhrase, How i will tell which type of trainingPhrase is? Next by default
+                            - I could always set the default null type externally from the intent
+
+     */
         Sentences sentences = new Sentences();
         sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
-        if(this.getTrainingPhrases().hasNullTrainingPhrase()) {
-            Sentences nextSentences = myTrainingPhrase.getNextTrainingPhrases();
-            sentences.addSentences(nextSentences);
-        }
         return sentences;
     }
 
@@ -413,11 +432,16 @@ public class myIntent {
      * Updates the intent's trainingPhrases with the parameter {@code paraphrasedSentences}
      * <br>
      * Concretely, adds the similar sentences to {@code this.trainingPhrases} for each existing sentence in attribute {@code this.trainingPhrases} and parameter {@code paraphrasedSentences} at the same time
+     * <br>
+     * The null training Phrases are not considered because they are created manually and therefore they are not paraphrased
      * @param paraphrasedSentences Paraphrased Sentences. Each sentence has associated similar sentences.
      */
     public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
         this.getTrainingPhrases().updateTrainingPhrases(paraphrasedSentences);
     }
+
+
+    //endregion
 }
 
 

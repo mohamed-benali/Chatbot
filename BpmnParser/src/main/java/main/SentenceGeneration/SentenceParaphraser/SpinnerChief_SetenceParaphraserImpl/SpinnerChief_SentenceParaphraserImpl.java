@@ -46,9 +46,14 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     private String spintype = "0";
 
     /**
+     * Outdated docs say:
+     * % of words spinned (percentage equals to 1/spinfreq)
      * ***DEFAULT*** is 4 (1/4 = 25% of the words)
+     * but....
+     * IMPORTANT!!!: There is a mistake in SpinnerChief's pathetically lazy written outdated docs.
+     * For getting all the words changed, you have to put a 0.
      */
-    private String spinfreq = "1"; // % of words spinned (percentage equals to 1/spinfreq)
+    private String spinfreq = "0"; //
 
     /**
      *  0 --> Removes the original word  ***DEFAULT***

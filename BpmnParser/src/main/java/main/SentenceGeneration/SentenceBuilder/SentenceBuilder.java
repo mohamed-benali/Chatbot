@@ -37,4 +37,16 @@ public interface SentenceBuilder {
      * @return For each sentence, returns it's paraphrased sentences
      */
     ParaphrasedSentences paraphraseSentences(List<String> trainingPhrasesToParaphrase) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException;
+
+    /**
+     * Builds a question where is asked who does what is done in the {@code sentence} passed as a parameter<br>
+     * <br>
+     * Specifically, the function analyzes the sentence, and builds the question.<br>
+     * <br>
+     *  For example, if {@code sentence} is "chase the monkey"
+     *  the method returns "Who chases the monkey?"
+     * @param sentence The sentence without the subject
+     * @return Returns a sentence where is asked who does what is done in the {@code sentence} passed as a parameter
+     */
+    String buildWhoSubjectSentence(String sentence) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
 }

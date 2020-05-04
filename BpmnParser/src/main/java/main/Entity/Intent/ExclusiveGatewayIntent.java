@@ -1,6 +1,7 @@
 package main.Entity.Intent;
 
 import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
+import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
@@ -36,21 +37,30 @@ public class ExclusiveGatewayIntent extends myIntent {
 
 
     @Override
-    protected Intents buildExtraIntents() {
-        return null;
+    public Intents buildExtraIntents() {
+        return new Intents();
     }
 
     @Override
-    protected Sentences buildTrainingPhrases() {
-        return null;
+    protected Sentences buildTrainingPhrasesToParaphrase() {
+        Sentences sentences = new Sentences();
+        sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
+        return sentences;
     }
 
     @Override
     public void updateTrainingPhrases(ParaphrasedSentences paraphrasedSentences) {
+        this.getTrainingPhrases().updateTrainingPhrases(paraphrasedSentences);
     }
 
     @Override
     protected List<String> getBuildedTrainingPhrases() {
-        return this.getTrainingPhrases().getTrainingPhrasesList(); // TODO: Pillar el null com a Next?
+        this.setDefaultNullTrainingPhrase();
+        return this.getTrainingPhrases().getBuildedTrainingPhrases();
+    }
+
+    @Override
+    protected void setDefaultNullTrainingPhrase() {
+        trainingPhrases.setDefaultTrainingPhraseType(DefaultTrainingPhraseType.NEXT_TYPE);
     }
 }

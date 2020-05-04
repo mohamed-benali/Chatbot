@@ -1,7 +1,6 @@
-package main.Entity.Intent;
+package main.Entity.Intent.QueryIntent;
 
 import main.Entity.Intent.QueryIntent.QueryTaskIntent;
-import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
 import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
@@ -11,28 +10,19 @@ import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import java.io.IOException;
 import java.util.List;
 
-public class TaskIntent extends myIntent {
-    public TaskIntent(String name, String subject, String tasca) throws IOException {
-        super(name, subject, tasca);
+public class WhoSubjectQueryTaskIntent extends QueryTaskIntent {
+    public WhoSubjectQueryTaskIntent(String id, String subject, String task) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+        super(id+"_WHO_SUBJECT", subject, task);
+
+        // TODO: Create here the training Sentences? For now here
+        String whoSubjectSentence = this.getSentenceBuilder().buildWhoSubjectSentence(this.getTask());
+        this.getTrainingPhrases().addTrainingPhrase(whoSubjectSentence);
     }
 
-    @Override // TODO: other type of Querys
-    public Intents buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
-        Intents intents = new Intents();
 
-        String id = this.getId();
-        String task = this.getTask();
-        String subject = this.getSubject();
 
-        myIntent queryTaskIntent = new WhoSubjectQueryTaskIntent(id, subject, task);
-
-        intents.add(queryTaskIntent);
-
-        return intents;
-    }
-
-    @Override
-    protected Sentences buildTrainingPhrasesToParaphrase() {
+    @Override //TODO: Create here the training Sentence? For now, in the constructor
+    protected Sentences buildTrainingPhrasesToParaphrase() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         Sentences sentences = new Sentences();
         sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());
         return sentences;
@@ -51,6 +41,7 @@ public class TaskIntent extends myIntent {
 
     @Override
     protected void setDefaultNullTrainingPhrase() {
-        trainingPhrases.setDefaultTrainingPhraseType(DefaultTrainingPhraseType.NEXT_TYPE);
+        getTrainingPhrases().setHasNullTrainingPhrase(false);
+        getTrainingPhrases().setDefaultTrainingPhraseType(null);
     }
 }

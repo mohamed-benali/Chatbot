@@ -1,4 +1,4 @@
-package IntentsTest;
+package IntentsTest.Intents;
 
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;

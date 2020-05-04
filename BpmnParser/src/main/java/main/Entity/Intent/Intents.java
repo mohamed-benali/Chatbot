@@ -1,6 +1,8 @@
 package main.Entity.Intent;
 
 import com.google.cloud.dialogflow.v2.Intent;
+import main.Exceptions.NoFreelingKeyException;
+import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilder;
 import main.SentenceGeneration.SentenceBuilder.SentenceBuilderImpl;
@@ -135,6 +137,7 @@ public class Intents {
 
 
 
+    //region REGION: Build Intents(ExtraIntents, TrainingPhrases, etc)
     /**
      * Builds the intents
      * <br><br>
@@ -144,7 +147,7 @@ public class Intents {
      * <br><br>
      * The order is: build extra intents, build Training Phrases
      */
-    public void build() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+    public void build() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException, SentenceAnalyzerException, NoFreelingKeyException {
         /* TODO:
              maybe create here(or in Parser.parse() ) the QueryTasks( createAdditionalTask or createQueryTasks)
              Responses
@@ -152,30 +155,52 @@ public class Intents {
              Some other thing
         */
 
+        /* TODO: En el parse: Genera els graf de intents
+            Aqui actualitzar perque DialogFlow ho pugui entendre, per tant, el build es un "Build DialogFlow"
+            Fer que sigui una interficie (chatbotBuilder ????) i segons la Impl es fa build de dialogflow.
+        */
         this.buildExtraIntents();
         this.buildTrainingPhrases();
     }
 
+    //region REGION: Build Extra Intents
     /**
      * Builds the extra intents such as QueryTaskIntent
      *
      */
-    private void buildExtraIntents() {
-        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+    private void buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+        Intents tmpIntents = new Intents();
+        for(Map.Entry<String, myIntent> entry : getIntents().entrySet()) {
             myIntent intent = entry.getValue();
-            Intents extraIntents = intent.buildExtraIntents();// TODO Intent sub class
-            this.add(extraIntents);
+            Intents extraIntents = intent.buildExtraIntents();
+            tmpIntents.add(extraIntents);
         }
+        this.add(tmpIntents);
     }
+    //endregion
 
 
+    //region REGION: Build Training Phrases
     /**
      * For each intent, builds it's trainingPhrases, generates similar sentences, and adds them as training phrases.
      */
-    private void buildTrainingPhrases() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException {
+    private void buildTrainingPhrases() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException, SentenceAnalyzerException, NoFreelingKeyException {
         List<String> trainingPhrasesToParaphrase = this.getTrainingPhrasesToParaphrase();
         ParaphrasedSentences paraphrasedSentences = sentenceBuilder.paraphraseSentences(trainingPhrasesToParaphrase);
         this.updateIntentsTrainingPhrases(paraphrasedSentences);
+    }
+
+    /**
+     * Gets the training phrases to paraphrase
+     * @return Returns the training phrases to paraphrase
+     */
+    private List<String> getTrainingPhrasesToParaphrase() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        Set<String> resultSet = new TreeSet<>(); // Uses set to reduce the amount of words
+        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
+            myIntent intent = entry.getValue();
+            resultSet.addAll(intent.getTrainingPhrasesToParaphrase() );
+        }
+        return new ArrayList<>(resultSet);
     }
 
     /**
@@ -190,19 +215,11 @@ public class Intents {
             intent.updateTrainingPhrases(paraphrasedSentences);
         }
     }
+    //endregion
 
-    /**
-     * Gets the training phrases to paraphrase
-     * @return Returns the training phrases to paraphrase
-     */
-    private List<String> getTrainingPhrasesToParaphrase() {
-        Set<String> resultSet = new TreeSet<>(); // Uses set to reduce the amount of words
-        for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
-            myIntent intent = entry.getValue();
-            resultSet.addAll(intent.getTrainingPhrasesToParaphrase() );
-        }
-        return new ArrayList<>(resultSet);
-    }
+    //endregion
+
+
 
     /*
      * Translate into Dialogflow

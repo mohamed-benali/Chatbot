@@ -1,6 +1,7 @@
 package main.Entity.Intent.TrainingPhrases;
 
 import main.Entity.Intent.myIntent;
+import main.Enums.DefaultTrainingPhraseType;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
@@ -22,12 +23,27 @@ public class myTrainingPhrase { // TODO: Podria ser una sub clase de sentence
         this.setSimilarSentences(new Sentences());
     }
 
-    //region REGION: Singleton Training Phrases(Next)
-    public static Sentences getNextTrainingPhrases() {
+    //region REGION: Singleton Default Training Phrases such as (Next)
+    public static Sentences getDefaultNextTrainingPhrases() {
         Sentences sentences = new Sentences();
         sentences.addSentence("Next");
         sentences.addSentence("Following");
         return sentences;
+    }
+
+    public static Sentences getDefaultBackTrainingPhrases() {
+        Sentences sentences = new Sentences();
+        sentences.addSentence("Back");
+        sentences.addSentence("Go back");
+        sentences.addSentence("Previous");
+        //sentences.addSentence("Return");
+        return sentences;
+    }
+
+    public static Sentences getDefaultTrainingPhrases(DefaultTrainingPhraseType defaultTrainingPhraseType) {
+        if  (defaultTrainingPhraseType.equals(DefaultTrainingPhraseType.NEXT_TYPE) ) return getDefaultNextTrainingPhrases();
+        else if(defaultTrainingPhraseType.equals(DefaultTrainingPhraseType.BACK_TYPE) ) return getDefaultBackTrainingPhrases();
+        else return null;
     }
     //endregion
 

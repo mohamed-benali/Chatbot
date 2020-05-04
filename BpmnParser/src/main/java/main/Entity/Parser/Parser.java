@@ -1,10 +1,14 @@
 package main.Entity.Parser;
 
 import main.Entity.Intent.Intents;
+import main.Exceptions.NoFreelingKeyException;
+import main.Exceptions.SentenceAnalyzerException;
+import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class Parser {
@@ -39,13 +43,16 @@ public class Parser {
      * Parser
      */
 
-    public void parse() {
+    public void parse() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, SpinnerChief_SentenceParaphraserException {
+        /**
         try {
             this.intents.add(bpmnAlgorithm.parse());
             this.intents.build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }*/
+        this.intents.add(bpmnAlgorithm.parse());
+        this.intents.build();
     }
 
 }

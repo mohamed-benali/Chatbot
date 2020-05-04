@@ -61,6 +61,48 @@ class SpinnerChiefParserImplTest {
 
     }
 
+
+
+
+
+
+
+
+    @Test
+    @DisplayName("Parse one sentence: {Who|That|Who else|Which} {updates|up-dates|improvements|revisions} {the|the particular|typically the|this} {stock|share|inventory|investment}?") // TODO: Do it
+    void generateSentencesBacktracking2() {
+
+        String sentenceToParse = "{Who|That|Who else|Which} {updates|up-dates|improvements|revisions} {the|the particular|typically the|this} {stock|share|inventory|investment}?";
+
+        SpinnerChiefParser spinnerChiefParser = new SpinnerChiefParserImpl() ;
+        Sentences similarSentences = spinnerChiefParser.parseSentence(sentenceToParse);
+
+        Sentences expectedGeneratedSentences = generateExpectedSimilarSententces2();
+
+        assertEquals(expectedGeneratedSentences, similarSentences);
+    }
+
+    private Sentences generateExpectedSimilarSententces2() {
+        // {Who|That|Who else} requests {the items|the things}?
+
+        Sentences expectedSentences = new Sentences();
+        expectedSentences.addSentence("Who requests the items?");
+        expectedSentences.addSentence("Who requests the things?");
+        expectedSentences.addSentence("Who requests the items?");
+        expectedSentences.addSentence("Who requests the things?");
+
+        expectedSentences.addSentence("That requests the items?");
+        expectedSentences.addSentence("That requests the things?");
+
+        expectedSentences.addSentence("Who else requests the items?");
+        expectedSentences.addSentence("Who else requests the things?");
+
+        return expectedSentences;
+
+    }
+
+
+
 }
 
 
