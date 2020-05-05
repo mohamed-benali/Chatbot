@@ -26,7 +26,7 @@ public class main {
         parser.parse();
         Intents intents = parser.getIntents();
 
-        //intents.print();
+        System.out.println(intents.toString());
 
         //intents.translateIntoDialogFlow();
 

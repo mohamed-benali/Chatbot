@@ -37,7 +37,8 @@ public class NullTrainingPhrase {
         String result = "";
         result += "Has Null Training Phrase: " + hasNullTrainingPhrase;
         result += "\n";
-        result += getDefaultTrainingPhraseType().toString();
+        if(getDefaultTrainingPhraseType()!=null) result += getDefaultTrainingPhraseType().toString();
+        else result += "Training Phrase Type: " + getDefaultTrainingPhraseType();
         result += "\n";
         result += "\n";
         return result;

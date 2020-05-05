@@ -77,32 +77,22 @@ class BpmnAlgorithmTest {
         myIntent intent2 = new myIntent("Task_098k69d", "Empleat", "Ship a Parcel");
         intent2.addBasicInfo("ExclusiveGateway_0t87582","ExclusiveGateway_0n01jaj",
                 "Task_1pynbur", "No");
-        myIntent intent2_query = new myIntent("Task_098k69d_query", "Empleat", "Ship a Parcel");
-        intent2_query.addTrainingPhrase("Who Ship a Parcel");
 
         myIntent intent3 = new myIntent("Task_0k9iu95", "Empleat", "Fetch the items");
         intent3.addBasicInfo("Task_0kegxhu","Task_0k9iu95",
                 "ExclusiveGateway_0t87582", null);
-        myIntent intent3_query = new myIntent("Task_0k9iu95_query", "Empleat", "Fetch the items");
-        intent3_query.addTrainingPhrase("Who Fetch the items");
 
         myIntent intent4 = new myIntent("Task_0kegxhu", "Empleat", "Request items");
         intent4.addBasicInfo("StartEvent_1e53g9j","Task_0kegxhu",
                 "Task_0k9iu95", null);
-        myIntent intent4_query = new myIntent("Task_0kegxhu_query", "Empleat", "Request items");
-        intent4_query.addTrainingPhrase("Who Request items");
 
         myIntent intent5 = new myIntent("Task_1pynbur", "Empleat", "Deliver order");
         intent5.addBasicInfo("ExclusiveGateway_0n01jaj","Task_1pynbur",
                 "EndEvent_06wuojd", null);
-        myIntent intent5_query = new myIntent("Task_1pynbur_query", "Empleat", "Deliver order");
-        intent5_query.addTrainingPhrase("Who Deliver order");
 
         myIntent intent6 = new myIntent("Task_1t8hbl4", "Empleat", "Ship a Parcel with Transport insurance");
         intent6.addBasicInfo("ExclusiveGateway_0t87582","ExclusiveGateway_0n01jaj",
                 "Task_1pynbur", "Yes");
-        myIntent intent6_query = new myIntent("Task_1t8hbl4_query", "Empleat", "Ship a Parcel with Transport insurance");
-        intent6_query.addTrainingPhrase("Who Ship a Parcel with Transport insurance");
 
         myIntent intent7 = new myIntent("ExclusiveGateway_0t87582", "Empleat", "Price over 100?");
         intent7.addBasicInfo("Task_0k9iu95","ExclusiveGateway_0t87582",
@@ -116,15 +106,10 @@ class BpmnAlgorithmTest {
 
         expectedIntents.add(intent); //
         expectedIntents.add(intent2);
-        expectedIntents.add(intent2_query);
         expectedIntents.add(intent3); //
-        expectedIntents.add(intent3_query);
         expectedIntents.add(intent4); //
-        expectedIntents.add(intent4_query);
         expectedIntents.add(intent5); //
-        expectedIntents.add(intent5_query);
         expectedIntents.add(intent6); //
-        expectedIntents.add(intent6_query);
         expectedIntents.add(intent7); //
         expectedIntents.add(intent8); //
 
@@ -145,7 +130,6 @@ class BpmnAlgorithmTest {
 
         Map<String, myIntent> resultIntentsMap = resultIntents.getIntents(); // String: name(identificador)
         Map<String, myIntent> expectedIntentsMap = expectedIntents.getIntents(); // String: name(identificador)
-
         assertEquals(expectedIntentsMap, resultIntentsMap);
 
         //assertEquals(expectedIntents, resultIntents);
@@ -163,14 +147,10 @@ class BpmnAlgorithmTest {
         myIntent intent2 = new myIntent("Task_1vunmit", "Departament", "Get items");
         intent2.addBasicInfo("StartEvent_1b1dcy2","Task_1vunmit",
                 "Task_1wuzo3e", null);
-        myIntent intent2_query = new myIntent("Task_1vunmit_query", "Departament", "Get items");
-        intent2_query.addTrainingPhrase("Who Get items");
 
         myIntent intent3 = new myIntent("Task_1wuzo3e", "Departament", "Prepare the items");
         intent3.addBasicInfo("Task_1vunmit","Task_1wuzo3e",
                 "EndEvent_0irzcwa", null);
-        myIntent intent3_query = new myIntent("Task_1wuzo3e_query", "Departament", "Prepare the items");
-        intent3_query.addTrainingPhrase("Who Prepare the items");
 
         myIntent intent4 = new myIntent("EndEvent_0irzcwa", "Departament", "End");
         intent4.addInputContextID("Task_1wuzo3e");
@@ -179,9 +159,7 @@ class BpmnAlgorithmTest {
 
         expectedIntents.add(intent); //
         expectedIntents.add(intent2);
-        expectedIntents.add(intent2_query);
         expectedIntents.add(intent3); //
-        expectedIntents.add(intent3_query);
         expectedIntents.add(intent4); //
 
 

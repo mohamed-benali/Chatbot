@@ -47,12 +47,11 @@ public class Parser {
         /**
         try {
             this.intents.add(bpmnAlgorithm.parse());
-            this.intents.build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }*/
         this.intents.add(bpmnAlgorithm.parse());
-        this.intents.build();
+        //this.intents.build();
     }
 
 }

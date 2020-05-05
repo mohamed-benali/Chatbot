@@ -78,14 +78,10 @@ class ParserFlowNodes_ExclusiveGatewayTest {
         myIntent intent3 = new myIntent("Task_0k9iu95", "Empleat", "Fetch the items");
         intent3.addBasicInfo("StartEvent_1e53g9j","Task_0k9iu95",
                 "ExclusiveGateway_0t87582", null);
-        myIntent intent3_query = new myIntent("Task_0k9iu95_query", "Empleat", "Fetch the items");
-        intent3_query.addTrainingPhrase("Who Fetch the items");
 
         myIntent intent5 = new myIntent("Task_1pynbur", "Empleat", "Deliver order");
         intent5.addBasicInfo("ExclusiveGateway_0n01jaj","Task_1pynbur",
                 "EndEvent_06wuojd", null);
-        myIntent intent5_query = new myIntent("Task_1pynbur_query", "Empleat", "Deliver order");
-        intent5_query.addTrainingPhrase("Who Deliver order");
 
         /**************************************/
         myIntent intent5Extra = new myIntent("Task_1pynbur_ExclusiveGateway_0t87582", "Empleat", "Deliver order");
@@ -97,8 +93,6 @@ class ParserFlowNodes_ExclusiveGatewayTest {
         myIntent intent6 = new myIntent("Task_1t8hbl4", "Empleat", "Ship a Parcel with Transport insurance");
         intent6.addBasicInfo("ExclusiveGateway_0t87582","ExclusiveGateway_0n01jaj",
                 "Task_1pynbur", "Yes");
-        myIntent intent6_query = new myIntent("Task_1t8hbl4_query", "Empleat", "Ship a Parcel with Transport insurance");
-        intent6_query.addTrainingPhrase("Who Ship a Parcel with Transport insurance");
 
         myIntent intent7 = new myIntent("ExclusiveGateway_0t87582", "Empleat", "Price over 100?");
         intent7.addBasicInfo("Task_0k9iu95","ExclusiveGateway_0t87582",
@@ -112,11 +106,8 @@ class ParserFlowNodes_ExclusiveGatewayTest {
 
         expectedIntents.add(intent); //
         expectedIntents.add(intent3); //
-        expectedIntents.add(intent3_query);
         expectedIntents.add(intent5); //
-        expectedIntents.add(intent5_query);
         expectedIntents.add(intent6); //
-        expectedIntents.add(intent6_query);
         expectedIntents.add(intent7); //
         expectedIntents.add(intent8); //
 
