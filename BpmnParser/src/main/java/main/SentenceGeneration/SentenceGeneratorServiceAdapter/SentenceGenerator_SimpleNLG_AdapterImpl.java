@@ -117,6 +117,31 @@ public class SentenceGenerator_SimpleNLG_AdapterImpl implements SentenceGenerato
         return sentenceGenerated;
     }
 
+    @Override
+    public String generateWhatObjectSentence(SentenceAnalysis sentenceAnalysis, String subject) throws NoFreelingKeyException {
+        String predicate    = sentenceAnalysis.getPredicate();
+        String object       = sentenceAnalysis.getObject();
+        String complement   = sentenceAnalysis.getComplement();
+
+        String predicateType    = sentenceAnalysis.getPredicateType();
+        String predicateForm    = sentenceAnalysis.getPredicateForm();
+        String predicateNumber  = sentenceAnalysis.getPredicateNumber();
+
+        String objectNumber     = sentenceAnalysis.getObjectNumber();
+        String complementNumber = sentenceAnalysis.getComplementNumber();
+
+        SPhraseSpec phraseSpec = nlgFactory.createClause();
+        this.buildSubject(subject, phraseSpec);
+        this.buildPredicate(predicate, predicateType, predicateNumber, phraseSpec);
+        this.buildObject(object, objectNumber, phraseSpec);
+        this.buildComplement(complement, phraseSpec);
+
+        phraseSpec.setFeature(Feature.INTERROGATIVE_TYPE, InterrogativeType.WHAT_OBJECT);
+        String sentenceGenerated = realiser.realiseSentence(phraseSpec);
+
+        return sentenceGenerated;
+    }
+
     private Form getVerbForm(String predicateForm) {
         switch (predicateForm) {
             case "infinitive":

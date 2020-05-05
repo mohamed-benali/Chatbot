@@ -119,4 +119,48 @@ class SentenceGeneratorServiceAdapterTest {
         assertEquals(expectedGeneratedSentence, generatedSentence);
     }
 
+
+
+
+
+
+
+
+
+    @Test
+    @DisplayName("Generates a WHAT_OBJECT sentence: with (Subject, Verb, Object, Complement).")
+    void generateWHO_SUBJECT_Sentence3() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("send", "verb",
+                "infinitive", null,
+                "finished documents", "plural",
+                "to marketing department", "singular");
+
+        String subject = "Mary";
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence(sentenceAnalysis, subject);
+
+        String expectedGeneratedSentence = "What does Mary send to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("Generates a WHAT_OBJECT sentence: What does Mary chase?")
+    void generateWHAT_OBJECT_Sentence() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("chase", "noun",
+                null, "singular",
+                "the monkey", "singular",
+                null, null);
+
+        String subject = "Mary";
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence(sentenceAnalysis, subject);
+
+        String expectedGeneratedSentence = "What does Mary chase?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+
+
 }
