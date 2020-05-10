@@ -24,4 +24,11 @@ public interface WordEngine {
      * @return Returns the separated words.
      */
     Cjt_Words separateWordsIntoSubSets(Words words, int sizeSubset);
+
+    /**
+     * Reduces the options of the words
+     * @param words
+     * @return Returns the words generated with the reduction
+     */
+    Cjt_Words reduceToHalfWordOptions(Words words);
 }

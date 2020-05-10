@@ -53,7 +53,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * IMPORTANT!!!: There is a mistake in SpinnerChief's pathetically lazy written outdated docs.
      * For getting all the words changed, you have to put a 0.
      */
-    private String spinfreq = "0"; //
+    private String spinfreq = "1"; //
 
     /**
      *  0 --> Removes the original word  ***DEFAULT***
@@ -131,7 +131,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * @param spinnerChiefParser SpinnerChief sentences parsing strategy that will be used
      */
     public SpinnerChief_SentenceParaphraserImpl(SpinnerChiefParser spinnerChiefParser) {
-        // TODO: Document that i can chose the method of parsing in the constructor
+        // TODO: Document that i can chose the method of parsing in the constructor --> Mantainability Reusability
         this.uri = buildURI();
         this.spinnerChiefParser = spinnerChiefParser;
     }

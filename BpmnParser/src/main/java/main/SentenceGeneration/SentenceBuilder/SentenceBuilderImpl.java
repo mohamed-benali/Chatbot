@@ -64,5 +64,19 @@ public class SentenceBuilderImpl implements SentenceBuilder {
         return generatedSentence;
     }
 
+    @Override
+    public String buildWhatObjectSentence(String sentence, String subject ) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        SentenceAnalysis sentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence(sentenceAnalysis, subject);
+        return generatedSentence;
+    }
+
+    @Override
+    public String buildWhatObjectSentence_WorkAround_Without_Does(String sentence, String subject) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+        SentenceAnalysis sentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence_WorkAround_Without_Does(sentenceAnalysis, subject);
+        return generatedSentence;
+    }
+
 
 }

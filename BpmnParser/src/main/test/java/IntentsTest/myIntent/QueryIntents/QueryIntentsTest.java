@@ -2,6 +2,7 @@ package IntentsTest.myIntent.QueryIntents;
 
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.QueryIntent.QueryTaskIntent;
+import main.Entity.Intent.QueryIntent.WhatObjectQueryTaskIntent;
 import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
 import main.Entity.Intent.TaskIntent;
 import main.Entity.Intent.myIntent;
@@ -30,26 +31,29 @@ class QueryIntentsTest {
 
 
     @Test
-    @DisplayName("Create a WHO_SUBJECT query task intent")
+    @DisplayName("Create a QueryTaskIntents")
     void createQueryTaskIntent() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         String name = "taskName";
         String subject = "Employee";
-        String tasca = "Ship a Parcel";
+        String tasca = "Send finished documents to Marketing Department";
 
         myIntent taskIntent = new TaskIntent(name, subject, tasca);
 
         Intents resultIntents = taskIntent.buildExtraIntents();
 
-        Intents expectedIntents = createExpected_WHO_SUBJECT_QueryTaskIntents(name, subject, tasca);
+        Intents expectedIntents = createExpected_QueryTaskIntents(name, subject, tasca);
 
         assertEquals(expectedIntents, resultIntents);
     }
 
-    private Intents createExpected_WHO_SUBJECT_QueryTaskIntents(String name, String subject, String tasca) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+    private Intents createExpected_QueryTaskIntents(String name, String subject, String tasca) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         Intents expectedIntents = new Intents();
 
-        myIntent intent_query = new WhoSubjectQueryTaskIntent(name , subject, tasca);
-        expectedIntents.add(intent_query);
+        myIntent intent_WHO_SUBJECT_query = new WhoSubjectQueryTaskIntent(name , subject, tasca);
+        expectedIntents.add(intent_WHO_SUBJECT_query);
+
+        myIntent intent_WHAT_OBJECT_query = new WhatObjectQueryTaskIntent(name , subject, tasca);
+        expectedIntents.add(intent_WHAT_OBJECT_query);
 
         return expectedIntents;
     }

@@ -1,6 +1,7 @@
 package main.Entity.Intent;
 
 import main.Entity.Intent.QueryIntent.QueryTaskIntent;
+import main.Entity.Intent.QueryIntent.WhatObjectQueryTaskIntent;
 import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
 import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
@@ -24,9 +25,11 @@ public class TaskIntent extends myIntent {
         String task = this.getTask();
         String subject = this.getSubject();
 
-        myIntent queryTaskIntent = new WhoSubjectQueryTaskIntent(id, subject, task);
+        myIntent whoSubjectQueryTaskIntent = new WhoSubjectQueryTaskIntent(id, subject, task);
+        intents.add(whoSubjectQueryTaskIntent);
 
-        intents.add(queryTaskIntent);
+        myIntent whatObjectQueryTaskIntent = new WhatObjectQueryTaskIntent(id, subject, task);
+        intents.add(whatObjectQueryTaskIntent);
 
         return intents;
     }

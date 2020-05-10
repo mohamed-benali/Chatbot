@@ -1,9 +1,8 @@
 package IntentsTest.myIntent.QueryIntents.WhatObjectQueryTaskIntent;
 
-import main.Entity.Intent.Intents;
+import main.Entity.Intent.QueryIntent.QueryTaskIntent;
+import main.Entity.Intent.QueryIntent.WhatObjectQueryTaskIntent;
 import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
-import main.Entity.Intent.TaskIntent;
-import main.Entity.Intent.myIntent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,27 +30,19 @@ class WhatObjectQueryTaskIntentTest {
 
 
     @Test
-    @DisplayName("Create a WHO_SUBJECT query task intent")
+    @DisplayName("Response of WhatObject_QueryTaskIntent: Employee sends finished documents to marketing department")
     void createQueryTaskIntent() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         String name = "taskName";
         String subject = "Employee";
-        String tasca = "Ship a Parcel";
+        String tasca = "Send finished documents to Marketing Department";
 
-        myIntent taskIntent = new TaskIntent(name, subject, tasca);
+        QueryTaskIntent intent = new WhatObjectQueryTaskIntent(name , subject, tasca);
+        List<String> resultResponse = intent.makeResponse();
 
-        Intents resultIntents = taskIntent.buildExtraIntents();
+        List<String> expectedResponse = new ArrayList<>();
+        expectedResponse.add("Employee sends finished documents to marketing department.");
 
-        Intents expectedIntents = createExpected_WHO_SUBJECT_QueryTaskIntents(name, subject, tasca);
-
-        assertEquals(expectedIntents, resultIntents);
+        assertEquals(expectedResponse, resultResponse);
     }
 
-    private Intents createExpected_WHO_SUBJECT_QueryTaskIntents(String name, String subject, String tasca) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
-        Intents expectedIntents = new Intents();
-
-        myIntent intent_query = new WhoSubjectQueryTaskIntent(name , subject, tasca);
-        expectedIntents.add(intent_query);
-
-        return expectedIntents;
-    }
 }

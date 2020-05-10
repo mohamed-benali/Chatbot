@@ -1,9 +1,9 @@
 package main.Entity.Intent.QueryIntent;
 
-import main.Entity.Intent.QueryIntent.QueryTaskIntent;
-import main.Enums.DefaultTrainingPhraseType;
+import main.Entity.Intent.myIntent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
@@ -11,30 +11,36 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhoSubjectQueryTaskIntent extends QueryTaskIntent {
-    public WhoSubjectQueryTaskIntent(String id, String subject, String task) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
-        super(id+"_WHO_SUBJECT", subject, task);
+public class WhatObjectQueryTaskIntent extends QueryTaskIntent {
+    public WhatObjectQueryTaskIntent(String name, String subject, String tasca) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+        super(name+"_WHAT_OBJECT", subject, tasca);
 
         // TODO: Create here the training Sentences? For now here
-        String whoSubjectSentence = this.getSentenceBuilder().buildWhoSubjectSentence(this.getTask());
-        this.getTrainingPhrases().addTrainingPhrase(whoSubjectSentence);
+        String whatObjectSentence_workAround_without_does = this.getSentenceBuilder().buildWhatObjectSentence_WorkAround_Without_Does(this.getTask(), subject);
+        this.getTrainingPhrases().addTrainingPhrase(whatObjectSentence_workAround_without_does);
+
+        String whatObjectSentence = this.getSentenceBuilder().buildWhatObjectSentence(this.getTask(), subject);
+        this.getTrainingPhrases().addTrainingPhrase(whatObjectSentence);
+
+        // TODO: Create here the sentenceAnalysis? For now here
+        SentenceAnalysis sentenceAnalysis =this.getSentenceAnalyzer().analyzeSentence(tasca);
+        this.setSentenceAnalysis(sentenceAnalysis);
     }
 
     @Override
-    public List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException { // TODO: Better responses, X is done by Subject
+    public List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException { // TODO: Better responses Make better responses, Subject Verb bla bla bla?
         List<String> responses = new ArrayList<>();
-
+        /*
+        String response = this.getSentenceAnalysis().getObject();
+        responses.add(response);*/
         String subject = this.getSubject();
         String response = this.getSentenceBuilder().buildSentence(this.getTask(), subject);
-        this.getTrainingPhrases().addTrainingPhrase(response);
-
         responses.add(response);
 
         return responses;
     }
 
-
-    @Override //TODO: Create here the training Sentence? For now, in the constructor
+    @Override
     protected Sentences buildTrainingPhrasesToParaphrase() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         Sentences sentences = new Sentences();
         sentences.addSentences(this.getTrainingPhrases().getTrainingPhrasesList());

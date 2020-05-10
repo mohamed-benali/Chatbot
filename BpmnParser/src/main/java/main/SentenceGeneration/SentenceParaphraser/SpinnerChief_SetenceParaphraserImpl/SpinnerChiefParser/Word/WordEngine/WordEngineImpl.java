@@ -108,5 +108,35 @@ public class WordEngineImpl implements WordEngine {
         return cjt_words;
     }
 
+    @Override //TODO:  Espais en blanc donen per cul
+    public Cjt_Words reduceToHalfWordOptions(Words words) {
+        Cjt_Words cjt_words = new Cjt_Words();
+        Words words_even = new Words();
+        Words words_odd = new Words();
+
+        for(int i = 0; i < words.size(); ++i) {
+            Word word = words.get(i);
+
+            if(i % 4 == 0) { // mod 4 because the blank space needs to be considered
+                words_even.add(word.get(0));
+                words_odd.add(word);
+            }
+            else if((i-2) % 4 == 0){
+                words_even.add(word);
+                words_odd.add(word.get(0)); // Adds the word i=0, to because it is the original word(not the paraphrased options)
+            }
+            else {
+                words_even.add(word);
+                words_odd.add(word);
+            }
+
+
+        }
+
+        cjt_words.add(words_even);
+        cjt_words.add(words_odd);
+        return cjt_words;
+    }
+
 
 }

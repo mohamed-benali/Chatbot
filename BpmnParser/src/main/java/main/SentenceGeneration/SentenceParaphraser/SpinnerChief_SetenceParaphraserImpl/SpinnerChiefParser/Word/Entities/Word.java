@@ -22,4 +22,6 @@ public abstract class Word {
      *     If {@code index + sizeSubset >= this.size()}, then returns the first word, plus the (sizeSubset-1) last words
      */
     public abstract Word getSubWord(int index, int sizeSubset);
+
+    public abstract boolean isBlankSpace();
 }

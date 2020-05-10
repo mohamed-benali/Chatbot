@@ -33,9 +33,6 @@ public class Sentence {
         String result = "";
         result += "\n";
         result += "Sentence:    " + this.getSentence() + "\n";
-        result += "\n";
-        result += "\n";
-
         return result;
     }
 }

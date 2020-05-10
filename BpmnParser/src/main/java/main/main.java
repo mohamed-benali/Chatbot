@@ -28,7 +28,7 @@ public class main {
 
         System.out.println(intents.toString());
 
-        //intents.translateIntoDialogFlow();
+        intents.translateIntoDialogFlow();
 
     }
 }

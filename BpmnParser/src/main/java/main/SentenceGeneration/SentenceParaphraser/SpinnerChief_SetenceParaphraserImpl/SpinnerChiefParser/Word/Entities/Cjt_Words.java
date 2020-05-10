@@ -39,6 +39,13 @@ public class Cjt_Words {
     //endregion
 
 
+    /**
+     * Number of words
+     * @return Returns the number of words
+     */
+   public int size(){
+        return cjt_words.size();
+   }
 
 
     public List<Words> getCjt_words() { return cjt_words; }

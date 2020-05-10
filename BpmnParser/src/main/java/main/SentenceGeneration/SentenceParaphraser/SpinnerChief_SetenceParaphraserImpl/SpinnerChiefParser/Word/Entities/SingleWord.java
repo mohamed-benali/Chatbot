@@ -14,7 +14,6 @@ public class SingleWord extends Word {
     @Override
     public String toString() {
         String result = "";
-        result += "\n";
         result += getWord().toString();
         result += "\n";
         return result;
@@ -37,10 +36,12 @@ public class SingleWord extends Word {
     @Override
     public int size() { return 1; }
 
-    @Override
     /**
-     * i = 0
+     * Always returns the word.
+     * @param i This parameter is ignrored.
+     * @return Returns the word
      */
+    @Override
     public String get(int i) {
         return word;
     }
@@ -58,5 +59,10 @@ public class SingleWord extends Word {
     @Override
     public Word getSubWord(int index, int sizeSubset) {
         return new SingleWord(word);
+    }
+
+    @Override
+    public boolean isBlankSpace() {
+        return this.getWord().equals(" ");
     }
 }

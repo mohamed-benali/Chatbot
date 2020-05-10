@@ -2,6 +2,10 @@ package main.SentenceGeneration.SentenceBuilder;
 
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SimpleSentenceAnalysis;
+import main.SentenceGeneration.SentenceGeneratorServiceAdapter.SentenceGeneratorServiceAdapter;
+import main.SentenceGeneration.SentenceGeneratorServiceAdapter.SentenceGenerator_SimpleNLG_AdapterImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -110,6 +114,7 @@ class SentenceBuilderTest {
 
 
 
+    //region REGION: WHO_SUBJECT
     @Test
     @DisplayName("Generates a WHO_SUBJECT sentence: Who chases the monkey?.")
     void generateSentence6() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
@@ -152,8 +157,52 @@ class SentenceBuilderTest {
 
         assertEquals(expectedGeneratedSentence, generatedSentence);
     }
+    //endregion
+
+    @Test
+    @DisplayName("Generates a WHAT_OBJECT sentence: What does Mary chase?")
+    void generateWHAT_OBJECT_Sentence() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Chase the monkey";
+        String subject = "Mary";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhatObjectSentence(sentence, subject);
 
 
+        String expectedGeneratedSentence = "What does Mary chase?";
+
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+    
+
+    @Test
+    @DisplayName("Generates a WHAT_OBJECT sentence: What does Mary send to marketing department?")
+    void generateWHAT_OBJECT_Sentence2() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Send finished documents to Marketing Department";
+        String subject = "Mary";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhatObjectSentence(sentence, subject);
+
+        String expectedGeneratedSentence = "What does Mary send to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("WorkAround! Generates a WHAT_OBJECT sentence: What sends Mary to marketing department?")
+    void generateWorkAround_WHAT_OBJECT_Sentence2() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Send finished documents to Marketing Department";
+        String subject = "Mary";
+
+        SentenceBuilder sentenceBuilder = new SentenceBuilderImpl() ;
+        String generatedSentence = sentenceBuilder.buildWhatObjectSentence_WorkAround_Without_Does(sentence, subject);
+
+        String expectedGeneratedSentence = "What sends Mary to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
 
 
 

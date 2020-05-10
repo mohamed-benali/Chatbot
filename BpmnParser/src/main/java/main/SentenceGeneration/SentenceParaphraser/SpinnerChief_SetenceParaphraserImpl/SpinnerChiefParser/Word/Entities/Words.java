@@ -60,6 +60,10 @@ public class Words {
     public void add(Word word) {
         words.add(word);
     }
+    public void add(String word) {
+        Word newWord = new SingleWord(word);
+        words.add(newWord);
+    }
 
     /**
      * Words should be all of type SingleWord

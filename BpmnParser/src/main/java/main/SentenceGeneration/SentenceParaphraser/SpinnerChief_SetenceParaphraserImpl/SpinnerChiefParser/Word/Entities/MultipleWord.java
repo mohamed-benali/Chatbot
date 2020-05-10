@@ -28,9 +28,7 @@ public class MultipleWord extends Word {
     @Override
     public String toString() {
         String result = "";
-        result += "\n";
         result += getWords().toString();
-        result += "\n";
         result += "\n";
         return result;
     }
@@ -97,5 +95,10 @@ public class MultipleWord extends Word {
         Word returnWord = word;
         if(word.size() == 1) returnWord = new SingleWord(word.get(0));
         return returnWord;
+    }
+
+    @Override
+    public boolean isBlankSpace() {
+        return false;
     }
 }

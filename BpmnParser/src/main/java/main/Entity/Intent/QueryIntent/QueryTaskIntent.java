@@ -1,35 +1,40 @@
 package main.Entity.Intent.QueryIntent;
 
 import main.Entity.Intent.Intents;
-import main.Entity.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Entity.Intent.myIntent;
-import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
+import main.SentenceGeneration.SentenceAnalyzer.FreelingSimpleSentenceAnalyzerImpl;
+import main.SentenceGeneration.SentenceAnalyzer.SentenceAnalyzer;
+import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Potser fer-la abstrat si es pot
 public abstract class QueryTaskIntent extends myIntent {
+
+    protected SentenceAnalysis sentenceAnalysis;
+    private SentenceAnalyzer sentenceAnalyzer;
+
+
     public QueryTaskIntent(String name, String subject, String task) throws IOException {
         super(name+"_Query", subject, task);
-
-        // TODO: Use the analysis of Freeling and SimpleNLG to build a better training phrase(use the verb, for example)
-        //this.addTrainingPhrase("Who " + task);
+        setSentenceAnalysis(new SentenceAnalysis());
+        setSentenceAnalyzer(new FreelingSimpleSentenceAnalyzerImpl());
     }
+
+    public SentenceAnalysis getSentenceAnalysis() { return sentenceAnalysis; }
+    public void setSentenceAnalysis(SentenceAnalysis sentenceAnalysis) { this.sentenceAnalysis = sentenceAnalysis; }
+
+    public SentenceAnalyzer getSentenceAnalyzer() { return sentenceAnalyzer; }
+    public void setSentenceAnalyzer(SentenceAnalyzer sentenceAnalyzer) { this.sentenceAnalyzer = sentenceAnalyzer; }
+
 
     @Override
-    protected List<String> makeResponse() {
-        // TODO: Use the analysis of Freeling and SimpleNLG to build a better response
-        List<String> responses = new ArrayList<String>();
-        String response = this.getSubject();
-        responses.add(response);
-        return responses;
-    }
+    public abstract List<String> makeResponse() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
 
 
     @Override
@@ -48,4 +53,7 @@ public abstract class QueryTaskIntent extends myIntent {
 
     @Override
     protected abstract void setDefaultNullTrainingPhrase();
+
+
+
 }

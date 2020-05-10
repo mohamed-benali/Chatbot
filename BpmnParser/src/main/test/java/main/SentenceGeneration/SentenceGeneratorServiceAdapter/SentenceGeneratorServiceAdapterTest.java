@@ -162,5 +162,40 @@ class SentenceGeneratorServiceAdapterTest {
     }
 
 
+    @Test
+    @DisplayName("WORKAROUND!!! Generates a WHAT_OBJECT sentence: What chases Mary?")
+    void generateWHAT_OBJECT_Sentence_testing() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("chase", "noun",
+                null, "singular",
+                "the monkey", "singular",
+                null, null);
+
+        String subject = "Mary";
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence_WorkAround_Without_Does(sentenceAnalysis, subject);
+
+        String expectedGeneratedSentence = "What chases Mary?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+    @Test
+    @DisplayName("WORKAROUND!!! Generates a WHAT_OBJECT sentence: What sends Mary to marketing department?")
+    void generateWHAT_OBJECT_Sentence_testing2() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        SentenceAnalysis sentenceAnalysis = new SimpleSentenceAnalysis("send", "verb",
+                "infinitive", null,
+                "finished documents", "plural",
+                "to marketing department", "singular");
+
+        String subject = "Mary";
+        SentenceGeneratorServiceAdapter sentenceGeneratorServiceAdapter = new SentenceGenerator_SimpleNLG_AdapterImpl();
+        String generatedSentence = sentenceGeneratorServiceAdapter.generateWhatObjectSentence_WorkAround_Without_Does(sentenceAnalysis, subject);
+
+        String expectedGeneratedSentence = "What sends Mary to marketing department?";
+
+        assertEquals(expectedGeneratedSentence, generatedSentence);
+    }
+
+
 
 }

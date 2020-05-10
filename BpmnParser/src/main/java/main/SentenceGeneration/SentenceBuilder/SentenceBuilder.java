@@ -40,4 +40,29 @@ public interface SentenceBuilder {
      * @return Returns a sentence where is asked who does what is done in the {@code sentence} passed as a parameter
      */
     String buildWhoSubjectSentence(String sentence) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
+
+    /**
+     * Builds a question where is asked what does the subject<br>
+     * <br>
+     * Specifically, the function analyzes the sentence, and builds the question.<br>
+     * <br>
+     * @param sentence The sentence without the subject
+     * @param subject The subject
+     * @return Returns a sentence where is asked what does the subject
+     * @throws InterruptedException
+     * @throws SentenceAnalyzerException
+     * @throws NoFreelingKeyException
+     * @throws IOException
+     */
+    String buildWhatObjectSentence(String sentence, String subject) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
+
+
+    /**
+     * WorkAround analisis of WhatObject(the workaround is that its used What_Subject instead of What_object, and
+     * the object and the subject are swapped. Therefore, does is not included.
+     * @param sentence Ex: "Send the documents"
+     * @param subject Ex: "Mary"
+     * @return "What sends Mary?"
+     */
+    String buildWhatObjectSentence_WorkAround_Without_Does(String sentence, String subject) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException;
 }
