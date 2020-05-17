@@ -1,25 +1,22 @@
-package main.Entity.Parser.ParserFlowNodes;
+package main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper;
 
+import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelper;
+import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelperImpl;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.xml.type.ModelElementType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CamundaHelper {
+public class CamundaHelperImpl implements CamundaHelper{
     public BpmnModelInstance modelInstance;
+    public ParseFlowNodesHelper parseFlowNodesHelper;
 
-    private static CamundaHelper instance;
-    public static CamundaHelper getInstance(BpmnModelInstance modelInstance) {
-        if(instance == null) instance = new CamundaHelper(modelInstance);
-        return instance;
-    }
-
-    public CamundaHelper(BpmnModelInstance modelInstance) {
+    public CamundaHelperImpl(BpmnModelInstance modelInstance, ParseFlowNodesHelper parseFlowNodesHelper) {
         this.modelInstance = modelInstance;
+        this.parseFlowNodesHelper = parseFlowNodesHelper;
     }
 
 
@@ -27,7 +24,41 @@ public class CamundaHelper {
      * HELPERS(Camunda BPMN)
      */
 
-    // Get following flow nodes(task, gateway, etc) of a FlowNode.
+
+    //region REGION Incoming FlowNodes
+    @Override
+    public Collection<FlowNode> getAllIncomingFlowNodes(FlowNode node) {
+        Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
+        for (SequenceFlow sequenceFlow : node.getIncoming()) {
+            followingFlowNodes.add(sequenceFlow.getSource());
+        }
+        return followingFlowNodes;
+    }
+
+    @Override
+    public List<FlowNode> getAllIncomingFlowNodesAsList(FlowNode node) {
+        List<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
+        for (SequenceFlow sequenceFlow : node.getIncoming()) {
+            followingFlowNodes.add(sequenceFlow.getSource());
+        }
+        return followingFlowNodes;
+    }
+
+    @Override
+    public Collection<FlowNode> getRelevantIncomingFlowNodes(FlowNode node) {
+        Collection<FlowNode> incomingFlowNodes = new ArrayList<FlowNode>();
+        for (SequenceFlow sequenceFlow : node.getIncoming()) {
+            FlowNode incomingNode = sequenceFlow.getSource();
+            if(parseFlowNodesHelper.isClosingExclusiveGateway(incomingNode) )
+                incomingFlowNodes.addAll(this.getRelevantIncomingFlowNodes(incomingNode));
+            else incomingFlowNodes.add(incomingNode);
+        }
+        return incomingFlowNodes;
+    }
+    //endregion
+
+    //region REGION: Following FlowNodes
+    @Override
     public Collection<FlowNode> getAllFlowingFlowNodes(FlowNode node) {
         Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
         for (SequenceFlow sequenceFlow : node.getOutgoing()) {
@@ -38,7 +69,7 @@ public class CamundaHelper {
         return followingFlowNodes;
     }
 
-    // Get following flow nodes(task, gateway, etc) of a FlowNode as List.
+    @Override
     public List<FlowNode> getAllFlowingFlowNodesAsList(FlowNode node) {
         List<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
         for (SequenceFlow sequenceFlow : node.getOutgoing()) {
@@ -47,31 +78,11 @@ public class CamundaHelper {
         return followingFlowNodes;
     }
 
-    // Get previous flow nodes(task, gateway, etc) of a FlowNode.
-    public Collection<FlowNode> getAllIncomingFlowNodes(FlowNode node) {
-        Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
-        for (SequenceFlow sequenceFlow : node.getIncoming()) {
-            followingFlowNodes.add(sequenceFlow.getSource());
-        }
-        return followingFlowNodes;
-    }
-
-    // Get previous flow nodes(task, gateway, etc) of a FlowNode  as List
-    public List<FlowNode> getAllIncomingFlowNodesAsList(FlowNode node) {
-        List<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
-        for (SequenceFlow sequenceFlow : node.getIncoming()) {
-            followingFlowNodes.add(sequenceFlow.getSource());
-        }
-        return followingFlowNodes;
-    }
-
-    // Get following flow nodes(task, gateway, etc) of a FlowNode.
-    // Ignores a flownode if it is a closing exclusive/parallel gateway
+    @Override
     public Collection<FlowNode> getRelevantFlowingFlowNodes(FlowNode node) {
         Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
         for (SequenceFlow sequenceFlow : node.getOutgoing()) {
             FlowNode followingNode = sequenceFlow.getTarget();
-            ParseFlowNodesHelper parseFlowNodesHelper = ParseFlowNodesHelper.getInstance(modelInstance);
             if( parseFlowNodesHelper.isClosingExclusiveGateway(followingNode ) ||
                 parseFlowNodesHelper.isClosingParallelGateway(followingNode) )
                 followingFlowNodes.addAll(this.getRelevantFlowingFlowNodes(followingNode));
@@ -80,35 +91,24 @@ public class CamundaHelper {
         return followingFlowNodes;
     }
 
-    // Get following flow nodes(task, gateway, etc) of a FlowNode.
-    // Ignores a flownode if it is a closing exclusive gateway
+    @Override
     public Collection<FlowNode> getRelevantFlowingFlowNodesPlusClosingParallelGateway(FlowNode node) {
         Collection<FlowNode> followingFlowNodes = new ArrayList<FlowNode>();
         for (SequenceFlow sequenceFlow : node.getOutgoing()) {
             FlowNode followingNode = sequenceFlow.getTarget();
-            ParseFlowNodesHelper parseFlowNodesHelper = ParseFlowNodesHelper.getInstance(modelInstance);
             if( parseFlowNodesHelper.isClosingExclusiveGateway(followingNode ) )
                 followingFlowNodes.addAll(this.getRelevantFlowingFlowNodes(followingNode));
             else followingFlowNodes.add(followingNode);
         }
         return followingFlowNodes;
     }
+    //endregion
 
-    // Get previous flow nodes(task, gateway, etc) of a FlowNode.
-    // Ignores a flownode if theu are closingExclusiveGateway
-    public Collection<FlowNode> getRelevantIncomingFlowNodes(FlowNode node) {
-        Collection<FlowNode> incomingFlowNodes = new ArrayList<FlowNode>();
-        for (SequenceFlow sequenceFlow : node.getIncoming()) {
-            FlowNode incomingNode = sequenceFlow.getSource();
-            ParseFlowNodesHelper parseFlowNodesHelper = ParseFlowNodesHelper.getInstance(modelInstance);
-            if(parseFlowNodesHelper.isClosingExclusiveGateway(incomingNode) )
-                incomingFlowNodes.addAll(this.getRelevantIncomingFlowNodes(incomingNode));
-            else incomingFlowNodes.add(incomingNode);
-        }
-        return incomingFlowNodes;
-    }
 
-    // Gives the source subject (ex:"Departament", "Empleat") of the message flow
+
+
+    //region get Source/Target Subject
+    @Override
     public String getSourceSubject(MessageFlow messageFlow) {
         String sourceSubject = null;
 
@@ -127,7 +127,7 @@ public class CamundaHelper {
         return sourceSubject;
     }
 
-    // Gives the target subject (ex:"Departament", "Empleat") of the message flow
+    @Override
     public String getTargetSubject(MessageFlow messageFlow) {
         String targetSubject = null;
 
@@ -145,4 +145,5 @@ public class CamundaHelper {
 
         return targetSubject;
     }
+    //endregion
 }

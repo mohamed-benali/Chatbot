@@ -2,7 +2,7 @@ package BpmnAlgorithmTest;
 
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
-import main.Entity.Parser.BpmnAlgorithm;
+import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Participant;
@@ -10,14 +10,13 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BpmnAlgorithm_ParallelGatewayTest {
+class BpmnAlgorithm_Impl_ParallelGatewayTest {
 
     static BpmnModelInstance modelInstanceParallelGateway;
-    static BpmnAlgorithm bpmnAlgorithmParallelGateway;
+    static BpmnAlgorithmImpl bpmnAlgorithmParallelGateway;
 
     /*
      * PATHS
@@ -35,7 +34,7 @@ class BpmnAlgorithm_ParallelGatewayTest {
 
     @BeforeEach
     void setUpEach() {
-        bpmnAlgorithmParallelGateway = new BpmnAlgorithm(modelInstanceParallelGateway);
+        bpmnAlgorithmParallelGateway = new BpmnAlgorithmImpl(modelInstanceParallelGateway);
     }
 
     @AfterEach

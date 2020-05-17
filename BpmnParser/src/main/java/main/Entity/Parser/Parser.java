@@ -1,6 +1,8 @@
 package main.Entity.Parser;
 
 import main.Entity.Intent.Intents;
+import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithm;
+import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
@@ -29,7 +31,7 @@ public class Parser {
         File file = new File(bpmnPath);
         this.modelInstance = Bpmn.readModelFromFile(file);
 
-        this.bpmnAlgorithm = new BpmnAlgorithm(this.modelInstance);
+        this.bpmnAlgorithm = new BpmnAlgorithmImpl(this.modelInstance);
     }
 
     /*

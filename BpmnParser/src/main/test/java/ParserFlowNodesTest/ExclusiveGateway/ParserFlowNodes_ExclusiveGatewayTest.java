@@ -2,8 +2,8 @@ package ParserFlowNodesTest.ExclusiveGateway;
 
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
-import main.Entity.Parser.BpmnAlgorithm;
-import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
+import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
@@ -11,18 +11,15 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.Process;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ParserFlowNodes_ExclusiveGatewayTest {
 
     static BpmnModelInstance modelInstance;
-    static ParserFlowNodes parserFlowNodes;
+    static ParserFlowNodesImpl parserFlowNodes;
 
-    static BpmnAlgorithm bpmnAlgorithm;
+    static BpmnAlgorithmImpl bpmnAlgorithm;
 
     /*
      * PATHS
@@ -40,9 +37,9 @@ class ParserFlowNodes_ExclusiveGatewayTest {
 
     @BeforeEach
     void setUpEach() {
-        parserFlowNodes = new ParserFlowNodes(modelInstance);
+        parserFlowNodes = new ParserFlowNodesImpl(modelInstance);
 
-        bpmnAlgorithm = new BpmnAlgorithm(modelInstance);
+        bpmnAlgorithm = new BpmnAlgorithmImpl(modelInstance);
     }
 
     @AfterEach

@@ -7,6 +7,7 @@ import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserAllCombinationsImpl;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserDirectSubSetImpl;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserHalfOptionsImpl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -53,7 +54,7 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
      * IMPORTANT!!!: There is a mistake in SpinnerChief's pathetically lazy written outdated docs.
      * For getting all the words changed, you have to put a 0.
      */
-    private String spinfreq = "1"; //
+    private String spinfreq = "0"; //
 
     /**
      *  0 --> Removes the original word  ***DEFAULT***
@@ -119,11 +120,11 @@ public class SpinnerChief_SentenceParaphraserImpl implements SentenceParaphraser
     private String uri;
 
     /**
-     * Default constructor for SpinnerChiefParser: SpinnerChiefParserDirectSubSetImpl()
+     * Default constructor for SpinnerChiefParser: SpinnerChiefParserHalfOptionsImpl()
      */
     public SpinnerChief_SentenceParaphraserImpl() {
         this.uri = buildURI();
-        spinnerChiefParser = new SpinnerChiefParserDirectSubSetImpl();
+        spinnerChiefParser = new SpinnerChiefParserHalfOptionsImpl();
     }
 
     /**

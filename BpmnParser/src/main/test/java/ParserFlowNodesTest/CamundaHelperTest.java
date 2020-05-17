@@ -1,6 +1,6 @@
 package ParserFlowNodesTest;
 
-import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CamundaHelperTest {
 
     static BpmnModelInstance modelInstance;
-    static ParserFlowNodes parserFlowNodes;
+    static ParserFlowNodesImpl parserFlowNodes;
 
     /*
      * PATHS
@@ -31,7 +31,7 @@ class CamundaHelperTest {
 
     @BeforeEach
     void setUpEach() {
-        parserFlowNodes = new ParserFlowNodes(modelInstance);
+        parserFlowNodes = new ParserFlowNodesImpl(modelInstance);
     }
 
     @AfterAll

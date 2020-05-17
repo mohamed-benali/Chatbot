@@ -77,4 +77,36 @@ class SentenceAnalyzerTest {
         assertEquals(expectedSentenceAnalysis, resultSentenceAnalysis);
     }
 
+    @Test
+    @DisplayName("Analyze sentence correctly: Receive payment confirmation")
+    void analyzeSentence4() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Receive payment confirmation";
+        SentenceAnalyzer sentenceAnalyzer = new FreelingSimpleSentenceAnalyzerImpl();
+
+        SentenceAnalysis resultSentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+
+        SentenceAnalysis expectedSentenceAnalysis = new SimpleSentenceAnalysis("receive", "verb",
+                "infinitive", null,
+                "payment confirmation", "singular",
+                null, null);
+
+        assertEquals(expectedSentenceAnalysis, resultSentenceAnalysis);
+    }
+
+    @Test
+    @DisplayName("Analyze sentence correctly: Receive Zoo's card")
+    void analyzeSentence5() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Receive Zoo's card";
+        SentenceAnalyzer sentenceAnalyzer = new FreelingSimpleSentenceAnalyzerImpl();
+
+        SentenceAnalysis resultSentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+
+        SentenceAnalysis expectedSentenceAnalysis = new SimpleSentenceAnalysis("receive", "verb",
+                "infinitive", null,
+                "zoo 's card", "singular",
+                null, null);
+
+        assertEquals(expectedSentenceAnalysis, resultSentenceAnalysis);
+    }
+
 }

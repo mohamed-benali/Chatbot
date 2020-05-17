@@ -65,4 +65,14 @@ public class SingleWord extends Word {
     public boolean isBlankSpace() {
         return this.getWord().equals(" ");
     }
+
+    @Override
+    public boolean isMultipleWord() {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleWord() {
+        return true;
+    }
 }

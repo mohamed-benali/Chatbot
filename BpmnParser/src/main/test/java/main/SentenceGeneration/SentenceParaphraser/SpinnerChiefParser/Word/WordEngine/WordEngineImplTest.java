@@ -96,7 +96,7 @@ class WordEngineImplTest {
 
 
 
-    @Test
+    @Test //TODO: The blank spaces between the options is not added in these tests. Maybe add them?
     @DisplayName("Parse one sentence: {Who|Who else} {updates|up-dates} {the|the particular|this} {stock|inventory}?")
     void generateSentencesBacktracking2() {
         MultipleWord multipleWord = new MultipleWord();

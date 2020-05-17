@@ -15,8 +15,13 @@ public class SpinnerChiefParserHalfOptionsImpl implements main.SentenceGeneratio
 
     public SpinnerChiefParserHalfOptionsImpl() {
         wordEngine = new WordEngineImpl();
-        //spinnerChiefParser = new SpinnerChiefParserDirectSubSetImpl();
-        spinnerChiefParser = new SpinnerChiefParserAllCombinationsImpl();
+        spinnerChiefParser = new SpinnerChiefParserDirectSubSetImpl();
+        //spinnerChiefParser = new SpinnerChiefParserAllCombinationsImpl();
+    }
+
+    public SpinnerChiefParserHalfOptionsImpl(SpinnerChiefParser spinnerChiefParser) {
+        wordEngine = new WordEngineImpl();
+        this.spinnerChiefParser = spinnerChiefParser;
     }
 
 

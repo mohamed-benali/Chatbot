@@ -1,28 +1,20 @@
 package ParserFlowNodesTest;
 
-import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.MessageFlow;
 
 
-import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
-import org.camunda.bpm.model.bpmn.instance.Task;
 import org.junit.jupiter.api.*;
 
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ParserFlowNodesTest {
 
     static BpmnModelInstance modelInstance;
-    static ParserFlowNodes parserFlowNodes;
+    static ParserFlowNodesImpl parserFlowNodes;
 
     /*
      * PATHS
@@ -40,7 +32,7 @@ class ParserFlowNodesTest {
 
     @BeforeEach
     void setUpEach() {
-        parserFlowNodes = new ParserFlowNodes(modelInstance);
+        parserFlowNodes = new ParserFlowNodesImpl(modelInstance);
     }
 
     @AfterAll

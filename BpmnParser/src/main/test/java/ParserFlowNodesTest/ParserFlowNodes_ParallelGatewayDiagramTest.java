@@ -1,11 +1,10 @@
 package ParserFlowNodesTest;
 
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.MessageFlow;
-import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.Task;
 import org.junit.jupiter.api.*;
 
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserFlowNodes_ParallelGatewayDiagramTest {
 
     static BpmnModelInstance modelInstanceParallelGateway;
-    static ParserFlowNodes parserFlowNodesParallelGateway;
+    static ParserFlowNodesImpl parserFlowNodesParallelGateway;
 
     /*
      * PATHS
@@ -36,7 +35,7 @@ class ParserFlowNodes_ParallelGatewayDiagramTest {
 
     @BeforeEach
     void setUpEach() {
-        parserFlowNodesParallelGateway = new ParserFlowNodes(modelInstanceParallelGateway);
+        parserFlowNodesParallelGateway = new ParserFlowNodesImpl(modelInstanceParallelGateway);
     }
 
     @AfterEach

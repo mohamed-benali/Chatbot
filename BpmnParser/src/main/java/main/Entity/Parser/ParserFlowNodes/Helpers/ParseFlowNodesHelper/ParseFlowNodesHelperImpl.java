@@ -1,5 +1,7 @@
-package main.Entity.Parser.ParserFlowNodes;
+package main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper;
 
+import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelper;
+import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelperImpl;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
@@ -10,37 +12,37 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class ParseFlowNodesHelper {
+public class ParseFlowNodesHelperImpl implements ParseFlowNodesHelper {
     public BpmnModelInstance modelInstance;
 
     private CamundaHelper camundaHelper;
 
-
-    private static ParseFlowNodesHelper instance;
-    public static ParseFlowNodesHelper getInstance(BpmnModelInstance modelInstance) {
-        if(instance == null) instance = new ParseFlowNodesHelper(modelInstance);
-        return instance;
-    }
-
-    public ParseFlowNodesHelper(BpmnModelInstance modelInstance) {
+    public ParseFlowNodesHelperImpl(BpmnModelInstance modelInstance) {
         this.modelInstance = modelInstance;
-        if(camundaHelper==null) camundaHelper = CamundaHelper.getInstance(modelInstance);
+        this.camundaHelper = new CamundaHelperImpl(modelInstance, this);
     }
 
-    /*
-     * AUXILIAR METHODS
-     */
+    @Override
+    public CamundaHelper getCamundaHelper() {
+        return camundaHelper;
+    }
+
+    //region REGION: createName
+
     // Creates the name(id) for the Intent
+    @Override
     public String createName(Participant participant, Process process, FlowNode node) {
         //String name = participant.getName() + ;
         String name = node.getId();
         return name;
     }
+    @Override
     public String createName(MessageFlow messageFlow, String subject) {
         String name = messageFlow.getId() + "_" + subject;
         return name;
     }
 
+    @Override
     public String createName(Participant participant, Process process, FlowNode node,
                              String textAtStart, String textAtEnd)
     {
@@ -48,9 +50,12 @@ public class ParseFlowNodesHelper {
         name = textAtStart + name + textAtEnd;
         return name;
     }
+    //endregion
 
 
+    //region REGION: ConvertToList
     // TODO: USe some wildcard
+    @Override
     public List<FlowNode> convertToFlowNodeList(Collection<FlowNode> nodes) {
         int nBranques = nodes.size();
         FlowNode[] firstNodesArray = nodes.toArray(new FlowNode[nBranques]); // Primers nodes de les branques
@@ -58,32 +63,36 @@ public class ParseFlowNodesHelper {
         return firstNodes;
     }
 
+    @Override
     public List<SequenceFlow> convertToSequenceFlowList(Collection<SequenceFlow> nodes) {
         int nBranques = nodes.size();
         SequenceFlow[] firstNodesArray = nodes.toArray(new SequenceFlow[nBranques]); // Primers nodes de les branques
         List<SequenceFlow> firstNodes = new ArrayList<SequenceFlow>(Arrays.asList(firstNodesArray));
         return firstNodes;
     }
+    //endregion
 
 
 
 
 
 
-    /*
-     *  GATEWAY opening/closing definitions
-     */
+    //region REGION: Opening/Closing gateway definitions
+
+    @Override
     public boolean isClosingExclusiveGateway(FlowNode followingNode) {
         ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
         if((followingNode.getElementType() == exclusiveGatewayType) && followingNode.getName() == null) return true;
         else return false;
     }
+    @Override
     public boolean isOpeningExclusiveGateway(FlowNode followingNode) {
         ModelElementType exclusiveGatewayType   = this.modelInstance.getModel().getType(ExclusiveGateway.class);
         if((followingNode.getElementType() == exclusiveGatewayType) && followingNode.getName() != null) return true;
         else return false;
     }
 
+    @Override
     public boolean isClosingParallelGateway(FlowNode followingNode) {
         ModelElementType parallelGatewayType   = this.modelInstance.getModel().getType(ParallelGateway.class);
         if(followingNode.getElementType() == parallelGatewayType){
@@ -93,6 +102,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
+    @Override
     public boolean isOpeningParallelGateway(FlowNode followingNode) {
         ModelElementType parallelGatewayType   = this.modelInstance.getModel().getType(ParallelGateway.class);
         if(followingNode.getElementType() == parallelGatewayType){
@@ -102,14 +112,11 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
+    //endregion
 
     //region REGION: AFTER GATEWAY
-    /*
-     * AFTER GATEWAY
-     */
 
-    // Tells if the node is after ONLY one EMPTY exlusive gateway
-    // Closing gateways dont have text
+    @Override
     public boolean after_closing_exclusive_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllIncomingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -118,8 +125,7 @@ public class ParseFlowNodesHelper {
         return false;
     }
 
-    // Tells if the node is after ONLY one NON EMPTY exlusive gateway
-    // Opening gateways dont have text
+    @Override
     public boolean after_opening_exclusive_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllIncomingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -127,7 +133,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
-
+    @Override
     public boolean after_opening_parallel_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllIncomingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -135,7 +141,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
-
+    @Override
     public boolean after_closing_parallel_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllIncomingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -147,12 +153,8 @@ public class ParseFlowNodesHelper {
 
 
     //region REGION: BEFORE GATEWAY
-    /*
-     * BEFORE GATEWAY
-     */
 
-    // Tells if the node is before a closing exlusive gateway
-    // Closing gateways dont have text
+    @Override
     public boolean before_closing_exclusive_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllFlowingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -161,8 +163,8 @@ public class ParseFlowNodesHelper {
         return false;
     }
 
-    // Tells if the node is before an opening exlusive gateway
-    // Closing gateways have text
+
+    @Override
     public boolean before_opening_exclusive_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllFlowingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -170,7 +172,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
-
+    @Override
     public boolean before_closing_parallel_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllFlowingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {
@@ -178,7 +180,7 @@ public class ParseFlowNodesHelper {
         }
         return false;
     }
-
+    @Override
     public boolean before_opening_parallel_gateway(FlowNode node) {
         Collection<FlowNode> flowNodes = camundaHelper.getAllFlowingFlowNodes(node);
         for(FlowNode flowNode : flowNodes) {

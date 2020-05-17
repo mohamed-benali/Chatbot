@@ -5,6 +5,8 @@ import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentence;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserAllCombinationsImpl;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserDirectSubSetImpl;
+import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.SpinnerChiefParserSubSetsImpl;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
 import org.junit.jupiter.api.*;
 
@@ -32,7 +34,7 @@ class SpinnerChief_SentenceParaphraserImplTest {
 
 
     @Test
-    @DisplayName("Paraphrase sentence: Who requests the items?")
+    @DisplayName("Paraphrase sentence(default=HalfOptions): Who requests the items?")
     void generateSentences() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
 
         List<String> sentences = new ArrayList<>();
@@ -82,13 +84,13 @@ class SpinnerChief_SentenceParaphraserImplTest {
 
 
     @Test
-    @DisplayName("Paraphrase one sentence: {Who|That|Who else} requests {the items|the things}?") // TODO: Do it
+    @DisplayName("Paraphrase one sentence(SubSetsImpl): {Who|That|Who else} requests {the items|the things}?") // TODO: Do it
     void generateSentencesBacktracking() throws IOException, InterruptedException, SpinnerChief_SentenceParaphraserException {
 
         String sentenceKey = "Who requests the items?";
         String sentenceToParse = "{Who|That|Who else} requests {the items|the things}?";
 
-        SpinnerChief_SentenceParaphraserImpl sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl() ;
+        SpinnerChief_SentenceParaphraserImpl sentenceParaphraser = new SpinnerChief_SentenceParaphraserImpl(new SpinnerChiefParserSubSetsImpl(2)) ;
         ParaphrasedSentences similarSentences = sentenceParaphraser.paraphraseOneSentence(sentenceToParse, sentenceKey);
 
         ParaphrasedSentences expectedGeneratedSentences = generateExpectedSentencesBacktracking(sentenceKey);

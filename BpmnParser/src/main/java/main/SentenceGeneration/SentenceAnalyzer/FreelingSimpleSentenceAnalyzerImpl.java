@@ -82,7 +82,12 @@ public class FreelingSimpleSentenceAnalyzerImpl implements SentenceAnalyzer {
         }
         if(firstAction.has("objW") )    {
             object      = firstAction.getString("objW");
-            objectNumber   = this.getMSDValueByKey("num", firstAction.getString("objMSD"));
+            String objectType = this.getMSDValueByKey("pos", firstAction.getString("objMSD"));
+            if(objectType.equals("conjunction")) {
+                //"objMSD": "pos=noun|type=common|num=plural",
+                objectNumber   = "singular";
+            }
+            else objectNumber   = this.getMSDValueByKey("num", firstAction.getString("objMSD"));
         }
         if(firstAction.has("compW") )   {
             complement   = firstAction.getString("compW");

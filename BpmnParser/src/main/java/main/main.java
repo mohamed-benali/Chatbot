@@ -15,7 +15,11 @@ public class main {
     public static String diagramLoopName = "diagramLoop.bpmn";
     public static String diagramLoopWithoutCollaborationsName = "diagramLoopWithoutCollaborations.bpmn";
 
-    public static String diagram = diagramParallelGatewayName;
+    public static String diagramZooName = "Zoo/Zoo.bpmn";
+    public static String diagramZooReducedWithoutMessagesName = "Zoo/ZooReducedWithoutMessages.bpmn";
+    public static String diagramZooModifiedName = "Zoo/ZooModified.bpmn";
+
+    public static String diagram = diagramZooReducedWithoutMessagesName;
 
     public static void main(String[] args) throws Exception {
         String packagePath = "./src/main/java/main";

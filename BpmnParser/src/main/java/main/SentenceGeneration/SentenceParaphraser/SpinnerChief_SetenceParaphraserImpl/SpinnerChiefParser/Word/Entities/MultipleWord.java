@@ -101,4 +101,14 @@ public class MultipleWord extends Word {
     public boolean isBlankSpace() {
         return false;
     }
+
+    @Override
+    public boolean isMultipleWord() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleWord() {
+        return false;
+    }
 }

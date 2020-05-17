@@ -1,10 +1,8 @@
 package BpmnAlgorithmTest;
 
-import com.google.cloud.dialogflow.v2.Intent;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.myIntent;
-import main.Entity.Parser.BpmnAlgorithm;
-import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
+import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Participant;
@@ -12,17 +10,14 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BpmnAlgorithmTest {
+class BpmnAlgorithmImplTest {
 
     static BpmnModelInstance modelInstance;
-    static BpmnAlgorithm bpmnAlgorithm;
+    static BpmnAlgorithmImpl bpmnAlgorithm;
 
     /*
      * PATHS
@@ -40,7 +35,7 @@ class BpmnAlgorithmTest {
 
     @BeforeEach
     void setUpEach() {
-        bpmnAlgorithm = new BpmnAlgorithm(modelInstance);
+        bpmnAlgorithm = new BpmnAlgorithmImpl(modelInstance);
     }
 
     @AfterEach

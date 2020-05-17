@@ -24,4 +24,8 @@ public abstract class Word {
     public abstract Word getSubWord(int index, int sizeSubset);
 
     public abstract boolean isBlankSpace();
+
+    public abstract boolean isMultipleWord();
+
+    public abstract boolean isSingleWord();
 }
