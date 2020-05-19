@@ -14,13 +14,18 @@ public interface ParseFlowNodesHelper {
 
 
 
+    //region REGION: createName
     String createName(Participant participant, Process process, FlowNode flowNode);
     String createName(Participant participant, Process process, FlowNode nextNode, String textAtStart, String textAtEnd);
     String createName(MessageFlow messageFlow, String sourceSubject);
+    //endregion
 
+    //region REGION: ConvertToList
     List<SequenceFlow> convertToSequenceFlowList(Collection<SequenceFlow> sequenceFlowsCollection);
     List<FlowNode> convertToFlowNodeList(Collection<FlowNode> followingNodes);
+    //endregion
 
+    //region REGION: AFTER GATEWAY
     /**
      * Tells if the node is after, at least, one closing exlusive gateway
      * As a design decision, closing exclusive gateways dont have text
@@ -38,9 +43,11 @@ public interface ParseFlowNodesHelper {
      */
     boolean after_opening_exclusive_gateway(FlowNode node);
     boolean after_opening_parallel_gateway(FlowNode node);
+    //endregion
 
 
 
+    //region REGION: BEFORE GATEWAY
     /**
      * Tells if the node is before an opening exclusive gateway
      * As a design decision, opening exclusive gateways has text
@@ -58,7 +65,9 @@ public interface ParseFlowNodesHelper {
      */
     boolean before_closing_exclusive_gateway(FlowNode node);
     boolean before_closing_parallel_gateway(FlowNode node);
+    //endregion
 
+    //region REGION: Opening/Closing gateway definitions
     /**
      * Tells if the node is an opening exclusive gateway
      * As a design decision, opening exclusive gateways have text
@@ -92,5 +101,6 @@ public interface ParseFlowNodesHelper {
      * @return Returns if the node passed as a parameter is a closing parallel gateway
      */
     boolean isClosingParallelGateway(FlowNode node);
+    //endregion
 
 }

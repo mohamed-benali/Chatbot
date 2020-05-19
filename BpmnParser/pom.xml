@@ -47,11 +47,13 @@
             <artifactId>camunda-engine</artifactId>
             <version>7.12.0</version>
         </dependency>
-        <dependency>
+
+        <!--<dependency>
             <groupId>org.camunda.bpm.webapp</groupId>
             <artifactId>camunda-webapp</artifactId>
             <version>7.12.0</version>
-        </dependency>
+        </dependency>-->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

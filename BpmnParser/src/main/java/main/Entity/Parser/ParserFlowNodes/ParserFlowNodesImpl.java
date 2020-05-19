@@ -331,8 +331,8 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
         List<FlowNode> firstNodes = this.getParseFlowNodesHelper().convertToFlowNodeList(followingNodes);
         int nBranques = firstNodes.size();
 
-        Map<String, FlowNode> firstNodesMap = new TreeMap<String, FlowNode>();
-        for(FlowNode flowNode : firstNodes) { firstNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
+        //Map<String, FlowNode> firstNodesMap = new TreeMap<String, FlowNode>();
+        //for(FlowNode flowNode : firstNodes) { firstNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
 
         ParallelGateway closingParallelGateway = getClosingParallelGateway(parallelGateway); // Gateway on convergeixen
 
@@ -346,8 +346,8 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
             branques.set(i, branchIntents);
         }
 
-        Map<String, FlowNode> lastNodesMap = new TreeMap<String, FlowNode>();
-        for(FlowNode flowNode : lastNodes) { lastNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
+        //Map<String, FlowNode> lastNodesMap = new TreeMap<String, FlowNode>();
+        //for(FlowNode flowNode : lastNodes) { lastNodesMap.put(flowNode.getId(), flowNode); } // Convertir en Map
 
         for(int i = 0; i < nBranques; ++i) {
             if(i==0) { // Primera branca
@@ -358,8 +358,6 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
                 firstNodeIntent.addInputContextIDs(this.getInputContextIDs(firstNode));
             }
             else {
-
-
                 String firstNodeId = firstNodes.get(i).getId();
                 String lastNodeId = lastNodes.get(i - 1).getId();
 
@@ -422,30 +420,14 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
         else {
             visitedFlowNodes.add(flowNodeId);
 
-            ModelElementType startEventType = this.modelInstance.getModel().getType(StartEvent.class);
-            ModelElementType taskType = this.modelInstance.getModel().getType(Task.class);
-            ModelElementType exclusiveGatewayType = this.modelInstance.getModel().getType(ExclusiveGateway.class);
-            ModelElementType ParallelGatewayType = this.modelInstance.getModel().getType(ParallelGateway.class);
-            ModelElementType messageFlowType = this.modelInstance.getModel().getType(MessageFlow.class);
-            ModelElementType sequenceFlowType = this.modelInstance.getModel().getType(SequenceFlow.class);
-            ModelElementType endEventType = this.modelInstance.getModel().getType(EndEvent.class);
+            ParserFlowNodesDTO parserFlowNodesDTO = new ParserFlowNodesDTO(participant, process, node);
+            this.parseFlowNode(parserFlowNodesDTO); // May actualize the node reference(e.g. in parallel gateway)
 
-            if (node.getElementType() == startEventType) intents.add(this.parseStartEvent(participant, process, node));
-            else if (node.getElementType() == taskType) intents.add(this.parseTask(participant, process, node));
-            else if (node.getElementType() == exclusiveGatewayType)
-                intents.add(this.parseExclusiveGateway(participant, process, node));
-            else if (node.getElementType() == ParallelGatewayType) {
-                // After the execution of "parseParallelGateway", *node* changes to the closing parallelGateway
-                List<FlowNode> workAroundChangeNodeInsideMethod = new ArrayList<FlowNode>();
-                workAroundChangeNodeInsideMethod.add(node);
-                Intents parsedIntents = this.parseParallelGateway(participant, process, workAroundChangeNodeInsideMethod);
-                node = workAroundChangeNodeInsideMethod.get(0);
-                intents.add(parsedIntents);
-            } else if (node.getElementType() == messageFlowType)
-                intents.add(this.parseMessageFlow(participant, process, node));
-            else if (node.getElementType() == endEventType) intents.add(this.parseEndEvent(participant, process, node));
-            else intents.add(this.parseFlowNode(participant, process, node));
+            node = parserFlowNodesDTO.getFlowNode();
+            intents.add(parserFlowNodesDTO.getIntents());
 
+
+            // TODO: Can appear a problem if there is a exclusiveGateway at the end so more than one could be the last node
             // Recursively parse the outgoing flownodes.
             Collection<FlowNode> flowNodes = this.getCamundaHelper().getRelevantFlowingFlowNodesPlusClosingParallelGateway(node); // Get following flow nodes(task, gateway, etc) of a FlowNode.
             for (FlowNode flowNode : flowNodes) {
@@ -593,7 +575,7 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
 
         if( this.getParseFlowNodesHelper().before_opening_exclusive_gateway(node) ||
             this.getParseFlowNodesHelper().before_opening_parallel_gateway(node))
-        {
+        {// TODO: what if node is opening parallel gateway?
             outputContextIDs.add(node.getId());
         }
         else if(this.getParseFlowNodesHelper().before_closing_parallel_gateway(node)) {
@@ -643,8 +625,9 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
 
     /*
      * Gets the output intent IDs of a node
+     *
      */ // TODO: Create different function for this function depending on the subtype of the FlowNode(parameter)
-    // TODO: Incomplete function. For now, i use: addOutputIntentIDs(...) from ParserFlowNodes.java
+    // TODO: Incomplete function. For now, i use: addOutputIntentIDs(...) from ParserFlowNodesImpl.java
     public List<String> getOutputIntentIDs(FlowNode node) {
         List<String> outputIntentIDs = new ArrayList<String>();
 
@@ -658,6 +641,7 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
                     outputIntentIDs.addAll(this.getOutputIntentIDs(flowNode));
                 }
                 else if(this.getParseFlowNodesHelper().isClosingParallelGateway(flowNode)) {
+                    // Note that the output intent is corrected inside the parsing of the parallel gateway
                     outputIntentIDs.addAll(this.getOutputIntentIDs(flowNode));
                 }
                 else if(this.getParseFlowNodesHelper().isClosingExclusiveGateway(flowNode)) {

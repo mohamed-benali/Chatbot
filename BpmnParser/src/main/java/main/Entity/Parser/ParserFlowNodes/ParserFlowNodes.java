@@ -12,6 +12,13 @@ import java.io.IOException;
 
 public interface ParserFlowNodes {
     Intents parseFlowNode(Participant participant, Process process, FlowNode node) throws IOException;
+
+    /**
+     * Parse the flow node inside the parserFlowNodesDTO passed as a parameter<br>
+     *
+     * @param parserFlowNodesDTO Contains all the data, such as the Parcipant, the process or the node to parse
+     * @throws IOException
+     */
     void parseFlowNode(ParserFlowNodesDTO parserFlowNodesDTO) throws IOException;
 
     myIntent parseTargetMessageFlow(MessageFlow messageFlow) throws IOException;

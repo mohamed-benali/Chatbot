@@ -3,9 +3,12 @@ package main.Entity.Parser;
 import main.Entity.Intent.Intents;
 import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithm;
 import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
+import main.Exceptions.NotBpmnTypeException;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
+
+
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
@@ -24,11 +27,13 @@ public class Parser {
     /*
      * CONSTRUCTORS
      */
-    public Parser(String bpmnPath) {
+    public Parser(String bpmnPath) throws IOException, NotBpmnTypeException {
         this.intents = new Intents();
 
         // read a model from a file
         File file = new File(bpmnPath);
+        if(!file.exists()) throw new IOException("Doesn't exist a file with the path: " + bpmnPath);
+
         this.modelInstance = Bpmn.readModelFromFile(file);
 
         this.bpmnAlgorithm = new BpmnAlgorithmImpl(this.modelInstance);
@@ -56,4 +61,7 @@ public class Parser {
         this.intents.build();
     }
 
+    public void translateIntoDialogFlow() throws Exception {
+        this.getIntents().translateIntoDialogFlow();
+    }
 }

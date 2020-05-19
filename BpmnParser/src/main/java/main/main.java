@@ -21,6 +21,7 @@ public class main {
 
     public static String diagram = diagramZooReducedWithoutMessagesName;
 
+
     public static void main(String[] args) throws Exception {
         String packagePath = "./src/main/java/main";
         String dataPath = "/../Data/";
