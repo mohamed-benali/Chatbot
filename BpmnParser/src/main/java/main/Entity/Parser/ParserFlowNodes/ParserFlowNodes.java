@@ -1,7 +1,7 @@
 package main.Entity.Parser.ParserFlowNodes;
 
 import main.Entity.Intent.Intents;
-import main.Entity.Intent.myIntent;
+import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesDTO.ParserFlowNodesDTO;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.MessageFlow;
@@ -15,7 +15,7 @@ public interface ParserFlowNodes {
 
     /**
      * Parse the flow node inside the parserFlowNodesDTO passed as a parameter<br>
-     *
+     * It may change the actual node (e.g. in a parallel gateway)
      * @param parserFlowNodesDTO Contains all the data, such as the Parcipant, the process or the node to parse
      * @throws IOException
      */

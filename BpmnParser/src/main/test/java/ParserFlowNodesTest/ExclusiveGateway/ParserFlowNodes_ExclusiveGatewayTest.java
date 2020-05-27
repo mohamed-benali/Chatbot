@@ -1,7 +1,7 @@
 package ParserFlowNodesTest.ExclusiveGateway;
 
 import main.Entity.Intent.Intents;
-import main.Entity.Intent.myIntent;
+import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;

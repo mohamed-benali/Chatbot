@@ -1,11 +1,14 @@
 package main.Entity.Intent;
 
+import main.Entity.Intent.Intent.myIntent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.Exceptions.SpinnerChief_SentenceParaphraserException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
+
+import com.google.api.gax.rpc.ResourceExhaustedException;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,6 +18,18 @@ public class Intents {
 
     private Map<String, myIntent> intents; // String: name(identificador)
     private SentenceParaphraser sentenceParaphraser;
+
+
+    public static Intents instance;
+
+    public static Intents getInstance(){
+        if(instance==null) instance = new Intents();
+        return instance;
+    }
+
+    public static void clearInstance() {
+        instance = null;
+    }
 
     /*
      * CONSTRUCTORS
@@ -39,6 +54,23 @@ public class Intents {
     @Override
     public String toString() {
         return intents.toString();
+    }
+
+
+    /**
+     * Per fer més rapid la generacio dels tests
+     * @return Retorna un string per on hi ha el codi de la creacio de tots intent amb la info basica.
+     * Si hi ha elements amb més d'un element no els considera
+     */
+    public String createCode(){
+        StringBuilder response = new StringBuilder();
+        for(var entry : getIntents().entrySet()) {
+            response.append(entry.getValue().createCode());
+            response.append("\n");
+            response.append("\n");
+
+        }
+        return response.toString();
     }
     //endregion
 
@@ -225,16 +257,42 @@ public class Intents {
      * Translate into Dialogflow
      */
     public void translateIntoDialogFlow() throws Exception {
+        int size = intents.size();
+        int i = 0;
         for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
             myIntent intent = entry.getValue();
-            /*
+            if((i+1)%50==0)  {
+                System.out.println("\n\nWaiting(61 seconds) due to exceding the dialogflow minute limit(60 intents/min): "+
+                        size+" intents(total)  "+ i+" intents now\n\n");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("15 s");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("30 s");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("45 s");
+                Thread.sleep(1000*16); // 16 seconds
+
+            }
             try {
                 intent.translateIntoDialogFlow();
-            } catch (Exception e) {
+            } catch (ResourceExhaustedException e) {
+                println(e.getMessage());
+                System.out.println("\n\nWaiting(61 seconds) due to exceding the dialogflow minute limit(60 intents/min): "+
+                        size+" intents(total)  "+ i+" intents now\n\n");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("15 s");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("30 s");
+                Thread.sleep(1000*15); // 15 seconds
+                System.out.println("45 s");
+                Thread.sleep(1000*16); // 16 seconds
+                intent.translateIntoDialogFlow();
+            } /*catch (Exception e) {
                 println(e.getMessage());
             }*/
-            intent.translateIntoDialogFlow(); // For debugging
 
+            //intent.translateIntoDialogFlow(); // For debugging
+            ++i;
         }
     }
 

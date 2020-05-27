@@ -19,7 +19,7 @@ public class main {
     public static String diagramZooReducedWithoutMessagesName = "Zoo/ZooReducedWithoutMessages.bpmn";
     public static String diagramZooModifiedName = "Zoo/ZooModified.bpmn";
 
-    public static String diagram = diagramZooReducedWithoutMessagesName;
+    public static String diagram = diagramZooModifiedName;
 
 
     public static void main(String[] args) throws Exception {

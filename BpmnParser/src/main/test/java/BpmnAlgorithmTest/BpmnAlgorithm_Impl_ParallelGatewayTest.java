@@ -1,7 +1,7 @@
 package BpmnAlgorithmTest;
 
 import main.Entity.Intent.Intents;
-import main.Entity.Intent.myIntent;
+import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;

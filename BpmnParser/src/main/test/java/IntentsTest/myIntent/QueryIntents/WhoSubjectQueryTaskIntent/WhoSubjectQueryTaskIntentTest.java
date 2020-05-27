@@ -1,7 +1,7 @@
 package IntentsTest.myIntent.QueryIntents.WhoSubjectQueryTaskIntent;
 
-import main.Entity.Intent.QueryIntent.QueryTaskIntent;
-import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
+import main.Entity.Intent.Intent.QueryIntent.QueryTaskIntent;
+import main.Entity.Intent.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import org.junit.jupiter.api.AfterEach;

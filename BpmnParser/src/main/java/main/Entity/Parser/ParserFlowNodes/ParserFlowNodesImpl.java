@@ -1,9 +1,9 @@
 package main.Entity.Parser.ParserFlowNodes;
 
 import main.Entity.Intent.*;
+import main.Entity.Intent.Intent.*;
 import main.Entity.Parser.BpmnAlgorithm.BpmnAlgorithmImpl;
 import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelper;
-import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelperImpl;
 import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelper;
 import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelperImpl;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesDTO.ParserFlowNodesDTO;
@@ -107,16 +107,16 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
         ModelElementType exclusiveGatewayType = this.modelInstance.getModel().getType(ExclusiveGateway.class);
         ModelElementType ParallelGatewayType = this.modelInstance.getModel().getType(ParallelGateway.class);
         ModelElementType messageFlowType = this.modelInstance.getModel().getType(MessageFlow.class);
-        ModelElementType sequenceFlowType = this.modelInstance.getModel().getType(SequenceFlow.class);
+        //ModelElementType sequenceFlowType = this.modelInstance.getModel().getType(SequenceFlow.class);
         ModelElementType endEventType = this.modelInstance.getModel().getType(EndEvent.class);
 
+        ModelElementType intermediateCatchEventType = this.modelInstance.getModel().getType(IntermediateCatchEvent.class);
+        //ModelElementType intermediateThrowEventType = this.modelInstance.getModel().getType(IntermediateThrowEvent.class);
 
-        if (node.getElementType() == startEventType)
-            intents.add(this.parseStartEvent(participant, process, node));
-        else if (node.getElementType() == taskType)
-            intents.add(this.parseTask(participant, process, node));
-        else if (node.getElementType() == exclusiveGatewayType)
-            intents.add(this.parseExclusiveGateway(participant, process, node));
+
+        if (node.getElementType() == startEventType) intents.add(this.parseStartEvent(participant, process, node));
+        else if (node.getElementType() == taskType) intents.add(this.parseTask(participant, process, node));
+        else if (node.getElementType() == exclusiveGatewayType) intents.add(this.parseExclusiveGateway(participant, process, node));
         else if (node.getElementType() == ParallelGatewayType) {
             // After the execution of "parseParallelGateway", *node* changes to the closing parallelGateway
             List<FlowNode> workAroundChangeNodeInsideMethod = new ArrayList<FlowNode>();
@@ -124,16 +124,19 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
             Intents parsedIntents = this.parseParallelGateway(participant, process, workAroundChangeNodeInsideMethod);
             node = workAroundChangeNodeInsideMethod.get(0);
             intents.add(parsedIntents);
-        } else if (node.getElementType() == messageFlowType)
-            intents.add(this.parseMessageFlow(participant, process, node));
-        else if (node.getElementType() == endEventType)
-            intents.add(this.parseEndEvent(participant, process, node));
+        }
+        else if (node.getElementType() == messageFlowType) intents.add(this.parseMessageFlow(participant, process, node));
+        else if (node.getElementType() == endEventType) intents.add(this.parseEndEvent(participant, process, node));
+        else if(node.getElementType() == intermediateCatchEventType) {
+            intents.add(this.parseIntermediateCatchEvent(participant, process, node));
+        }
         else intents.add(this.parseFlowNode(participant, process, node));
 
 
         parserFlowNodesDTO.setIntents(intents);
         parserFlowNodesDTO.setFlowNode(node);
     }
+
     //endregion
 
     //region REGION: Start Event
@@ -269,6 +272,40 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
         Intents intents = new Intents();
 
         MessageFlow messageFlow = modelInstance.getModelElementById(node.getId());
+
+        return intents;
+    }
+    //endregion
+
+
+    //region REGION: Parse Intermediate Catch  Event
+
+    public Intents parseIntermediateCatchEvent(Participant participant, Process process, FlowNode node) throws IOException {
+        Intents intents = new Intents();
+
+        IntermediateCatchEvent intermediateCatchEvent = modelInstance.getModelElementById(node.getId());
+        String name = this.getParseFlowNodesHelper().createName(participant, process, intermediateCatchEvent); // The name is the identificator
+        String subject = participant.getName();
+        String tasca = intermediateCatchEvent.getName();
+        myIntent intent = new IntermediateCatchEventIntent(name, subject, tasca);
+
+        addTrainingPhrases(intent, intermediateCatchEvent);
+
+
+        // TODO: Document this(the idea for doing this[Dialoglow dont has OR in input context, so in an if structure, only
+        //  one context can be required. So some nodes have to give/require the same context])
+
+        intent.addInputContextIDs(this.getInputContextIDs(node));
+        intent.addOutputContextIDs(this.getOutputContextIDs(node));
+
+        intent.addOutputIntentIDs(this.getOutputIntentIDs(node));
+
+        intents.add(intent);
+
+        /*// Query intent
+        QueryTaskIntent queryTaskIntent = new QueryTaskIntent(name, subject, tasca);
+
+        intents.add(queryTaskIntent);*/
 
         return intents;
     }
@@ -641,7 +678,7 @@ public class ParserFlowNodesImpl implements ParserFlowNodes {
                     outputIntentIDs.addAll(this.getOutputIntentIDs(flowNode));
                 }
                 else if(this.getParseFlowNodesHelper().isClosingParallelGateway(flowNode)) {
-                    // Note that the output intent is corrected inside the parsing of the parallel gateway
+                    // Note that the output intent is fixed inside the parsing of the parallel gateway
                     outputIntentIDs.addAll(this.getOutputIntentIDs(flowNode));
                 }
                 else if(this.getParseFlowNodesHelper().isClosingExclusiveGateway(flowNode)) {

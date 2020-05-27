@@ -109,4 +109,20 @@ class SentenceAnalyzerTest {
         assertEquals(expectedSentenceAnalysis, resultSentenceAnalysis);
     }
 
+    @Test
+    @DisplayName("Analyze sentence correctly: Charge zoo account")
+    void analyzeSentence6() throws InterruptedException, SentenceAnalyzerException, IOException, NoFreelingKeyException {
+        String sentence = "Charge zoo account";
+        SentenceAnalyzer sentenceAnalyzer = new FreelingSimpleSentenceAnalyzerImpl();
+
+        SentenceAnalysis resultSentenceAnalysis = sentenceAnalyzer.analyzeSentence(sentence);
+
+        SentenceAnalysis expectedSentenceAnalysis = new SimpleSentenceAnalysis("charge", "noun",
+                null, "singular",
+                "zoo account", "singular",
+                null, null);
+
+        assertEquals(expectedSentenceAnalysis, resultSentenceAnalysis);
+    }
+
 }

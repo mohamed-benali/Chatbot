@@ -1,6 +1,5 @@
 package main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChiefParser.Word.Entities;
 
-import main.Entity.Intent.TrainingPhrases.NullTrainingPhrase;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
 
 import java.util.ArrayList;

@@ -1,8 +1,5 @@
 package main.SentenceGeneration.SentenceEntities.Sentences;
 
-import main.Entity.Intent.Intents;
-import main.Entity.Intent.myIntent;
-
 import java.util.*;
 
 public class Sentences {

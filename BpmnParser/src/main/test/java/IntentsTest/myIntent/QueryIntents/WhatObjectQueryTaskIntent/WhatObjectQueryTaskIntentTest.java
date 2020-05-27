@@ -1,8 +1,7 @@
 package IntentsTest.myIntent.QueryIntents.WhatObjectQueryTaskIntent;
 
-import main.Entity.Intent.QueryIntent.QueryTaskIntent;
-import main.Entity.Intent.QueryIntent.WhatObjectQueryTaskIntent;
-import main.Entity.Intent.QueryIntent.WhoSubjectQueryTaskIntent;
+import main.Entity.Intent.Intent.QueryIntent.QueryTaskIntent;
+import main.Entity.Intent.Intent.QueryIntent.WhatObjectQueryTaskIntent;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import org.junit.jupiter.api.AfterEach;

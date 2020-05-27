@@ -1,13 +1,12 @@
 package main.Entity.Parser.BpmnAlgorithm;
 
-import main.Entity.Intent.BeginIntent_Special;
-import main.Entity.Intent.myIntent;
+import main.Entity.Intent.Intent.BeginIntent_Special;
+import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelper;
 import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelperImpl;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesDTO.ParserFlowNodesDTO;
 import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelper;
-import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelperImpl;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodes;
 import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -75,23 +74,47 @@ public class BpmnAlgorithmImpl implements BpmnAlgorithm{
         this.intents.add(beginIntentSpecial);
 
         // TODO: Crea i Actualitzar els input Intent abans de continuar
-
         // TODO: Inserir per tots aquells que tenen al intent com a outputIntent(aprofitar que si jo soc el outputIntent,
         // TODO: tu ets el meu inputIntent
 
-        // Collaboration
-        Collection<MessageFlow> messageFlowIntsances = modelInstance.getModelElementsByType(MessageFlow.class);
-        for(MessageFlow messageFlow : messageFlowIntsances) {
-            myIntent sourceIntent = this.parserFlowNodes.parseSourceMessageFlow(messageFlow);
-            myIntent targetIntent = this.parserFlowNodes.parseTargetMessageFlow(messageFlow);
+        /*
+         * Add the input intents (using output intents)
+         */
+        this.fillInputIntents(); // Updates this.intents //TODO: Update the equals & toString methods of myIntent
 
-            this.intents.insertAfterIntent (sourceIntent, messageFlow.getSource().getId());
-            this.intents.insertBeforeIntent(targetIntent, messageFlow.getTarget().getId());
+        // Collaboration
+        Collection<MessageFlow> messageFlowInstances = modelInstance.getModelElementsByType(MessageFlow.class);
+        for(MessageFlow messageFlow : messageFlowInstances) {
+            // TODO: Use buildExtraIntent for the loop in Exclusive Gateway
+            String sourceNodeID = messageFlow.getSource().getId();
+            String targetNodeID = messageFlow.getTarget().getId();
+
+            myIntent sourceIntent = intents.getIntentByID(sourceNodeID);
+            myIntent targetIntent = intents.getIntentByID(targetNodeID);
+
+            String sourceSubject = sourceIntent.getSubject();
+            String targetSubject = targetIntent.getSubject();
+
+            sourceIntent.markAsCollaborationSource(targetNodeID, targetSubject);
+            targetIntent.markAsCollaborationTarget(sourceNodeID, sourceSubject);
         }
 
         return this.intents;
     }
 
+    private void fillInputIntents() {
+        Map<String, myIntent> intentsMap = this.intents.getIntents();
+        for(var intentEntry : intentsMap.entrySet()) { // For each intent
+            String intentID = intentEntry.getKey();
+            myIntent intent = intentEntry.getValue();
+
+            List<String> outputIntents = intent.getOutputIntents();
+            for(String outputIntentID : outputIntents) { // For each output intent
+                myIntent outputIntent = this.intents.getIntentByID(outputIntentID); // Get outputIntent
+                outputIntent.addInputIntentID(intentID); // Add actual intent as an input intent
+            }
+        }
+    }
 
 
     public Intents parseParticipant(Participant participant) throws IOException {

@@ -1,7 +1,5 @@
 package main.SentenceGeneration.SentenceEntities.Sentences;
 
-import main.Entity.Intent.TrainingPhrases.myTrainingPhrases;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

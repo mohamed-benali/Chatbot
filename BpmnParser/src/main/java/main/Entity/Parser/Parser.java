@@ -28,7 +28,7 @@ public class Parser {
      * CONSTRUCTORS
      */
     public Parser(String bpmnPath) throws IOException, NotBpmnTypeException {
-        this.intents = new Intents();
+        this.intents = Intents.getInstance();
 
         // read a model from a file
         File file = new File(bpmnPath);

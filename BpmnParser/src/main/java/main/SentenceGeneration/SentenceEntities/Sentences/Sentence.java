@@ -1,7 +1,5 @@
 package main.SentenceGeneration.SentenceEntities.Sentences;
 
-import main.Entity.Intent.myIntent;
-
 public class Sentence {
 
     protected String sentence;
