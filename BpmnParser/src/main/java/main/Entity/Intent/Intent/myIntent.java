@@ -490,14 +490,20 @@ public class myIntent {
         List<String> inputContextNames = this.buildInputContext(this.getInputContexts());
         List<String> outputContextNames = this.buildOutputContext();
 
+        boolean isFallbackIntent = this.isFallbackIntent();
+
 
         String projectId = "greetingsbot-qtakwv";
         //this.intentManagment.deleteIntent(projectId, title);
 
         // TODO: Provide the correct contexts(input, output, etc) (fix makeResponse, buildTrainingPhrases, etc)
         this.intentManagment.createIntent(title, projectId, trainingPhrases,
-                                            responses, inputContextNames, outputContextNames);
+                                            responses, inputContextNames, outputContextNames, isFallbackIntent);
 
+    }
+
+    public boolean isFallbackIntent() {
+        return false;
     }
 
     // Returns the output contexts that this intent generates when is matched

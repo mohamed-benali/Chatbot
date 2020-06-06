@@ -11,7 +11,7 @@ import java.util.List;
 
 // Special because is created 100% manually
 public class BeginIntent_Special extends myIntent {
-    public static String BEGIN_CONTEXT = "BEGIN_CONTEXT";
+    public static String BEGIN_CONTEXT = "begin_context";
     public static String TRAINING_PHRASE = "BEGIN";
 
 

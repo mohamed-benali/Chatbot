@@ -261,7 +261,7 @@ public class Intents {
         int i = 0;
         for(Map.Entry<String, myIntent> entry : intents.entrySet()) {
             myIntent intent = entry.getValue();
-            if((i+1)%50==0)  {
+            if((i+1)%51==0)  {
                 System.out.println("\n\nWaiting(61 seconds) due to exceding the dialogflow minute limit(60 intents/min): "+
                         size+" intents(total)  "+ i+" intents now\n\n");
                 Thread.sleep(1000*15); // 15 seconds

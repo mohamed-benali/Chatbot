@@ -1,6 +1,7 @@
 package main.Entity.Parser.BpmnAlgorithm;
 
 import main.Entity.Intent.Intent.BeginIntent_Special;
+import main.Entity.Intent.Intent.FallBackIntent;
 import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import main.Entity.Parser.ParserFlowNodes.Helpers.ParseFlowNodesHelper.ParseFlowNodesHelper;
@@ -73,9 +74,9 @@ public class BpmnAlgorithmImpl implements BpmnAlgorithm{
         beginIntentSpecial.setParticipantNames(participantNames);
         this.intents.add(beginIntentSpecial);
 
-        // TODO: Crea i Actualitzar els input Intent abans de continuar
-        // TODO: Inserir per tots aquells que tenen al intent com a outputIntent(aprofitar que si jo soc el outputIntent,
-        // TODO: tu ets el meu inputIntent
+        // Fallback intent
+        FallBackIntent fallBackIntent = new FallBackIntent();
+        this.intents.add(fallBackIntent);
 
         /*
          * Add the input intents (using output intents)

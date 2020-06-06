@@ -83,6 +83,7 @@ public class IntentManagment {
      * @param trainingPhrasesParts Training phrases.
      * @param messageTexts         Message texts for the agent's response when the intent is detected.
      * @param outputContextNames
+     * @param isFallbackIntent
      * @return The created Intent.
      */
     public Intent createIntent(
@@ -90,7 +91,7 @@ public class IntentManagment {
             String projectId,
             List<String> trainingPhrasesParts,
             List<String> messageTexts,
-            List<String> inputContextsNames, List<String> outputContextNames) throws Exception {
+            List<String> inputContextsNames, List<String> outputContextNames, boolean isFallbackIntent) throws Exception {
         // Instantiates a client
             // Set the project agent name using the projectID (my-project-id)
             ProjectAgentName parent = ProjectAgentName.of(projectId);
@@ -174,7 +175,10 @@ public class IntentManagment {
                     .addAllTrainingPhrases(trainingPhrases)
                     .addAllInputContextNames(inputContextNamesStringList)
                     .addAllOutputContexts(outputContexts)
+                    .setWebhookState(Intent.WebhookState.WEBHOOK_STATE_ENABLED)
+                    .setIsFallback(isFallbackIntent)
                     .build();
+
 
 
             // Performs the create intent request
