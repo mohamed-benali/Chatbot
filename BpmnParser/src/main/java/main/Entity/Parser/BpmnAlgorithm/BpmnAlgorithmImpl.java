@@ -78,6 +78,10 @@ public class BpmnAlgorithmImpl implements BpmnAlgorithm{
         FallBackIntent fallBackIntent = new FallBackIntent();
         this.intents.add(fallBackIntent);
 
+        // Back intent
+        BackIntent backIntent = new BackIntent();
+        this.intents.add(backIntent);
+
         /*
          * Add the input intents (using output intents)
          */
