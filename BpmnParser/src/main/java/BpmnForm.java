@@ -37,8 +37,10 @@ public class BpmnForm {
                 bpmnPath = myFileChooser.getFilePath();
 
 
-                selectedFileText.setText(fileName);
-                JOptionPane.showMessageDialog(null, fileName);
+
+
+                selectedFileText.setText(bpmnPath);
+                JOptionPane.showMessageDialog(null, bpmnPath);
 
             }
         });
@@ -56,7 +58,7 @@ public class BpmnForm {
                     progressText.setText("Done");
                     progressBar.setValue(100);
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "File does not exist");
+                    JOptionPane.showMessageDialog(null, "File does not exist\n"+ex.getMessage());
                     progressText.setText("File does not exist");
                     ex.printStackTrace();
                 } catch (NotBpmnTypeException ex) {
