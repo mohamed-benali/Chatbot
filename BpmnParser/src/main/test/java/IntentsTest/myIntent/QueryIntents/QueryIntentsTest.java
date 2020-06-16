@@ -38,7 +38,7 @@ class QueryIntentsTest {
 
         myIntent taskIntent = new TaskIntent(name, subject, tasca);
 
-        Intents resultIntents = taskIntent.buildExtraIntents();
+        Intents resultIntents = taskIntent.buildExtraIntents(null);
 
         Intents expectedIntents = createExpected_QueryTaskIntents(name, subject, tasca);
 

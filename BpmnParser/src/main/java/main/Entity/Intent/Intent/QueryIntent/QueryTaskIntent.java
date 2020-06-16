@@ -1,6 +1,5 @@
 package main.Entity.Intent.Intent.QueryIntent;
 
-import main.Entity.Intent.Intent.StartIntent;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.Intent.myIntent;
 import main.Exceptions.NoFreelingKeyException;
@@ -10,6 +9,7 @@ import main.SentenceGeneration.SentenceAnalyzer.SentenceAnalyzer;
 import main.SentenceGeneration.SentenceEntities.SentenceAnalysis.SentenceAnalysis;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +42,7 @@ public abstract class QueryTaskIntent extends myIntent {
 
 
     @Override
-    public Intents buildExtraIntents() {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) {
         return null;
     }
 

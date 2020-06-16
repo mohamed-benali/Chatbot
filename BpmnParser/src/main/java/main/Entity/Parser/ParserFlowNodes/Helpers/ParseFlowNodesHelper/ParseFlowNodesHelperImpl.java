@@ -5,7 +5,9 @@ import main.Entity.Parser.ParserFlowNodes.Helpers.CamundaHelper.CamundaHelperImp
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.xml.impl.type.ModelElementTypeImpl;
 import org.camunda.bpm.model.xml.type.ModelElementType;
+import org.camunda.bpm.model.xml.type.ModelElementTypeBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +97,7 @@ public class ParseFlowNodesHelperImpl implements ParseFlowNodesHelper {
     @Override
     public boolean isClosingParallelGateway(FlowNode followingNode) {
         ModelElementType parallelGatewayType   = this.modelInstance.getModel().getType(ParallelGateway.class);
+
         if(followingNode.getElementType() == parallelGatewayType){
             Collection<FlowNode> parallelGatewayIncomingflowNodes = camundaHelper.getAllIncomingFlowNodes(followingNode);
             int incomingSize = parallelGatewayIncomingflowNodes.size();

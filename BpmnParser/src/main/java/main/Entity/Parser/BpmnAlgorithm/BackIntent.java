@@ -4,6 +4,7 @@ import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class BackIntent extends myIntent {
 
 
     @Override
-    public Intents buildExtraIntents() {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) {
         return new Intents();
     }
 

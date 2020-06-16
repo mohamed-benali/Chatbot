@@ -1,12 +1,12 @@
 package main.Entity.Intent.Intent;
 
-import main.Entity.Intent.Intent.myIntent;
 import main.Entity.Intent.Intents;
 import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ExclusiveGatewayIntent extends myIntent {
 
 
     @Override
-    public Intents buildExtraIntents() {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) {
         return new Intents();
     }
 

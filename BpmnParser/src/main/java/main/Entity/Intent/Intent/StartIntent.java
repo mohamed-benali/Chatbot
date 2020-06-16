@@ -5,6 +5,7 @@ import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,9 +27,9 @@ public class StartIntent extends myIntent {
 
 
     @Override
-    public Intents buildExtraIntents() throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) throws InterruptedException, SentenceAnalyzerException, NoFreelingKeyException, IOException {
         Intents intents = new Intents();
-        intents.add(super.buildExtraIntents());
+        intents.add(super.buildExtraIntents(modelInstance));
         return intents;
     }
 

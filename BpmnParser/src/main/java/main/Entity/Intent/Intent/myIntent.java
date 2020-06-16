@@ -5,6 +5,7 @@ import main.Entity.Intent.Intent.CollaborationManager.CollaborationManagerImpl;
 import main.Entity.Intent.Intents;
 import main.Entity.Intent.Intent.TrainingPhrases.myTrainingPhrase;
 import main.Entity.Intent.Intent.TrainingPhrases.myTrainingPhrases;
+import main.Entity.Parser.ParserFlowNodes.ParserFlowNodesImpl;
 import main.Enums.DefaultTrainingPhraseType;
 import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
@@ -14,6 +15,8 @@ import com.google.cloud.dialogflow.v2.*;
 import main.Entity.DialogFlow.IntentManagment;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -550,8 +553,9 @@ public class myIntent {
     /**
      * Builds the extra intents such as QueryTaskIntent
      * @return Returns the extra intents that can be create from this intent
+     * @param modelInstance
      */
-    public Intents buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         Intents intents = new Intents();
 
         if(this.isAsCollaborationTarget()) {
@@ -564,7 +568,13 @@ public class myIntent {
             newIntent.setName(newIntentID);
 
             newIntent.clearInputContexts();
-            newIntent.addInputContextID(sourceNodeID);
+
+            ParserFlowNodesImpl parserFlowNodes = new ParserFlowNodesImpl(modelInstance);
+            FlowNode node = modelInstance.getModelElementById(sourceNodeID);
+            List<String> inputContexts = parserFlowNodes.getOutputContextIDs(node);
+            newIntent.setInputContexts(inputContexts);
+
+            //newIntent.addInputContextID(sourceNodeID);
 
             newIntent.clearTrainingPhrases();
             newIntent.addTrainingPhrase("yes");

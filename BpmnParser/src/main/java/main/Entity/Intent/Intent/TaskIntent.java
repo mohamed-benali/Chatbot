@@ -9,6 +9,7 @@ import main.Exceptions.NoFreelingKeyException;
 import main.Exceptions.SentenceAnalyzerException;
 import main.SentenceGeneration.SentenceEntities.Sentences.ParaphrasedSentences;
 import main.SentenceGeneration.SentenceEntities.Sentences.Sentences;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,14 +48,14 @@ public class TaskIntent extends myIntent {
     }
 
     @Override // TODO: other type of Querys
-    public Intents buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+    public Intents buildExtraIntents(BpmnModelInstance modelInstance) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         Intents intents = new Intents();
 
         String id = this.getId();
         String task = this.getTask();
         String subject = this.getSubject();
 
-        intents.add(super.buildExtraIntents());
+        intents.add(super.buildExtraIntents(modelInstance));
 
         myIntent whoSubjectQueryTaskIntent = new WhoSubjectQueryTaskIntent(id, subject, task);
         intents.add(whoSubjectQueryTaskIntent);

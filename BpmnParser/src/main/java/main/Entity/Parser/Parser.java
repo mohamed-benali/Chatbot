@@ -58,7 +58,7 @@ public class Parser {
             System.out.println(e.getMessage());
         }*/
         this.intents.add(bpmnAlgorithm.parse());
-        this.intents.build();
+        this.intents.build(modelInstance);
     }
 
     public void translateIntoDialogFlow() throws Exception {

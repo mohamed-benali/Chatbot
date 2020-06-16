@@ -9,6 +9,7 @@ import main.SentenceGeneration.SentenceParaphraser.SentenceParaphraser;
 import main.SentenceGeneration.SentenceParaphraser.SpinnerChief_SetenceParaphraserImpl.SpinnerChief_SentenceParaphraserImpl;
 
 import com.google.api.gax.rpc.ResourceExhaustedException;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 
 import java.io.IOException;
 import java.util.*;
@@ -177,8 +178,9 @@ public class Intents {
      * It also prepares the the extraIntents, such as QueryTaskIntent
      * <br><br>
      * The order is: build extra intents, build Training Phrases
+     * @param modelInstance
      */
-    public void build() throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException, SentenceAnalyzerException, NoFreelingKeyException {
+    public void build(BpmnModelInstance modelInstance) throws InterruptedException, SpinnerChief_SentenceParaphraserException, IOException, SentenceAnalyzerException, NoFreelingKeyException {
         /* TODO:
              maybe create here(or in Parser.parse() ) the QueryTasks( createAdditionalTask or createQueryTasks)
              Responses
@@ -190,7 +192,7 @@ public class Intents {
             Aqui actualitzar perque DialogFlow ho pugui entendre, per tant, el build es un "Build DialogFlow"
             Fer que sigui una interficie (chatbotBuilder ????) i segons la Impl es fa build de dialogflow.
         */
-        this.buildExtraIntents();
+        this.buildExtraIntents(modelInstance);
         this.buildTrainingPhrases();
     }
 
@@ -198,12 +200,13 @@ public class Intents {
     /**
      * Builds the extra intents such as QueryTaskIntent
      *
+     * @param modelInstance
      */
-    private void buildExtraIntents() throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
+    private void buildExtraIntents(BpmnModelInstance modelInstance) throws IOException, InterruptedException, SentenceAnalyzerException, NoFreelingKeyException {
         Intents tmpIntents = new Intents();
         for(Map.Entry<String, myIntent> entry : getIntents().entrySet()) {
             myIntent intent = entry.getValue();
-            Intents extraIntents = intent.buildExtraIntents();
+            Intents extraIntents = intent.buildExtraIntents(modelInstance);
             tmpIntents.add(extraIntents);
         }
         this.add(tmpIntents);
