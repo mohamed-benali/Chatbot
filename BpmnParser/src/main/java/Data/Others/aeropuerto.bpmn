@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="default" name="BPMN">
+  <process id="proc0" name="Unnamed_Process" isExecutable="true">
+    <startEvent id="event0"></startEvent>
+    <endEvent id="event1"></endEvent>
+    <sequenceFlow id="activity3_event1" sourceRef="activity3" targetRef="event1"></sequenceFlow>
+    <parallelGateway id="gateway0"></parallelGateway>
+    <sequenceFlow id="activity0_gateway0" sourceRef="activity0" targetRef="gateway0"></sequenceFlow>
+    <parallelGateway id="gateway1"></parallelGateway>
+    <sequenceFlow id="activity1_gateway1" sourceRef="activity1" targetRef="gateway1"></sequenceFlow>
+    <sequenceFlow id="activity2_gateway1" sourceRef="activity2" targetRef="gateway1"></sequenceFlow>
+    <sequenceFlow id="activity0" name="Comprobar billetes"></sequenceFlow>
+    <sequenceFlow id="event0_activity0" sourceRef="event0" targetRef="activity0"></sequenceFlow>
+    <sequenceFlow id="activity1" name="Embarcar pasajeros"></sequenceFlow>
+    <sequenceFlow id="gateway0_activity1" sourceRef="gateway0" targetRef="activity1"></sequenceFlow>
+    <sequenceFlow id="activity2" name="Embarcar equipaje"></sequenceFlow>
+    <sequenceFlow id="gateway0_activity2" sourceRef="gateway0" targetRef="activity2"></sequenceFlow>
+    <sequenceFlow id="activity3" name="Iniciar vuelo"></sequenceFlow>
+    <sequenceFlow id="gateway1_activity3" sourceRef="gateway1" targetRef="activity3"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_proc0">
+    <bpmndi:BPMNPlane bpmnElement="proc0" id="BPMNPlane_proc0">
+      <bpmndi:BPMNShape bpmnElement="event0" id="BPMNShape_event0">
+        <omgdc:Bounds height="35.0" width="35.0" x="0.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="event1" id="BPMNShape_event1">
+        <omgdc:Bounds height="35.0" width="35.0" x="710.0" y="95.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gateway0" id="BPMNShape_gateway0">
+        <omgdc:Bounds height="40.0" width="40.0" x="230.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gateway1" id="BPMNShape_gateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="470.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="activity0" id="BPMNShape_activity0">
+        <omgdc:Bounds height="60.0" width="100.0" x="80.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="activity1" id="BPMNShape_activity1">
+        <omgdc:Bounds height="60.0" width="100.0" x="320.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="activity2" id="BPMNShape_activity2">
+        <omgdc:Bounds height="60.0" width="100.0" x="320.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="activity3" id="BPMNShape_activity3">
+        <omgdc:Bounds height="60.0" width="100.0" x="560.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="activity3_event1" id="BPMNEdge_activity3_event1">
+        <omgdi:waypoint x="660.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="112.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="activity0_gateway0" id="BPMNEdge_activity0_gateway0">
+        <omgdi:waypoint x="180.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="230.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="activity1_gateway1" id="BPMNEdge_activity1_gateway1">
+        <omgdi:waypoint x="420.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="432.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="432.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="activity2_gateway1" id="BPMNEdge_activity2_gateway1">
+        <omgdi:waypoint x="420.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="432.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="432.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="event0_activity0" id="BPMNEdge_event0_activity0">
+        <omgdi:waypoint x="35.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="80.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gateway0_activity1" id="BPMNEdge_gateway0_activity1">
+        <omgdi:waypoint x="270.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="30.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="30.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gateway0_activity2" id="BPMNEdge_gateway0_activity2">
+        <omgdi:waypoint x="270.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="282.0" y="190.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="190.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gateway1_activity3" id="BPMNEdge_gateway1_activity3">
+        <omgdi:waypoint x="510.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

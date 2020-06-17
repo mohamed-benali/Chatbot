@@ -55,7 +55,7 @@ public class BpmnForm {
                     parser.parse();
                     progressText.setText("Uploading Chatbot into DialogFlow");
                     parser.translateIntoDialogFlow();
-                    progressText.setText("Done");
+                    progressText.setText("Done\n You can acces the chatbot here: https://bot.dialogflow.com/6884061e-eed2-4d97-8f0e-b369a8b7def0");
                     progressBar.setValue(100);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "File does not exist\n"+ex.getMessage());
