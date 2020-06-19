@@ -17,11 +17,13 @@ Change Directory for methainfo to {root-path}/src/main/resources
 
 
 4- Build-->Build Artifacts
+
   Select the artifact and select build.
   
   
 5- Open the JAR with WinRar or similar
-    Go to META-INF and delete .SF files.
+
+   Go to META-INF and delete .SF files.
     
     
 6-Execute JAR :)
